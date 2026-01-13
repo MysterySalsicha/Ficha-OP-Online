@@ -1,0 +1,26 @@
+{
+  "nexRange": {
+    "min": 0,
+    "max": 15
+  },
+  "progressionRules": {
+    "attributes": {
+      "maxBase": 3,
+      "increaseRule": "apenasQuandoEspecificado"
+    },
+    "skills": {
+      "trainedOnly": true,
+      "maxTrained": "definidoPorNex"
+    },
+    "ritualAccess": {
+      "minNex": 10,
+      "restrictedToClass": "Ocultista"
+    },
+    "overrideAllowed": true
+  },
+  "patents": [
+    "Recruta",
+    "Agente",
+    "AgenteExperiente"
+  ]
+}

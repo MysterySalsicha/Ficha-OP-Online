@@ -1,0 +1,95 @@
+[
+  {
+    "name": "Pistola",
+    "type": "arma",
+    "category": "leve",
+    "attribute": "agilidade",
+    "attackBonus": 0,
+    "damage": "1d12",
+    "range": "medio",
+    "weight": 1,
+    "description": "Arma de fogo leve e comum. Usa Agilidade para atacar."
+  },
+  {
+    "name": "Faca",
+    "type": "arma",
+    "category": "leve",
+    "attribute": "forca",
+    "attackBonus": 0,
+    "damage": "1d6",
+    "range": "curto",
+    "weight": 1,
+    "description": "Arma corpo a corpo simples e fácil de esconder."
+  },
+  {
+    "name": "Cassetete",
+    "type": "arma",
+    "category": "leve",
+    "attribute": "forca",
+    "attackBonus": 0,
+    "damage": "1d8",
+    "range": "corpo a corpo",
+    "weight": 1,
+    "description": "Arma simples usada para contenção."
+  },
+  {
+    "name": "Colete Leve",
+    "type": "protecao",
+    "category": "leve",
+    "defenseBonus": 2,
+    "weight": 2,
+    "description": "Proteção básica que aumenta a Defesa."
+  },
+  {
+    "name": "Kit de Primeiros Socorros",
+    "type": "equipamento",
+    "category": "basico",
+    "weight": 1,
+    "effect": "Permite realizar testes de Medicina para estabilizar ou tratar ferimentos.",
+    "description": "Estojo com bandagens, gaze e medicamentos básicos."
+  },
+  {
+    "name": "Lanterna",
+    "type": "equipamento",
+    "category": "basico",
+    "weight": 1,
+    "effect": "Ilumina áreas escuras, removendo penalidades por falta de luz.",
+    "description": "Lanterna comum alimentada por pilhas."
+  },
+  {
+    "name": "Componentes de Conhecimento",
+    "type": "componenteRitual",
+    "element": "Conhecimento",
+    "color": "#D4AF37",
+    "weight": 1,
+    "effect": "Permite conjurar rituais do elemento Conhecimento.",
+    "description": "Símbolos, escritos e objetos ligados à verdade e compreensão."
+  },
+  {
+    "name": "Componentes de Morte",
+    "type": "componenteRitual",
+    "element": "Morte",
+    "color": "#000000",
+    "weight": 1,
+    "effect": "Permite conjurar rituais do elemento Morte.",
+    "description": "Resquícios, cinzas e materiais ligados à decadência."
+  },
+  {
+    "name": "Componentes de Sangue",
+    "type": "componenteRitual",
+    "element": "Sangue",
+    "color": "#8B0000",
+    "weight": 1,
+    "effect": "Permite conjurar rituais do elemento Sangue.",
+    "description": "Objetos manchados de energia vital corrompida."
+  },
+  {
+    "name": "Componentes de Energia",
+    "type": "componenteRitual",
+    "element": "Energia",
+    "color": "#6A0DAD",
+    "weight": 1,
+    "effect": "Permite conjurar rituais do elemento Energia.",
+    "description": "Dispositivos e materiais instáveis carregados de energia paranormal."
+  }
+]

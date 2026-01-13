@@ -1,0 +1,16 @@
+{
+  "pv": {
+    "formula": "pvBase + (nexSteps * pvPerNex) + vigor",
+    "overrideAllowed": true
+  },
+  "pe": {
+    "formula": "peBase + presenca",
+    "perRound": "1 + floor(nex / 10)",
+    "overrideAllowed": true
+  },
+  "san": {
+    "formula": "20 + presenca",
+    "lossRules": "definedByNarrative",
+    "overrideAllowed": true
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "unlockRule": {
+    "minNex": 15,
+    "choiceType": "unica",
+    "irreversible": true
+  },
+  "elements": {
+    "Conhecimento": {
+      "color": "#D4AF37",
+      "sanCostModifier": -1
+    },
+    "Morte": {
+      "color": "#000000",
+      "pvCostModifier": -1
+    },
+    "Sangue": {
+      "color": "#8B0000",
+      "damageBonus": 1
+    },
+    "Energia": {
+      "color": "#6A0DAD",
+      "peCostModifier": -1
+    }
+  },
+  "restrictions": {
+    "multipleAffinities": false,
+    "overrideAllowed": true
+  }
+}

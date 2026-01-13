@@ -1,0 +1,19 @@
+{
+  "unlockRule": {
+    "minNex": 15,
+    "requiresAffinity": true
+  },
+  "executionRules": {
+    "usesPE": true,
+    "usesSAN": true,
+    "usesComponents": true
+  },
+  "limits": {
+    "maxAdvancedRitualsKnown": 1
+  },
+  "riskRules": {
+    "failureEffect": "efeitoColateral",
+    "criticalFailure": "colapsoParanormal"
+  },
+  "overrideAllowed": true
+}

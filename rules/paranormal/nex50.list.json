@@ -1,0 +1,37 @@
+[
+  {
+    "level": 50,
+    "title": "Marcado pelo Outro Lado",
+    "benefit": "Pode usar rituais do próprio elemento sem gastar componentes 1 vez por cena.",
+    "cost": "Perde 2 pontos de Humanidade.",
+    "description": "O paranormal responde com mais facilidade à presença do personagem."
+  },
+  {
+    "level": 55,
+    "title": "Voz do Abismo",
+    "benefit": "Recebe +2 em testes relacionados ao seu elemento.",
+    "cost": "Perde 2 pontos de Humanidade.",
+    "description": "O Outro Lado começa a influenciar pensamentos e decisões."
+  },
+  {
+    "level": 60,
+    "title": "Forma Instável",
+    "benefit": "Uma vez por missão, pode ignorar um efeito negativo.",
+    "cost": "Perde 2 pontos de Humanidade.",
+    "description": "O corpo já não obedece totalmente às leis naturais."
+  },
+  {
+    "level": 65,
+    "title": "Limite Rompido",
+    "benefit": "Pode aprender um ritual adicional fora do limite normal.",
+    "cost": "Perde 2 pontos de Humanidade.",
+    "description": "O personagem ultrapassa barreiras proibidas."
+  },
+  {
+    "level": 70,
+    "title": "Entidade em Formação",
+    "benefit": "Recebe um poder paranormal único definido pelo mestre.",
+    "cost": "Humanidade reduzida a 0.",
+    "description": "O personagem deixa de ser totalmente humano."
+  }
+]

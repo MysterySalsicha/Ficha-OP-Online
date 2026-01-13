@@ -1,0 +1,36 @@
+{
+  "initiative": {
+    "roll": "1d20 + agilidade",
+    "rerollEachCombat": true
+  },
+  "turnStructure": [
+    "acaoPadrao",
+    "acaoMovimento",
+    "acaoLivre"
+  ],
+  "attack": {
+    "roll": "1d20 + atributo + bonus",
+    "critical": {
+      "value": 20,
+      "effect": "danoMaximo"
+    }
+  },
+  "defense": {
+    "formula": "10 + agilidade + protecao"
+  },
+  "damage": {
+    "reduction": {
+      "armorApplies": true
+    }
+  },
+  "death": {
+    "pvZero": "inconsciente",
+    "pvNegativo": "morto",
+    "overrideAllowed": true
+  },
+  "sanity": {
+    "lossOnParanormal": true,
+    "collapseAtZero": "enlouquecendo"
+  },
+  "overrideAllowed": true
+}

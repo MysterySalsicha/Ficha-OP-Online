@@ -1,0 +1,14 @@
+{
+  "baseValue": 1,
+  "pointsToDistribute": 4,
+  "minValue": 1,
+  "maxValue": 3,
+  "attributes": [
+    "forca",
+    "agilidade",
+    "intelecto",
+    "presenca",
+    "vigor"
+  ],
+  "overrideAllowed": true
+}

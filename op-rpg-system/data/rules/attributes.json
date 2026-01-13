@@ -1,0 +1,19 @@
+{
+  "baseValue": 1,
+  "distribution": {
+    "pointsAtCreation": 4,
+    "maxAttributeValue": 3,
+    "minAttributeValue": 1
+  },
+  "attributes": [
+    "forca",
+    "agilidade",
+    "intelecto",
+    "presenca",
+    "vigor"
+  ],
+  "rules": {
+    "totalPointsMustMatch": true,
+    "overrideAllowed": true
+  }
+}

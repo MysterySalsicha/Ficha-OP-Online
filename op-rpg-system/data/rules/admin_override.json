@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "requiresPassword": true,
+  "logOverride": true,
+  "overrideTypes": [
+    "attributeLimit",
+    "skillLimit",
+    "inventoryLimit",
+    "ritualAccess",
+    "customItem",
+    "customSkill"
+  ]
+}

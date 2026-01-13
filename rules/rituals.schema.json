@@ -1,0 +1,24 @@
+{
+  "elements": {
+    "Conhecimento": { "color": "#D4AF37" },
+    "Morte": { "color": "#000000" },
+    "Sangue": { "color": "#8B0000" },
+    "Energia": { "color": "#6A0DAD" }
+  },
+  "access": {
+    "minNex": 10,
+    "allowedClasses": ["Ocultista"],
+    "overrideAllowed": true
+  },
+  "execution": {
+    "costType": "PE",
+    "usesComponents": true
+  },
+  "limits": {
+    "maxRitualsKnownByNex": {
+      "10": 2,
+      "15": 3
+    }
+  },
+  "overrideAllowed": true
+}

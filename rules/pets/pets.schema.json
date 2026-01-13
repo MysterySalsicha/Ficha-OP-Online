@@ -1,0 +1,19 @@
+{
+  "unlockRule": {
+    "minNex": 5,
+    "requiresNarrativeApproval": true
+  },
+  "limits": {
+    "maxPetsPerCharacter": 1,
+    "canActIndependently": false
+  },
+  "control": {
+    "usesAction": "acaoMovimento",
+    "skillUsed": "adestramento"
+  },
+  "combatRules": {
+    "canAttack": true,
+    "damageIsFixed": true
+  },
+  "overrideAllowed": true
+}

@@ -1,0 +1,28 @@
+{
+  "trainedBonus": 5,
+  "untrainedBonus": 0,
+  "requiresTraining": [
+    "Ocultismo",
+    "Medicina",
+    "Tatica",
+    "Pilotagem"
+  ],
+  "maxTrainedByClassAndNex": {
+    "5": {
+      "Combatente": 2,
+      "Especialista": 4,
+      "Ocultista": 3
+    },
+    "10": {
+      "Combatente": 3,
+      "Especialista": 5,
+      "Ocultista": 4
+    },
+    "15": {
+      "Combatente": 4,
+      "Especialista": 6,
+      "Ocultista": 5
+    }
+  },
+  "overrideAllowed": true
+}

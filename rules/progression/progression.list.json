@@ -1,0 +1,54 @@
+[
+  {
+    "nex": 0,
+    "patent": "Recruta",
+    "benefits": {
+      "attributesPoints": 3,
+      "trainedSkills": 2,
+      "pvBonus": 0,
+      "peBonus": 0,
+      "sanBonus": 0,
+      "ritualsKnown": 0
+    },
+    "description": "Pessoa comum, sem treinamento formal contra o paranormal."
+  },
+  {
+    "nex": 5,
+    "patent": "Recruta",
+    "benefits": {
+      "attributesPoints": 0,
+      "trainedSkills": 3,
+      "pvBonus": 2,
+      "peBonus": 1,
+      "sanBonus": 1,
+      "ritualsKnown": 0
+    },
+    "description": "Primeiro contato real com a Ordem e o paranormal."
+  },
+  {
+    "nex": 10,
+    "patent": "Agente",
+    "benefits": {
+      "attributesPoints": 1,
+      "trainedSkills": 4,
+      "pvBonus": 4,
+      "peBonus": 2,
+      "sanBonus": 2,
+      "ritualsKnown": 2
+    },
+    "description": "Agente ativo, já treinado e autorizado a lidar com rituais."
+  },
+  {
+    "nex": 15,
+    "patent": "AgenteExperiente",
+    "benefits": {
+      "attributesPoints": 0,
+      "trainedSkills": 5,
+      "pvBonus": 6,
+      "peBonus": 3,
+      "sanBonus": 3,
+      "ritualsKnown": 3
+    },
+    "description": "Veterano em missões, com maior resistência física e mental."
+  }
+]

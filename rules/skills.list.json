@@ -1,0 +1,14 @@
+[
+  { "name": "Atletismo", "attribute": "forca" },
+  { "name": "Acrobacia", "attribute": "agilidade" },
+  { "name": "Pontaria", "attribute": "agilidade" },
+  { "name": "Furtividade", "attribute": "agilidade" },
+  { "name": "Investigacao", "attribute": "intelecto" },
+  { "name": "Tecnologia", "attribute": "intelecto" },
+  { "name": "Ocultismo", "attribute": "intelecto" },
+  { "name": "Medicina", "attribute": "intelecto" },
+  { "name": "Diplomacia", "attribute": "presenca" },
+  { "name": "Intimidacao", "attribute": "presenca" },
+  { "name": "Vontade", "attribute": "presenca" },
+  { "name": "Percepcao", "attribute": "presenca" }
+]

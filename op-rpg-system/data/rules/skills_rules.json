@@ -1,0 +1,25 @@
+{
+  "trainedBonus": 5,
+  "untrainedBonus": 0,
+  "training": {
+    "nex0": {
+      "trainedSkills": 0
+    },
+    "nex5": {
+      "trainedSkillsByClass": {
+        "Combatente": 2,
+        "Especialista": 4,
+        "Ocultista": 3
+      }
+    }
+  },
+  "restrictions": {
+    "requiresTraining": [
+      "Ocultismo",
+      "Pilotagem",
+      "Tatica",
+      "Medicina"
+    ]
+  },
+  "overrideAllowed": true
+}

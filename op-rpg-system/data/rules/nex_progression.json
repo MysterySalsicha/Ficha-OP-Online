@@ -1,0 +1,43 @@
+{
+  "0": {
+    "label": "Civil",
+    "unlock": [],
+    "limits": {
+      "canChooseClass": false,
+      "canUseRituals": false
+    }
+  },
+  "5": {
+    "label": "Recruta",
+    "unlock": [
+      "class",
+      "trainedSkills",
+      "basicEquipment"
+    ],
+    "limits": {
+      "maxAttribute": 3,
+      "canChooseTrilha": false,
+      "canUseRituals": false
+    }
+  },
+  "10": {
+    "label": "Agente",
+    "unlock": [
+      "firstPowerOrClassFeature"
+    ],
+    "limits": {
+      "canChooseTrilha": true,
+      "canUseRituals": true
+    }
+  },
+  "15": {
+    "label": "Agente Experiente",
+    "unlock": [
+      "additionalSkill",
+      "inventoryExpansion"
+    ],
+    "limits": {
+      "maxAttribute": 4
+    }
+  }
+}

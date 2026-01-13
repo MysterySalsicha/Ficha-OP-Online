@@ -1,0 +1,76 @@
+{
+  "baseStates": [
+    {
+      "id": "vivo",
+      "label": "Vivo",
+      "description": "O personagem está consciente e pode agir normalmente."
+    },
+    {
+      "id": "inconsciente",
+      "label": "Inconsciente",
+      "description": "O personagem não pode agir. Não realiza ações até recuperar consciência.",
+      "effects": {
+        "canAct": false
+      }
+    },
+    {
+      "id": "morto",
+      "label": "Morto",
+      "description": "O personagem morreu. A ficha fica bloqueada para edição normal.",
+      "effects": {
+        "canAct": false,
+        "sheetLocked": true
+      }
+    }
+  ],
+
+  "mentalStates": [
+    {
+      "id": "abalado",
+      "label": "Abalado",
+      "trigger": "perdaSAN",
+      "effects": {
+        "testPenalty": -1
+      },
+      "description": "O personagem sofreu estresse mental recente e tem dificuldade de concentração."
+    },
+    {
+      "id": "enlouquecendo",
+      "label": "Enlouquecendo",
+      "trigger": "sanZero",
+      "effects": {
+        "canUseRituals": false,
+        "testPenalty": -2
+      },
+      "description": "A mente do personagem está colapsando sob influência do paranormal."
+    }
+  ],
+
+  "physicalConditions": [
+    {
+      "id": "ferido",
+      "label": "Ferido",
+      "trigger": "pvBaixo",
+      "effects": {
+        "testPenalty": -1
+      },
+      "description": "O personagem sofreu danos físicos significativos."
+    },
+    {
+      "id": "gravementeFerido",
+      "label": "Gravemente Ferido",
+      "trigger": "pvCritico",
+      "effects": {
+        "movementPenalty": true,
+        "testPenalty": -2
+      },
+      "description": "O personagem está à beira do colapso físico."
+    }
+  ],
+
+  "rules": {
+    "autoApply": true,
+    "stackingAllowed": false,
+    "overrideAllowed": true
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Escopeta",
+    "type": "arma",
+    "category": "media",
+    "attribute": "forca",
+    "attackBonus": 0,
+    "damage": "2d10",
+    "range": "curto",
+    "weight": 3,
+    "patentRequired": "Agente",
+    "description": "Arma de fogo poderosa a curta distância."
+  },
+  {
+    "name": "Fuzil",
+    "type": "arma",
+    "category": "media",
+    "attribute": "agilidade",
+    "attackBonus": 1,
+    "damage": "2d8",
+    "range": "longo",
+    "weight": 4,
+    "patentRequired": "Agente",
+    "description": "Arma de longo alcance usada em combates táticos."
+  },
+  {
+    "name": "Machado Pesado",
+    "type": "arma",
+    "category": "pesada",
+    "attribute": "forca",
+    "attackBonus": -1,
+    "damage": "3d8",
+    "range": "corpo a corpo",
+    "weight": 5,
+    "patentRequired": "AgenteExperiente",
+    "description": "Arma brutal, difícil de manejar, mas devastadora."
+  }
+]

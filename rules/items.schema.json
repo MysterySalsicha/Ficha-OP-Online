@@ -1,0 +1,24 @@
+{
+  "carryCapacity": {
+    "formula": "5 + vigor",
+    "unit": "espacos",
+    "overrideAllowed": true
+  },
+  "itemTypes": [
+    "arma",
+    "protecao",
+    "equipamento",
+    "consumivel",
+    "componenteRitual"
+  ],
+  "patentAccess": {
+    "Recruta": ["leve", "basico"],
+    "Agente": ["leve", "medio", "basico"],
+    "AgenteExperiente": ["leve", "medio"]
+  },
+  "combatRules": {
+    "attackRoll": "1d20 + atributo + bonus",
+    "damageRoll": "definidoPeloItem"
+  },
+  "overrideAllowed": true
+}

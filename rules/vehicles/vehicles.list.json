@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Carro Popular",
+    "type": "veiculo",
+    "capacity": 4,
+    "pv": 20,
+    "speed": "normal",
+    "weight": "grande",
+    "description": "Veículo comum, fácil de dirigir e manter."
+  },
+  {
+    "name": "Van da Ordem",
+    "type": "veiculo",
+    "capacity": 6,
+    "pv": 30,
+    "speed": "media",
+    "weight": "grande",
+    "description": "Veículo adaptado para missões, com espaço para equipamentos."
+  },
+  {
+    "name": "Moto",
+    "type": "veiculo",
+    "capacity": 2,
+    "pv": 15,
+    "speed": "rapida",
+    "weight": "medio",
+    "description": "Ágil e rápida, mas com pouca proteção."
+  }
+]

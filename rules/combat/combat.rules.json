@@ -1,0 +1,48 @@
+{
+  "initiative": {
+    "description": "No início do combate, todos rolam iniciativa. A ordem define quem age primeiro.",
+    "example": "1d20 + Agilidade"
+  },
+
+  "actions": {
+    "acaoPadrao": {
+      "description": "Usada para atacar, conjurar rituais ou ações importantes."
+    },
+    "acaoMovimento": {
+      "description": "Usada para se deslocar, sacar item ou se posicionar."
+    },
+    "acaoLivre": {
+      "description": "Pequenas ações narrativas, falar ou largar algo."
+    }
+  },
+
+  "attackFlow": {
+    "stepByStep": [
+      "Declare o alvo",
+      "Role ataque",
+      "Compare com a Defesa",
+      "Role dano se acertar"
+    ],
+    "hitRule": "Se o resultado do ataque for igual ou maior que a Defesa, o ataque acerta."
+  },
+
+  "criticalHit": {
+    "rule": "Se tirar 20 natural, causa dano máximo.",
+    "description": "O ataque atinge um ponto vital ou momento perfeito."
+  },
+
+  "damageAndPV": {
+    "description": "O dano reduz os Pontos de Vida (PV).",
+    "pvZeroEffect": "Ao chegar a 0 PV, o personagem fica inconsciente."
+  },
+
+  "deathRule": {
+    "description": "Se o PV ficar negativo, o personagem morre.",
+    "note": "O mestre pode ignorar isso por narrativa."
+  },
+
+  "sanityInCombat": {
+    "description": "Eventos paranormais podem causar perda de SAN durante o combate.",
+    "collapse": "Ao chegar a 0 SAN, o personagem entra em colapso mental."
+  }
+}

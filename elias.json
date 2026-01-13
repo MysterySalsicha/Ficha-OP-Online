@@ -1,0 +1,32 @@
+{
+  "name": "Elias Vance",
+  "concept": "Socorrista Tático",
+  "class": "Especialista",
+  "nex": 5,
+  "patent": "Recruta",
+  "attributes": {
+    "intelecto": 3,
+    "agilidade": 2,
+    "presenca": 2,
+    "vigor": 1,
+    "forca": 1
+  },
+  "vitalStats": {
+    "pv": 17,
+    "pe": 6,
+    "san": 22,
+    "defense": 14
+  },
+  "skills": [
+    "Medicina",
+    "Investigacao",
+    "Pontaria",
+    "Vontade"
+  ],
+  "inventory": [
+    { "name": "Pistola", "category": "leve", "weight": 1 },
+    { "name": "Colete Leve", "category": "leve", "weight": 2 },
+    { "name": "Kit de Primeiros Socorros", "category": "basico", "weight": 1 },
+    { "name": "Lanterna", "category": "basico", "weight": 1 }
+  ]
+}

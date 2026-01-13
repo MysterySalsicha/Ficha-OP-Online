@@ -1,0 +1,26 @@
+[
+  {
+    "element": "Conhecimento",
+    "description": "A mente do personagem se alinha com verdades proibidas.",
+    "benefit": "Reduz em 1 o custo de SAN ao conjurar rituais de Conhecimento.",
+    "drawback": "Sempre que falhar em testes mentais contra o paranormal, perde +1 SAN."
+  },
+  {
+    "element": "Morte",
+    "description": "O personagem aceita a decadência como parte da existência.",
+    "benefit": "Reduz em 1 qualquer dano de Morte sofrido.",
+    "drawback": "Testes de Medicina recebem -1 permanentemente."
+  },
+  {
+    "element": "Sangue",
+    "description": "A energia vital se torna violenta e instável.",
+    "benefit": "Causa +1 de dano físico.",
+    "drawback": "Sempre que sofrer dano crítico, perde +1 SAN."
+  },
+  {
+    "element": "Energia",
+    "description": "O corpo do personagem vibra com forças caóticas.",
+    "benefit": "Reduz em 1 o custo de PE de rituais de Energia.",
+    "drawback": "Falhas críticas causam 1d6 de dano adicional."
+  }
+]

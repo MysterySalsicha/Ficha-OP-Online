@@ -1,0 +1,12 @@
+{
+  "usageRules": {
+    "driverRequired": true,
+    "skillUsed": "pilotagem",
+    "combatAllowed": true
+  },
+  "damageRules": {
+    "vehicleHasPV": true,
+    "destructionEffect": "veiculoInutilizado"
+  },
+  "overrideAllowed": true
+}

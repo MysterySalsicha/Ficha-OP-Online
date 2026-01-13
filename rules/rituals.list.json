@@ -1,0 +1,67 @@
+[
+  {
+    "name": "Perturbar",
+    "circle": 1,
+    "element": "Conhecimento",
+    "color": "#D4AF37",
+    "cost": 1,
+    "requiresComponent": true,
+    "execution": "acaoPadrao",
+    "range": "medio",
+    "duration": "1 rodada",
+    "effect": "O alvo deve realizar um teste de Vontade. Em caso de falha, sofre -2 em testes até o final da duração.",
+    "description": "Pensamentos intrusivos invadem a mente do alvo, rompendo sua concentração."
+  },
+  {
+    "name": "Ouvir os Sussurros",
+    "circle": 1,
+    "element": "Conhecimento",
+    "color": "#D4AF37",
+    "cost": 1,
+    "requiresComponent": true,
+    "execution": "acaoPadrao",
+    "range": "pessoal",
+    "duration": "concentracao",
+    "effect": "Enquanto concentrado, recebe +5 em testes de Investigação e Percepção ligados ao paranormal.",
+    "description": "O ocultista escuta ecos do Outro Lado em busca de verdades ocultas."
+  },
+  {
+    "name": "Eletrocussao",
+    "circle": 1,
+    "element": "Energia",
+    "color": "#6A0DAD",
+    "cost": 2,
+    "requiresComponent": true,
+    "execution": "acaoPadrao",
+    "range": "curto",
+    "duration": "instantaneo",
+    "effect": "Causa 2d6 de dano de Energia. Um teste de Reflexos reduz o dano à metade.",
+    "description": "Uma descarga paranormal percorre o corpo do alvo."
+  },
+  {
+    "name": "Amaldicoar",
+    "circle": 1,
+    "element": "Morte",
+    "color": "#000000",
+    "cost": 2,
+    "requiresComponent": true,
+    "execution": "acaoPadrao",
+    "range": "curto",
+    "duration": "1 cena",
+    "effect": "O alvo sofre -1d20 no próximo teste que realizar.",
+    "description": "Um presságio de decadência se fixa no destino do alvo."
+  },
+  {
+    "name": "Arma Amaldicoada",
+    "circle": 1,
+    "element": "Sangue",
+    "color": "#8B0000",
+    "cost": 2,
+    "requiresComponent": true,
+    "execution": "acaoPadrao",
+    "range": "toque",
+    "duration": "1 cena",
+    "effect": "A arma tocada causa +1d6 de dano de Sangue.",
+    "description": "Energia vital corrompida envolve a arma."
+  }
+]

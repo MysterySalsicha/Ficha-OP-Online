@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Cão Treinado",
+    "type": "pet",
+    "pv": 8,
+    "damage": "1d6",
+    "special": "Pode ajudar em testes de Percepção e Investigação.",
+    "description": "Cão treinado para auxiliar em missões e detectar perigos."
+  },
+  {
+    "name": "Corvo Observador",
+    "type": "pet",
+    "pv": 4,
+    "damage": "1d4",
+    "special": "Pode explorar áreas à distância e retornar.",
+    "description": "Ave inteligente usada para reconhecimento."
+  },
+  {
+    "name": "Aliado Humano",
+    "type": "aliado",
+    "pv": 10,
+    "damage": "1d8",
+    "special": "Pode conceder +1 em um teste por cena.",
+    "description": "Pessoa comum que auxilia o agente em campo."
+  }
+]

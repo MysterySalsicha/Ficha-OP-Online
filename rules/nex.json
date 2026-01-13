@@ -1,0 +1,24 @@
+{
+  "0": {
+    "label": "Civil",
+    "unlock": []
+  },
+  "5": {
+    "label": "Recruta",
+    "unlock": ["classe", "periciasTreinadas", "equipamentosBasicos"],
+    "limits": {
+      "maxAttribute": 3
+    }
+  },
+  "10": {
+    "label": "Agente",
+    "unlock": ["trilha", "rituaisIniciais"]
+  },
+  "15": {
+    "label": "Agente Experiente",
+    "unlock": ["periciaExtra"],
+    "limits": {
+      "maxAttribute": 4
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "carryCapacity": {
+    "formula": "5 + vigor",
+    "overrideAllowed": true
+  },
+  "itemCategories": [
+    "arma",
+    "proteção",
+    "equipamento",
+    "consumivel",
+    "componenteRitual",
+    "outros"
+  ],
+  "patentRestrictions": {
+    "Recruta": ["armaLeve", "equipamentoBasico"],
+    "Agente": ["armaMedia"]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "unlockRule": {
+    "minNex": 50,
+    "requiresAffinity": true,
+    "irreversible": true
+  },
+  "humanityRule": {
+    "maxHumanity": 10,
+    "lossPerAdvance": 2,
+    "collapseAtZero": "entidadeParanormal"
+  },
+  "limits": {
+    "maxParanormalPowers": 3,
+    "ritualsIgnoreLimits": false
+  },
+  "control": {
+    "masterApprovalRequired": true,
+    "overrideAllowed": true
+  }
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Visao do Outro Lado",
+    "circle": 2,
+    "element": "Conhecimento",
+    "color": "#D4AF37",
+    "costPE": 3,
+    "costSAN": 2,
+    "requiresComponent": true,
+    "execution": "acaoCompleta",
+    "range": "pessoal",
+    "duration": "1 cena",
+    "effect": "O ocultista pode enxergar entidades, rastros e efeitos paranormais invisíveis a pessoas comuns.",
+    "risk": "Se falhar no teste, perde +1 SAN adicional.",
+    "description": "A mente se abre para verdades que não deveriam ser vistas."
+  },
+  {
+    "name": "Drenar Vida",
+    "circle": 2,
+    "element": "Morte",
+    "color": "#000000",
+    "costPE": 3,
+    "costSAN": 2,
+    "requiresComponent": true,
+    "execution": "acaoPadrao",
+    "range": "curto",
+    "duration": "instantaneo",
+    "effect": "Causa 3d6 de dano de Morte e cura o ocultista em metade do dano causado.",
+    "risk": "Se falhar, o ocultista sofre 1d6 de dano.",
+    "description": "A energia vital do alvo é arrancada à força."
+  },
+  {
+    "name": "Frenesi de Sangue",
+    "circle": 2,
+    "element": "Sangue",
+    "color": "#8B0000",
+    "costPE": 3,
+    "costSAN": 2,
+    "requiresComponent": true,
+    "execution": "acaoPadrao",
+    "range": "pessoal",
+    "duration": "3 rodadas",
+    "effect": "Recebe +2 em ataques e dano físico durante a duração.",
+    "risk": "Ao final, perde 2 SAN automaticamente.",
+    "description": "O corpo é tomado por violência e instinto."
+  },
+  {
+    "name": "Sobrecarga Energetica",
+    "circle": 2,
+    "element": "Energia",
+    "color": "#6A0DAD",
+    "costPE": 4,
+    "costSAN": 3,
+    "requiresComponent": true,
+    "execution": "acaoCompleta",
+    "range": "medio",
+    "duration": "instantaneo",
+    "effect": "Causa 4d6 de dano de Energia em todos os alvos na área.",
+    "risk": "Falha causa metade do dano no próprio ocultista.",
+    "description": "Energia paranormal explode de forma instável."
+  }
+]

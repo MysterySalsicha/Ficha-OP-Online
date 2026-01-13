@@ -1,0 +1,27 @@
+{
+  "Combatente": {
+    "nex5": {
+      "pvBase": 20,
+      "pvPerNex": 5,
+      "peBase": 2,
+      "trainedSkills": 2
+    }
+  },
+  "Especialista": {
+    "nex5": {
+      "pvBase": 16,
+      "pvPerNex": 4,
+      "peBase": 4,
+      "trainedSkills": 4
+    }
+  },
+  "Ocultista": {
+    "nex5": {
+      "pvBase": 12,
+      "pvPerNex": 3,
+      "peBase": 6,
+      "trainedSkills": 3,
+      "ritualAccess": true
+    }
+  }
+}
