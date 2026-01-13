@@ -1,0 +1,54 @@
+{
+  "vitality": [
+    {
+      "id": "vivo",
+      "label": "Vivo",
+      "description": "Personagem capaz de agir.",
+      "condition": "pv > 0"
+    },
+    {
+      "id": "inconsciente",
+      "label": "Inconsciente",
+      "description": "Personagem caído, incapaz de agir.",
+      "condition": "pv <= 0 && pv > -maxPv"
+    },
+    {
+      "id": "morrendo",
+      "label": "Morrendo",
+      "description": "Personagem perdendo vida a cada turno.",
+      "condition": "inconsciente && failedDeathSaves < 3"
+    },
+    {
+      "id": "morto",
+      "label": "Morto",
+      "description": "Personagem permanentemente fora de jogo.",
+      "condition": "pv <= -maxPv || failedDeathSaves >= 3"
+    }
+  ],
+  "sanity": [
+    {
+      "id": "sao",
+      "label": "São",
+      "description": "Mente saudável.",
+      "condition": "san > maxSan / 2"
+    },
+    {
+      "id": "abalado",
+      "label": "Abalado",
+      "description": "Recebe penalidades em testes.",
+      "condition": "san <= maxSan / 2 && san > 0"
+    },
+    {
+      "id": "enlouquecendo",
+      "label": "Enlouquecendo",
+      "description": "Entrando em estado de loucura.",
+      "condition": "san <= 0"
+    },
+    {
+      "id": "insano",
+      "label": "Insano",
+      "description": "Personagem perdeu controle (NPC).",
+      "condition": "permanentInsanity == true"
+    }
+  ]
+}

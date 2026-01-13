@@ -1,27 +1,32 @@
 {
   "Combatente": {
-    "nex5": {
-      "pvBase": 20,
-      "pvPerNex": 5,
-      "peBase": 2,
-      "trainedSkills": 2
-    }
+    "pvBase": 20,
+    "pvPerNex": 5,
+    "peBase": 2,
+    "pePerNex": 2,
+    "sanBase": 12,
+    "sanPerNex": 3,
+    "trainedSkills": 2,
+    "proficiencies": ["simples", "taticas", "protecao_leve", "protecao_pesada"]
   },
   "Especialista": {
-    "nex5": {
-      "pvBase": 16,
-      "pvPerNex": 4,
-      "peBase": 4,
-      "trainedSkills": 4
-    }
+    "pvBase": 16,
+    "pvPerNex": 4,
+    "peBase": 3,
+    "pePerNex": 3,
+    "sanBase": 16,
+    "sanPerNex": 4,
+    "trainedSkills": 7,
+    "proficiencies": ["simples", "protecao_leve"]
   },
   "Ocultista": {
-    "nex5": {
-      "pvBase": 12,
-      "pvPerNex": 3,
-      "peBase": 6,
-      "trainedSkills": 3,
-      "ritualAccess": true
-    }
+    "pvBase": 12,
+    "pvPerNex": 3,
+    "peBase": 4,
+    "pePerNex": 4,
+    "sanBase": 20,
+    "sanPerNex": 5,
+    "trainedSkills": 3,
+    "proficiencies": ["simples"]
   }
 }

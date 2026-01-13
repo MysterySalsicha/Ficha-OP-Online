@@ -1,0 +1,26 @@
+{
+  "attributes": {
+    "min": 0,
+    "max": 5,
+    "startPoints": 4,
+    "base": 1
+  },
+  "nex": {
+    "min": 0,
+    "max": 99,
+    "milestones": [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 99]
+  },
+  "skills": {
+    "degrees": ["destreinado", "treinado", "veterano", "expert"],
+    "bonus": {
+      "destreinado": 0,
+      "treinado": 5,
+      "veterano": 10,
+      "expert": 15
+    }
+  },
+  "inventory": {
+    "categories": ["I", "II", "III", "IV"],
+    "minSpace": 0
+  }
+}

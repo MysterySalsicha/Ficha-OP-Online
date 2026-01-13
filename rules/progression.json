@@ -1,0 +1,17 @@
+{
+  "0": { "patent": "Mundano", "limits": { "maxAttribute": 3, "maxSkill": "destreinado" } },
+  "5": { "patent": "Recruta", "features": ["class_choice", "proficiency_start"], "limits": { "maxAttribute": 3, "maxSkill": "treinado" } },
+  "10": { "patent": "Operador", "features": ["path_choice"], "limits": { "maxAttribute": 3, "maxSkill": "treinado" } },
+  "15": { "patent": "Operador", "features": ["power_1"], "limits": { "maxAttribute": 4, "maxSkill": "treinado" } },
+  "20": { "patent": "Operador", "features": ["attribute_increase_1"], "limits": { "maxAttribute": 4, "maxSkill": "treinado" } },
+  "25": { "patent": "Agente Especial", "features": ["power_2"], "limits": { "maxAttribute": 4, "maxSkill": "treinado" } },
+  "30": { "patent": "Agente Especial", "features": ["power_3"], "limits": { "maxAttribute": 4, "maxSkill": "treinado" } },
+  "35": { "patent": "Agente Especial", "features": ["degree_training_1"], "limits": { "maxAttribute": 4, "maxSkill": "veterano" } },
+  "40": { "patent": "Oficial de Operações", "features": ["path_power_2"], "limits": { "maxAttribute": 4, "maxSkill": "veterano" } },
+  "45": { "patent": "Oficial de Operações", "features": ["power_4"], "limits": { "maxAttribute": 4, "maxSkill": "veterano" } },
+  "50": { "patent": "Oficial de Operações", "features": ["attribute_increase_2", "versatility"], "limits": { "maxAttribute": 5, "maxSkill": "veterano" } },
+  "55": { "patent": "Agente de Elite", "features": ["power_5"], "limits": { "maxAttribute": 5, "maxSkill": "veterano" } },
+  "60": { "patent": "Agente de Elite", "features": ["power_6"], "limits": { "maxAttribute": 5, "maxSkill": "veterano" } },
+  "65": { "patent": "Agente de Elite", "features": ["path_power_3"], "limits": { "maxAttribute": 5, "maxSkill": "veterano" } },
+  "70": { "patent": "Agente de Elite", "features": ["power_7"], "limits": { "maxAttribute": 5, "maxSkill": "expert" } }
+}

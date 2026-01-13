@@ -1,0 +1,20 @@
+{
+  "costs": {
+    "cast_1": 1,
+    "cast_2": 3,
+    "cast_3": 6,
+    "cast_4": 10
+  },
+  "circles": [
+    { "level": 1, "nexReq": 5 },
+    { "level": 2, "nexReq": 25 },
+    { "level": 3, "nexReq": 55 },
+    { "level": 4, "nexReq": 85 }
+  ],
+  "list": [
+    { "name": "Decadência", "element": "Morte", "circle": 1 },
+    { "name": "Cicatrização", "element": "Sangue", "circle": 1 },
+    { "name": "Eletrocussão", "element": "Energia", "circle": 1 },
+    { "name": "Perturbação", "element": "Conhecimento", "circle": 1 }
+  ]
+}
