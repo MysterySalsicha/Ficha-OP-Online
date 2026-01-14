@@ -1,18 +1,12 @@
 {
-  "name": "app-ficha-op",
+  "name": "ordem-fichas",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "dependencies": {
+    "zustand": "^4.5.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
-    "@types/node": "^25.0.8",
+    "@types/node": "^20",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5"
   }
 }

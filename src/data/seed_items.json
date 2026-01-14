@@ -1,0 +1,47 @@
+[
+  {
+    "id": "retalhadora",
+    "name": "Retalhadora",
+    "category": "arma",
+    "type": "Energia",
+    "description": "Revólver de Energia. Olhos com Sorte: Ímpar = Crítico, Par = Dano em Área.",
+    "weight": 1,
+    "slots": 1,
+    "access_category": 2,
+    "quantity": 1,
+    "stats": {
+      "damage": "2d6",
+      "critical": "19/x3",
+      "range": "curto",
+      "hands": 1
+    },
+    "is_custom": false,
+    "character_id": ""
+  },
+  {
+    "id": "cicatrizante",
+    "name": "Cicatrizante",
+    "category": "equipamento",
+    "weight": 1,
+    "slots": 1,
+    "access_category": 1,
+    "quantity": 1,
+    "description": "Medicamento avançado.",
+    "stats": { "effect": "Recupera 2d8+2 PV", "uses": 1 },
+    "is_custom": false,
+    "character_id": ""
+  },
+  {
+    "id": "cinzas_humanas",
+    "name": "Cinzas Humanas",
+    "category": "componente",
+    "weight": 0,
+    "slots": 0,
+    "access_category": 0,
+    "quantity": 5,
+    "description": "Componente para rituais de Morte.",
+    "stats": {},
+    "is_custom": false,
+    "character_id": ""
+  }
+]

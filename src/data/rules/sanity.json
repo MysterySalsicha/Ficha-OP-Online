@@ -1,0 +1,13 @@
+{
+  "loss": {
+    "mundane": "1d4",
+    "paranormal_encounter": "1d6",
+    "casting": "custo_do_ritual"
+  },
+  "costs": {
+    "ritual_1": 1,
+    "ritual_2": 3,
+    "ritual_3": 6,
+    "ritual_4": 10
+  }
+}
