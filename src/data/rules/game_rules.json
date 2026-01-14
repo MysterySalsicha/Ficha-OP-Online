@@ -1,0 +1,71 @@
+{
+  "estresse": {
+    "nome": "Pontos de Determinação (PD)",
+    "descricao": "Sistema que substitui e expande a Sanidade para focar em estresse e terror narrativo.",
+    "calculo": "Baseado em NEX + Presença (similar ao PE antigo).",
+    "ganho": [
+      "Ação 'Relaxar' durante Interlúdio.",
+      "Consumir refeição favorita (bônus temporário)."
+    ],
+    "perda": [
+      "Conjurar Rituais (custo padrão).",
+      "Falha em teste de Ocultismo ao conjurar (perde o dobro do custo).",
+      "Situações de medo e estresse (dano mental).",
+      "Dano de criaturas que afeta a mente."
+    ],
+    "efeitos": [
+      "Teste de Medo: Realizado quando exposto a terror. Resultado define consequência.",
+      "0 PD: O personagem fica vulnerável a punições severas, condições (Paralisia, Inconsciência) ou morte, mas não necessariamente insanidade permanente imediata.",
+      "Ferimentos Debilitantes: Dano massivo ou crítico pode reduzir atributos (Força, Agilidade, etc.) temporariamente."
+    ]
+  },
+  "perseguicao": {
+    "mecânica_base": "Teste Estendido de Atletismo.",
+    "condicao_vitoria": "Acumular 3 sucessos antes de 3 falhas.",
+    "acoes_disponiveis": [
+      {
+        "nome": "Corrida Padrão",
+        "efeito": "Teste de Atletismo normal. Sucesso = +1 progresso. Falha = +1 falha."
+      },
+      {
+        "nome": "Despistar",
+        "efeito": "Substitui Atletismo por Furtividade. Alto risco: Sucesso concede 2 progressos, Falha concede 2 falhas."
+      },
+      {
+        "nome": "Criar Obstáculo",
+        "efeito": "Teste de Intelecto ou Profissão. Sucesso aumenta a DT do perseguidor ou reduz suas falhas."
+      },
+      {
+        "nome": "Distrair",
+        "efeito": "Teste de Enganação ou Atuação. Chama a atenção do perseguidor para si ou outro lugar."
+      },
+      {
+        "nome": "Sacrificar-se",
+        "efeito": "O personagem fica para trás para garantir a fuga dos outros (sucesso automático para o grupo, destino incerto para o personagem)."
+      }
+    ]
+  },
+  "furtividade": {
+    "mecânica_base": "Sistema de Pontos de Visibilidade.",
+    "estados": [
+      "Oculto (0 Visibilidade)",
+      "Suspeito (1+ Visibilidade)",
+      "Detectado (Visibilidade atinge o Limiar)"
+    ],
+    "regras_visibilidade": [
+      "O Mestre define um Limiar de Visibilidade (ex: 5 ou 7) para a cena.",
+      "Ações Chamativas (correr, falar alto, derrubar algo) aumentam a Visibilidade em +2 pontos.",
+      "Se a soma da Visibilidade do grupo atingir o Limiar, todos com Visibilidade > 0 são detectados."
+    ],
+    "modificadores_acao": [
+      {
+        "tipo": "Ação Discreta",
+        "efeito": "Não aumenta Visibilidade, mas impõe -1d20 no teste de perícia realizado."
+      },
+      {
+        "tipo": "Ação Normal",
+        "efeito": "Teste normal, mas pode gerar ruído ou sinais leves (+1 Visibilidade em caso de falha ou sucesso marginal)."
+      }
+    ]
+  }
+}

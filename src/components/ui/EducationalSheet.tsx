@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "./sheet";
 import { LucideIcon } from 'lucide-react';
 
 interface EducationalSheetProps {
