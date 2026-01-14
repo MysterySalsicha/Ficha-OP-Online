@@ -88,7 +88,13 @@ export interface Item {
   quantity: number;
   weight: number;
 
-  stats: Record<string, any>;
+  stats: Record<string, any>; // Generic stats
+
+  // Weapon Specifics
+  critical_range?: number; // e.g., 19 (for 19-20)
+  critical_multiplier?: number; // e.g., 3 (for x3)
+  damage_dice?: string; // "1d8"
+
   is_custom: boolean;
 }
 

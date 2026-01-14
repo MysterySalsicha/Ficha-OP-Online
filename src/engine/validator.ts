@@ -1,4 +1,4 @@
-import { Character, AttributeName, ActionResult, RitualRule } from '../core/types';
+import { Character, AttributeName, ActionResult, RitualRule, Item } from '../core/types';
 import { getProgressionLimits } from './calculator';
 
 /**
@@ -80,4 +80,20 @@ export function validateItemAdd(char: Character, itemWeight: number, currentWeig
          };
     }
     return { success: true, message: "Item adicionado" };
+}
+
+/**
+ * Validates attack execution (Ammo check).
+ */
+export function validateAttack(char: Character, weapon: Item, ammoItem?: Item): ActionResult {
+    // Check if weapon uses ammo
+    if (weapon.category === 'arma' && weapon.stats.uses_ammo) {
+        if (!ammoItem) {
+             return { success: false, message: "Sem munição equipada/selecionada" };
+        }
+        if (ammoItem.quantity < 1) {
+             return { success: false, message: "Munição esgotada" };
+        }
+    }
+    return { success: true, message: "Ataque válido" };
 }

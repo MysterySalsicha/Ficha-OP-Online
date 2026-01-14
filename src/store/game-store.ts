@@ -9,7 +9,7 @@ import {
     Item
 } from '../core/types';
 import { recalculateCharacter } from '../engine/calculator';
-import { validateAttributeIncrease, validateRitualCast, validateItemAdd } from '../engine/validator';
+import { validateAttributeIncrease, validateRitualCast, validateItemAdd, validateAttack } from '../engine/validator';
 
 interface GameState {
     currentUser: User | null;
@@ -26,6 +26,9 @@ interface GameState {
     increaseAttribute: (attr: AttributeName) => ActionResult;
     castRitual: (ritual: RitualRule) => ActionResult;
     addItem: (item: Item) => ActionResult;
+
+    // Combat Actions
+    performAttack: (weaponId: string) => ActionResult;
 
     // Gameplay Actions
     rollDice: (diceCode: string, purpose?: string) => ActionResult;
@@ -79,6 +82,64 @@ export const useGameStore = create<GameState>((set, get) => ({
         };
         set({ currentMesa: mockMesa });
         return { success: true, message: "Entrou na mesa!" };
+    },
+
+    performAttack: (weaponId) => {
+        const { character, items } = get();
+        if (!character) return { success: false, message: "Sem personagem" };
+
+        const weapon = items.find(i => i.id === weaponId);
+        if (!weapon) return { success: false, message: "Arma não encontrada" };
+
+        // 1. Identify Ammo (Simplified: assumes 1st ammo found or specific link)
+        // In a real app, user selects ammo.
+        // For MVP, if weapon uses ammo, find 'municao' item.
+        let ammo: Item | undefined;
+        if (weapon.stats.uses_ammo) {
+            ammo = items.find(i => i.category === 'municao'); // Should filter by caliber
+        }
+
+        // 2. Validate (Atomic)
+        const validation = validateAttack(character, weapon, ammo);
+        if (!validation.success) return validation;
+
+        // 3. Consume Ammo (Trigger Effect)
+        let newItems = [...items];
+        if (ammo) {
+            const ammoIndex = newItems.findIndex(i => i.id === ammo!.id);
+            if (ammoIndex >= 0) {
+                newItems[ammoIndex] = { ...newItems[ammoIndex], quantity: newItems[ammoIndex].quantity - 1 };
+                // If 0, remove? Or keep as empty? Usually keep.
+                set({ items: newItems });
+            }
+        }
+
+        // 4. Roll Attack
+        // Standard O.P. Attack: d20 + Bonus (Strength or Agility + Proficiency)
+        // Simplification: Roll 1d20 + 0
+        const d20 = Math.floor(Math.random() * 20) + 1;
+        const rollTotal = d20; // + bonus
+
+        // 5. Check Critical
+        const threat = weapon.critical_range || 20;
+        const multiplier = weapon.critical_multiplier || 2;
+        const isCritical = d20 >= threat;
+
+        // 6. Calculate Damage (Simulated)
+        // If critical, roll dice * multiplier
+        const damageStr = weapon.damage_dice || "1d6";
+        const damage = isCritical ? `${damageStr} (x${multiplier})` : damageStr;
+
+        return {
+            success: true,
+            message: `Ataque com ${weapon.name}: ${rollTotal} (${isCritical ? 'CRÍTICO!' : 'Acerto?'})`,
+            impact: {
+                roll: rollTotal,
+                isCritical,
+                damage,
+                ammoConsumed: !!ammo
+            }
+        };
     },
 
     rollDice: (diceCode, purpose) => {
