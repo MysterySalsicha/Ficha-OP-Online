@@ -1,0 +1,333 @@
+{
+  "combate": [
+    {
+      "name": "Artista Marcial",
+      "effect": "Seus ataques desarmados causam 1d6 de dano (podem ser letais) e contam como armas ágeis.",
+      "prerequisite": "Nenhum"
+    },
+    {
+      "name": "Combater com Duas Armas",
+      "effect": "Ao fazer a ação agredir com duas armas, você faz um ataque com cada uma (penalidade de -2 em ambos).",
+      "prerequisite": "Agilidade 3"
+    },
+    {
+      "name": "Combate Defensivo",
+      "effect": "Você pode escolher lutar defensivamente como ação livre. Recebe -2 nos ataques e +5 na Defesa/Reflexos.",
+      "prerequisite": "Intelecto 2"
+    },
+    {
+      "name": "Gatilho",
+      "effect": "Uma vez por rodada, se acertar um ataque a distância, pode gastar 2 PE para fazer outro ataque com a mesma arma contra o mesmo alvo.",
+      "prerequisite": "Agilidade 3"
+    },
+    {
+      "name": "Golpe Demolidor",
+      "effect": "Causa +2 de dano contra objetos e ignora 5 pontos de RD de objetos. Manobras de quebrar recebem +2.",
+      "prerequisite": "Força 2"
+    },
+    {
+      "name": "Golpe Pesado",
+      "effect": "Aumenta o dano de suas armas corpo a corpo em +1 dado do mesmo tipo.",
+      "prerequisite": "Força 2"
+    },
+    {
+      "name": "Reflexos Defensivos",
+      "effect": "Recebe +2 em Defesa e testes de resistência.",
+      "prerequisite": "Agilidade 2"
+    },
+    {
+      "name": "Saque Rápido",
+      "effect": "Saca ou guarda itens como ação livre. Pode recarregar armas de disparo como ação livre (1/rodada).",
+      "prerequisite": "Agilidade 3"
+    },
+    {
+      "name": "Segurar o Gatilho",
+      "effect": "Similar a Gatilho, mas para armas automáticas ou situações específicas de rajada.",
+      "prerequisite": "Agilidade 3"
+    },
+    {
+      "name": "Tiro Certeiro",
+      "effect": "Soma sua Agilidade nas rolagens de dano com armas de ataque a distância em alcance curto ou médio.",
+      "prerequisite": "Agilidade 2"
+    }
+  ],
+  "gerais": [
+    {
+      "name": "Acrobático",
+      "effect": "Você ignora terreno difícil. Gasta 2 PE.",
+      "prerequisite": "Acrobacia treinado ou +2"
+    },
+    {
+      "name": "Ás do Volante",
+      "effect": "Você pode evitar dano a veículos usando Pilotagem. Gasta 2 PE.",
+      "prerequisite": "Pilotagem treinado ou +2"
+    },
+    {
+      "name": "Atlético",
+      "effect": "Seu deslocamento aumenta em +3m. Gasta 2 PE para ativar em certas situações.",
+      "prerequisite": "Atletismo treinado ou +2"
+    },
+    {
+      "name": "Atraente",
+      "effect": "+5 em testes sociais contra pessoas que possam se sentir atraídas por você. Gasta 2 PE.",
+      "prerequisite": "Presença"
+    },
+    {
+      "name": "Dedos Ágeis",
+      "effect": "+5 em testes para manipular mecanismos delicados ou bater carteira. Gasta 2 PE.",
+      "prerequisite": "Agilidade"
+    },
+    {
+      "name": "Detector de Mentiras",
+      "effect": "Impõe -10 em testes de Enganação contra você. Gasta 2 PE.",
+      "prerequisite": "Presença"
+    },
+    {
+      "name": "Especialista em Emergências",
+      "effect": "Pode usar Medicina para primeiros socorros como ação de movimento. Gasta 2 PE.",
+      "prerequisite": "Intelecto"
+    },
+    {
+      "name": "Estigmado",
+      "effect": "Converte dano mental (de medo) em dano físico (PV). Passivo.",
+      "prerequisite": "Nenhum"
+    },
+    {
+      "name": "Foco em Perícia",
+      "effect": "Escolha uma perícia (exceto Luta/Pontaria). Rola 2 dados e escolhe o melhor (+1d20 com regra de vantagem).",
+      "prerequisite": "Treinado na perícia"
+    },
+    {
+      "name": "Inventário Organizado",
+      "effect": "Soma Intelecto à capacidade de carga. Itens leves contam como 0,25 espaços. Gasta 2 PE para otimizar.",
+      "prerequisite": "Intelecto"
+    },
+    {
+      "name": "Informado",
+      "effect": "Pode usar Atualidades no lugar de outra perícia de conhecimento (com justificativa). Gasta 2 PE.",
+      "prerequisite": "Intelecto"
+    },
+    {
+      "name": "Interrogador",
+      "effect": "Pode usar Intimidação para coagir como ação padrão (1x/cena). Gasta 2 PE.",
+      "prerequisite": "Força"
+    },
+    {
+      "name": "Mentiroso Nato",
+      "effect": "Não sofre penalidade por contar mentiras absurdas ou implausíveis. Gasta 2 PE.",
+      "prerequisite": "Presença"
+    },
+    {
+      "name": "Observador",
+      "effect": "Soma Intelecto em testes de Intuição. Gasta 2 PE.",
+      "prerequisite": "Intelecto"
+    },
+    {
+      "name": "Pai de Pet",
+      "effect": "Você tem um animal treinado que concede +2 em duas perícias escolhidas.",
+      "prerequisite": "Presença"
+    },
+    {
+      "name": "Palavras de Devoção",
+      "effect": "+2 em testes sociais com pessoas religiosas ou supersticiosas. Gasta 2 PE.",
+      "prerequisite": "Presença"
+    },
+    {
+      "name": "Parceiro",
+      "effect": "Concede +1 adicional (+3 total) quando usa a ação Ajudar em um aliado escolhido.",
+      "prerequisite": "Nenhum"
+    },
+    {
+      "name": "Pensamento Tático",
+      "effect": "+1 em testes de perícias baseadas em Intelecto quando tiver tempo para planejar. Gasta 2 PE.",
+      "prerequisite": "Intelecto"
+    },
+    {
+      "name": "Personalidade Esotérica",
+      "effect": "+5 em testes sociais com ocultistas. Gasta 2 PE.",
+      "prerequisite": "Presença"
+    },
+    {
+      "name": "Persuasivo",
+      "effect": "+5 em testes de Diplomacia e Enganação para mudar atitude. Gasta 2 PE.",
+      "prerequisite": "Presença"
+    },
+    {
+      "name": "Pesquisador Científico",
+      "effect": "Pode usar Ciências no lugar de outras perícias técnicas (com justificativa). Gasta 2 PE.",
+      "prerequisite": "Intelecto"
+    },
+    {
+      "name": "Proativo",
+      "effect": "Se o mestre pedir iniciativa, pode gastar 2 PE para agir imediatamente antes do primeiro turno.",
+      "prerequisite": "Agilidade"
+    },
+    {
+      "name": "Provisões de Emergência",
+      "effect": "Uma vez por missão, saca um item útil pequeno mundano que 'esqueceu' que tinha. Gasta 2 PE.",
+      "prerequisite": "Intelecto"
+    },
+    {
+      "name": "Racionalidade Inflexível",
+      "effect": "Recebe +2 em testes de Vontade contra efeitos de Medo. Gasta 2 PE.",
+      "prerequisite": "Intelecto"
+    },
+    {
+      "name": "Rato de Computador",
+      "effect": "+2 em Tecnologia e reduz tempo de ações de invasão. Gasta 2 PE.",
+      "prerequisite": "Intelecto"
+    },
+    {
+      "name": "Resposta Rápida",
+      "effect": "Pode agir na rodada surpresa mesmo se estiver surpreendido (age por último). Gasta 2 PE.",
+      "prerequisite": "Agilidade"
+    },
+    {
+      "name": "Sentidos Aguçados",
+      "effect": "+2 em testes de Percepção e Investigação. Gasta 2 PE.",
+      "prerequisite": "Intelecto"
+    }
+  ],
+  "paranormal": {
+    "sangue": [
+      {
+        "name": "Anatomia Insana",
+        "effect": "Você tem 50% de chance de ignorar o dano extra de acertos críticos e ataques furtivos.",
+        "prerequisite": "Sangue 1"
+      },
+      {
+        "name": "Arma de Sangue",
+        "effect": "Pode conjurar uma arma de sangue (dano 1d6, simples, leve). Pode gastar 1 PE para ataque extra.",
+        "prerequisite": "Sangue 1"
+      },
+      {
+        "name": "Sangue Vivo",
+        "effect": "Ao ficar machucado pela primeira vez na cena, ganha Cura Acelerada 2. Afinidade: Cura Acelerada 5.",
+        "prerequisite": "Sangue 1"
+      },
+      {
+        "name": "Espreitar da Besta",
+        "effect": "+5 em Furtividade. Em perseguição (caçador), usa Furtividade em vez de Atletismo. Afinidade: Não pode ser flanqueado/desprevenido.",
+        "prerequisite": "Sangue 1"
+      },
+      {
+        "name": "Instintos Sanguinários",
+        "effect": "Você recebe visão no escuro e faro (percebe criaturas a alcance curto sem vê-las).",
+        "prerequisite": "Sangue 1"
+      },
+      {
+        "name": "Sangue Fervente",
+        "effect": "Enquanto machucado, recebe +2 em rolagens de dano corpo a corpo.",
+        "prerequisite": "Sangue 1"
+      }
+    ],
+    "morte": [
+      {
+        "name": "Potencial Aprimorado",
+        "effect": "Aumenta seu limite de PE por turno em 1. Afinidade: Aumenta em 2.",
+        "prerequisite": "Morte 1"
+      },
+      {
+        "name": "Potencial Expandido",
+        "effect": "Você recebe +1 PE por nível de NEX (retroativo). Afinidade: +2 PE por nível.",
+        "prerequisite": "Morte 1"
+      },
+      {
+        "name": "Escapar da Morte",
+        "effect": "Uma vez por cena, ao sofrer dano que o levaria a 0 PV, pode gastar 5 PE para ficar com 1 PV.",
+        "prerequisite": "Morte 2"
+      },
+      {
+        "name": "Surto Temporal",
+        "effect": "Uma vez por rodada, pode gastar 3 PE para realizar uma ação de movimento extra.",
+        "prerequisite": "Morte 2"
+      },
+      {
+        "name": "Antecipar Vitalidade",
+        "effect": "Gasta PV (temporário ou permanente) para ganhar bônus em testes no presente.",
+        "prerequisite": "Morte 1"
+      },
+      {
+        "name": "A Hora do Pavor",
+        "effect": "Cria uma aura (alcance curto) que impõe -2 em testes de perícia de inimigos.",
+        "prerequisite": "Morte 2"
+      }
+    ],
+    "energia": [
+      {
+        "name": "Afortunado",
+        "effect": "Pode rerrolar resultados 1 em dados de dano ou efeitos (não D20). Afinidade: Pode rerrolar 1 em D20.",
+        "prerequisite": "Energia 1"
+      },
+      {
+        "name": "Causalidade Fortuita",
+        "effect": "Reduz a DT de testes de Investigação para encontrar pistas em 5. Afinidade: A redução é permanente/maior.",
+        "prerequisite": "Energia 1"
+      },
+      {
+        "name": "Campo Protetor",
+        "effect": "Gasta 1 PE (reação) para receber +5 na Defesa contra um ataque.",
+        "prerequisite": "Energia 1"
+      },
+      {
+        "name": "Conexão Empática",
+        "effect": "Pode tocar objetos eletrônicos/energizados para ler 'memórias' ou impressões recentes.",
+        "prerequisite": "Energia 1"
+      },
+      {
+        "name": "Golpe de Sorte",
+        "effect": "Aumenta sua margem de ameaça em 1. Afinidade: Aumenta multiplicador de crítico em 1.",
+        "prerequisite": "Energia 1"
+      },
+      {
+        "name": "Manipular Entropia",
+        "effect": "Gasta 2 PE para forçar um alvo a rerrolar um dado (pode ser aliado ou inimigo).",
+        "prerequisite": "Energia 2"
+      }
+    ],
+    "conhecimento": [
+      {
+        "name": "Expansão de Conhecimento",
+        "effect": "Você aprende um poder de outra classe (deve atender pré-requisitos). Afinidade: Pode pegar mais um.",
+        "prerequisite": "Conhecimento 1"
+      },
+      {
+        "name": "Percepção Paranormal",
+        "effect": "Em testes de busca/investigação, pode rerrolar um dado com resultado 10 ou menos.",
+        "prerequisite": "Conhecimento 1"
+      },
+      {
+        "name": "Sensitivo",
+        "effect": "Recebe +5 em testes de Vontade contra Medo e presença perturbadora.",
+        "prerequisite": "Conhecimento 1"
+      },
+      {
+        "name": "Absorver Conhecimento",
+        "effect": "Gasta 1 PE e ação completa para 'consultar' o Outro Lado e obter uma resposta sim/não/talvez sobre um fato.",
+        "prerequisite": "Conhecimento 2"
+      },
+      {
+        "name": "Apatia Herege",
+        "effect": "Gasta 2 PE para suprimir emoções e rerrolar teste de resistência mental.",
+        "prerequisite": "Conhecimento 1"
+      }
+    ],
+    "medo": [
+      {
+        "name": "Contraritual",
+        "effect": "+2 em testes de resistência contra rituais e efeitos paranormais.",
+        "prerequisite": "Qualquer elemento 1"
+      },
+      {
+        "name": "Canalizar o Medo",
+        "effect": "Sacrifica Sanidade (2d4) para ativar efeitos de catalisadores ou bônus de dano (+5) em armas amaldiçoadas.",
+        "prerequisite": "NEX 50%"
+      },
+      {
+        "name": "Presença do Medo",
+        "effect": "Aumenta a DT de seus rituais em +2 (ou efeito similar de aura de medo).",
+        "prerequisite": "NEX 50%"
+      }
+    ]
+  }
+}

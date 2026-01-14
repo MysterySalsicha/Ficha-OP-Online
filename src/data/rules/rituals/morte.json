@@ -1,0 +1,167 @@
+[
+  {
+    "name": "Amaldiçoar Arma",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 arma",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "A arma causa +1d6 de dano de Morte e assume uma aparência envelhecida ou enferrujada.",
+      "discente": "(+2 PE): O dano adicional aumenta para +2d6. Requer 2º círculo.",
+      "verdadeiro": "(+5 PE): O dano adicional aumenta para +4d6. Requer afinidade."
+    }
+  },
+  {
+    "name": "Cicatrização",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "O alvo recupera 3d8+3 PV, mas envelhece 1 ano.",
+      "discente": "(+2 PE): A cura aumenta para 5d8+5 PV. Requer 2º círculo.",
+      "verdadeiro": "(+9 PE): A cura aumenta para 7d8+7 PV, o alcance muda para Curto e pode afetar seres escolhidos. Requer 4º círculo e afinidade."
+    }
+  },
+  {
+    "name": "Decadência",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Fortitude reduz à metade",
+    "effects": {
+      "normal": "Causa 2d8+2 de dano de Morte.",
+      "discente": "(+2 PE): Causa 3d8+3 de dano. Você pode fazer um ataque corpo a corpo como parte da execução; se acertar, causa o dano do ataque + dano do ritual. Resistência muda para Nenhuma.",
+      "verdadeiro": "(+5 PE): Alcance muda para Pessoal e Área para Explosão de 6m. Afeta todos os seres na área."
+    }
+  },
+  {
+    "name": "Definhar",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Fortitude parcial",
+    "effects": {
+      "normal": "O alvo fica Fatigado (se falhar) ou Vulnerável (se passar).",
+      "discente": "(+2 PE): Se falhar, fica Exausto. Se passar, fica Fatigado.",
+      "verdadeiro": "(+5 PE): Se falhar, fica Inconsciente. Se passar, fica Exausto."
+    }
+  },
+  {
+    "name": "Espirais da Perdição",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "O alvo sofre -1d20 em testes de perícia.",
+      "discente": "(+2 PE): O alvo também sofre -1d20 em rolagens de ataque.",
+      "verdadeiro": "(+5 PE): A penalidade aumenta para -2d20 em perícias e ataques."
+    }
+  },
+  {
+    "name": "Desacelerar Impacto",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Reação",
+    "range": "Curto",
+    "target": "1 ser ou objeto",
+    "duration": "Instantânea",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você retarda a queda do alvo. Ele não sofre dano de queda (até 60m) e pousa em pé.",
+      "discente": "(+3 PE): Pode ser usado contra um ataque à distância (projétil). Aumenta a Defesa do alvo em +10 contra aquele ataque.",
+      "verdadeiro": "(+7 PE): Pode ser usado contra qualquer ataque físico. O alvo recebe Resistência a Dano 30 contra aquele ataque."
+    }
+  },
+  {
+    "name": "Paradoxo",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Fortitude anula",
+    "effects": {
+      "normal": "O alvo sofre 6d6 de dano de Morte e, no final do próximo turno dele, volta para a posição onde estava quando o ritual foi lançado (desfazendo movimento).",
+      "discente": "(+3 PE): O dano aumenta para 9d6.",
+      "verdadeiro": "(+7 PE): O alvo volta no tempo fisicamente. Além do dano e movimento, ele perde PV, PE e condições adquiridas na última rodada (retorna ao estado anterior)."
+    }
+  },
+  {
+    "name": "Velocidade Mortal",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "O alvo recebe uma ação de movimento extra por turno.",
+      "discente": "(+3 PE): A ação extra pode ser usada para qualquer fim (Padrão, Movimento ou Completa). No entanto, o alvo envelhece rápido e sofre 1 ano de envelhecimento ao fim da cena.",
+      "verdadeiro": "(+7 PE): O alvo recebe duas ações extras por turno (padrão, movimento ou completa). Envelhece 10 anos ao final."
+    }
+  },
+  {
+    "name": "Tentáculos de Lodo",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Médio",
+    "target": "Área de lodo com 6m de raio",
+    "duration": "Cena",
+    "resistance": "Reflexos anula",
+    "effects": {
+      "normal": "Tentáculos de lodo negro surgem. Seres na área ficam Agarrados. No início de seus turnos, sofrem 4d6 de dano de Morte.",
+      "discente": "(+4 PE): Os tentáculos são maiores. Seres que falharem na resistência ficam Imóveis em vez de Agarrados.",
+      "verdadeiro": "(+9 PE): O lodo drena a vida. Metade do dano causado é revertido em PV temporários para você."
+    }
+  },
+  {
+    "name": "Zerar Entropia",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser ou objeto",
+    "duration": "1 rodada",
+    "resistance": "Fortitude anula",
+    "effects": {
+      "normal": "Você para o tempo para o alvo. Ele fica Paralisado e imune a todo dano e efeitos. O tempo não passa para ele.",
+      "discente": "(+4 PE): A duração aumenta para 1d4 rodadas.",
+      "verdadeiro": "(+9 PE): Você pode afetar uma área (esfera de 3m) e escolher quem é afetado."
+    }
+  },
+  {
+    "name": "Fim Inevitável",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Completa",
+    "range": "Médio",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Fortitude parcial",
+    "effects": {
+      "normal": "Você decreta o fim do alvo. Causa 20d8 de dano de Morte. Se o alvo for reduzido a 0 PV, ele morre instantaneamente e se transforma em cinzas.",
+      "discente": "(+5 PE): O dano aumenta para 30d8.",
+      "verdadeiro": "(+10 PE): Se o alvo falhar na resistência, ele morre instantaneamente se tiver 100 PV ou menos (após o dano). Se passar, sofre o dano normal."
+    }
+  }
+]

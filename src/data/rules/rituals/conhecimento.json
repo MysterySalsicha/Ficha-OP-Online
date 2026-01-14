@@ -1,0 +1,348 @@
+[
+  {
+    "name": "Compreensão Paranormal",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 texto, gravação ou criatura",
+    "duration": "Cena",
+    "resistance": "Vontade anula (se criatura)",
+    "effects": {
+      "normal": "Você entende qualquer linguagem escrita ou falada. Se o alvo for uma criatura, você pode se comunicar com ela mesmo que não compartilhem um idioma.",
+      "discente": "(+2 PE): O alcance muda para Curto e o alvo para 'Seres escolhidos'. Você pode entender e se comunicar com todos os alvos simultaneamente.",
+      "verdadeiro": "(+5 PE): Além do efeito anterior, você também entende linguagens simbólicas complexas, códigos criptografados e sigilos ocultos automaticamente."
+    }
+  },
+  {
+    "name": "Coincidência Forçada",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "O alvo recebe +2 em todos os testes de perícia.",
+      "discente": "(+2 PE): O alvo escolhe dois atributos; em testes de perícia baseados nesses atributos, ele pode rolar 2d20 e escolher o melhor.",
+      "verdadeiro": "(+5 PE): O bônus em perícias aumenta para +5. Requer afinidade."
+    }
+  },
+  {
+    "name": "Enfeitiçar",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 pessoa",
+    "duration": "Cena",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "A atitude do alvo em relação a você melhora em um passo (ex: de Indiferente para Amistoso). Você recebe +5 em testes de Diplomacia contra o alvo.",
+      "discente": "(+2 PE): A atitude melhora em dois passos e o bônus aumenta para +10.",
+      "verdadeiro": "(+5 PE): O alvo fica Prestativo em relação a você. Se você der uma ordem que não seja contra a natureza dele, ele a seguirá sem testes."
+    }
+  },
+  {
+    "name": "Ouvir os Sussurros",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Instantânea",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você faz uma pergunta sobre um evento futuro imediato (na mesma cena) que possa ser respondida com 'sim' ou 'não'. O Mestre rola 1d6 (1 = não, outros = resposta correta).",
+      "discente": "(+2 PE): Você pode fazer qualquer pergunta, não limitada a sim/não.",
+      "verdadeiro": "(+5 PE): Você pode fazer até três perguntas quaisquer durante a mesma cena."
+    }
+  },
+  {
+    "name": "Perturbação",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 pessoa",
+    "duration": "1 rodada",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "Você dá uma ordem de uma palavra. Se o alvo falhar na resistência, gasta seu turno obedecendo (ex: 'Fuja', 'Largue', 'Caia').",
+      "discente": "(+2 PE): O alvo também fica Atordoado por 1 rodada após obedecer.",
+      "verdadeiro": "(+5 PE): O alcance muda para Médio e o alvo para 'Até 3 pessoas'."
+    }
+  },
+  {
+    "name": "Tecer Ilusão",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Médio",
+    "target": "Ilusão que cabe em um cubo de 1,5m",
+    "duration": "Cena",
+    "resistance": "Vontade desacredita",
+    "effects": {
+      "normal": "Cria uma ilusão visual ou auditiva estática. Se alguém interagir fisicamente, percebe que é falsa.",
+      "discente": "(+2 PE): A ilusão pode ser visual e auditiva simultaneamente e pode incluir movimento simples.",
+      "verdadeiro": "(+5 PE): A ilusão é completa (inclui cheiro e temperatura) e pode ser complexa. O tamanho aumenta para um cubo de 6m."
+    }
+  },
+  {
+    "name": "Terceiro Olho",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você enxerga auras paranormais em alcance Médio e sabe seu elemento e intensidade.",
+      "discente": "(+2 PE): A duração muda para 1 dia.",
+      "verdadeiro": "(+5 PE): Você também enxerga através de ilusões e vê seres invisíveis como formas translúcidas."
+    }
+  },
+  {
+    "name": "Aprimorar Mente",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Vontade anula (se involuntário)",
+    "effects": {
+      "normal": "O alvo recebe +1 em Intelecto ou Presença (escolha um).",
+      "discente": "(+3 PE): O bônus aumenta para +2. Requer 3º círculo.",
+      "verdadeiro": "(+7 PE): O alvo recebe +1 em ambos os atributos e pode rolar novamente testes de perícia baseados neles. Requer afinidade."
+    }
+  },
+  {
+    "name": "Detecção de Ameaças",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Longo",
+    "target": "Esfera com 30m de raio",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você detecta a presença e localização exata de qualquer ser hostil na área, ignorando camuflagem e cobertura total.",
+      "discente": "(+3 PE): Você também descobre a NEX aproximada (ou VD) e os principais pontos fortes/fracos dos alvos detectados.",
+      "verdadeiro": "(+7 PE): O alcance muda para 'Sentido Alargado' (você detecta ameaças em todo o local, ex: um prédio inteiro)."
+    }
+  },
+  {
+    "name": "Esconder dos Olhos",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser ou objeto",
+    "duration": "Cena ou até realizar ação hostil",
+    "resistance": "Vontade anula (se involuntário)",
+    "effects": {
+      "normal": "O alvo fica invisível. Se o alvo atacar ou conjurar um ritual hostil, o efeito termina.",
+      "discente": "(+3 PE): A invisibilidade não termina se o alvo realizar ações hostis.",
+      "verdadeiro": "(+7 PE): O alvo e todos os seus aliados em alcance curto ficam invisíveis."
+    }
+  },
+  {
+    "name": "Invadir Mente",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Vontade parcial",
+    "effects": {
+      "normal": "Você bombardeia a mente do alvo com visões do Outro Lado. Causa 6d6 de dano de Conhecimento e o deixa Confuso por 1 rodada. Se passar, metade do dano e não fica confuso.",
+      "discente": "(+3 PE): Dano aumenta para 10d6. O alvo fica Confuso por 1 cena se falhar.",
+      "verdadeiro": "(+7 PE): O alvo sofre 15d6 de dano e sua mente 'quebra', ficando Atordoado por 1 rodada e Confuso permanentemente (até ser curado)."
+    }
+  },
+  {
+    "name": "Localização",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Ilimitado",
+    "target": "1 ser ou objeto conhecido",
+    "duration": "Concentração",
+    "resistance": "Vontade anula (se ser)",
+    "effects": {
+      "normal": "Você sabe a direção e distância aproximada do alvo.",
+      "discente": "(+3 PE): Você vê o alvo e seus arredores imediatos como se estivesse lá.",
+      "verdadeiro": "(+7 PE): Você sabe a localização exata e pode rastrear o alvo em tempo real, mesmo se ele mudar de lugar."
+    }
+  },
+  {
+    "name": "Aurora da Verdade",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Médio",
+    "target": "Área de luz com 6m de raio",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Ilumina a área. Qualquer ilusão na área é revelada e seres invisíveis tornam-se visíveis como contornos.",
+      "discente": "(+3 PE): Seres na área recebem -2d20 em testes de Enganação e não conseguem mentir deliberadamente.",
+      "verdadeiro": "(+7 PE): Dissipa automaticamente qualquer ritual de ilusão ou escuridão de até 3º círculo na área."
+    }
+  },
+  {
+    "name": "Ligação Telepática",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Médio",
+    "target": "Você e até 4 aliados",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Os alvos podem se comunicar mentalmente entre si, independentemente de idioma, enquanto estiverem em alcance longo uns dos outros.",
+      "discente": "(+3 PE): A ligação permite compartilhar sentidos. Se um alvo não estiver cego/surdo, os outros também não estarão (em relação à percepção da área).",
+      "verdadeiro": "(+7 PE): Os alvos compartilham experiências. Se um for treinado em uma perícia de Intelecto/Presença, todos os outros contam como treinados nela."
+    }
+  },
+  {
+    "name": "Alterar Memória",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Permanente",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "Você apaga ou altera memórias dos últimos 10 minutos do alvo.",
+      "discente": "(+4 PE): Você pode alterar memórias de até 1 dia inteiro.",
+      "verdadeiro": "(+9 PE): Você pode reescrever a personalidade e o passado completo do alvo. Requer afinidade."
+    }
+  },
+  {
+    "name": "Contato Paranormal",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Completa",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Instantânea",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você faz uma pergunta complexa a uma Entidade de Conhecimento. Recebe uma resposta clara e verdadeira, mas sofre 2d6 de dano mental.",
+      "discente": "(+4 PE): Pode fazer até três perguntas. O dano mental aumenta para 4d6.",
+      "verdadeiro": "(+9 PE): O mestre revela informações cruciais para a missão que você nem sabia que precisava perguntar. Dano mental 6d6."
+    }
+  },
+  {
+    "name": "Mergulho Mental",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Concentração",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "Você entra na mente do alvo. Pode ver suas memórias recentes e sentimentos atuais. O alvo fica Atordoado enquanto você estiver na mente dele.",
+      "discente": "(+4 PE): Pode procurar por memórias específicas de qualquer época da vida do alvo.",
+      "verdadeiro": "(+9 PE): Você pode deixar um comando pós-hipnótico na mente do alvo que será ativado em uma condição futura."
+    }
+  },
+  {
+    "name": "Vidência",
+    "circle": 3,
+    "cost": 6,
+    "execution": "10 minutos",
+    "range": "Ilimitado",
+    "target": "1 local ou ser",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você projeta sua consciência para observar o alvo de longe. Pode ver e ouvir tudo ao redor do alvo.",
+      "discente": "(+4 PE): Você pode conjurar rituais de até 2º círculo através da vidência como se estivesse lá.",
+      "verdadeiro": "(+9 PE): A vidência ignora qualquer forma de proteção contra detecção paranormal ou mágica."
+    }
+  },
+  {
+    "name": "Relembrar Fragmento",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 objeto",
+    "duration": "Instantânea",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você vê os eventos mais importantes que ocorreram perto deste objeto nas últimas 24 horas.",
+      "discente": "(+4 PE): O tempo aumenta para os últimos 7 dias.",
+      "verdadeiro": "(+9 PE): Você vê a 'história completa' do objeto, desde sua criação."
+    }
+  },
+  {
+    "name": "Controle Mental",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Médio",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "Você assume controle total sobre as ações do alvo. Ele age sob seu comando mental.",
+      "discente": "(+5 PE): Pode controlar até 3 alvos simultaneamente.",
+      "verdadeiro": "(+10 PE): O controle dura 1 dia inteiro e não exige concentração constante. Requer afinidade."
+    }
+  },
+  {
+    "name": "Inexistir",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Vontade parcial",
+    "resistance_details": "Se passar, sofre metade do dano e não é apagado.",
+    "effects": {
+      "normal": "Você apaga a existência do alvo. Causa 20d12 de dano de Conhecimento. Se o dano reduzir o alvo a 0 PV, ele é completamente apagado da realidade (ninguém lembra que ele existiu).",
+      "discente": "(+5 PE): O dano aumenta para 30d12.",
+      "verdadeiro": "(+10 PE): Se o alvo falhar na resistência, ele é apagado automaticamente, independentemente do PV atual. Requer afinidade."
+    }
+  },
+  {
+    "name": "Possessão",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Médio",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "Sua consciência entra no corpo do alvo e você assume controle total. Seu próprio corpo fica em transe inconsciente.",
+      "discente": "(+5 PE): Você pode usar seus próprios rituais e habilidades enquanto possuir o corpo do alvo.",
+      "verdadeiro": "(+10 PE): Se o corpo possuído morrer, você pode saltar para outro corpo em alcance médio instantaneamente gastando 5 PE."
+    }
+  },
+  {
+    "name": "Pronunciar Sigilo",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "Todos os seres na área",
+    "duration": "1 rodada",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "Você pronuncia um sigilo do Outro Lado que paralisa a mente de quem ouve. Alvos que falharem ficam Indesfensíveis e não podem agir.",
+      "discente": "(+5 PE): A duração aumenta para Cena.",
+      "verdadeiro": "(+10 PE): Os alvos que falharem também sofrem 10d10 de dano mental e ficam com a mente 'queimada' (perdem acesso a rituais/habilidades de Intelecto)."
+    }
+  }
+]

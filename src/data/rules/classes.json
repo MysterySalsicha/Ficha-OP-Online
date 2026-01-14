@@ -1,32 +1,100 @@
 {
-  "Combatente": {
-    "pvBase": 20,
-    "pvPerNex": 5,
-    "peBase": 2,
-    "pePerNex": 2,
-    "sanBase": 12,
-    "sanPerNex": 3,
-    "trainedSkills": 2,
-    "proficiencies": ["simples", "taticas", "protecao_leve", "protecao_pesada"]
-  },
-  "Especialista": {
-    "pvBase": 16,
-    "pvPerNex": 4,
-    "peBase": 3,
-    "pePerNex": 3,
-    "sanBase": 16,
-    "sanPerNex": 4,
-    "trainedSkills": 7,
-    "proficiencies": ["simples", "protecao_leve"]
-  },
-  "Ocultista": {
-    "pvBase": 12,
-    "pvPerNex": 3,
-    "peBase": 4,
-    "pePerNex": 4,
-    "sanBase": 20,
-    "sanPerNex": 5,
-    "trainedSkills": 3,
-    "proficiencies": ["simples"]
+  "classes": {
+    "Combatente": {
+      "pv_inicial": 20,
+      "pv_por_nex": 5,
+      "pe_inicial": 2,
+      "pe_por_nex": 2,
+      "san_inicial": 12,
+      "san_por_nex": 3,
+      "proficiencias": ["Armas Simples", "Armas Táticas", "Proteção Leve", "Proteção Pesada"],
+      "trilhas_base": ["Aniquilador", "Comandante de Campo", "Guerreiro", "Operações Especiais", "Tropa de Choque"],
+      "trilhas_sah": {
+        "Agente Secreto": {
+          "10": "Carteirada: Você recebe um kit de disfarce e documentos falsos. Treinado em Diplomacia. Pode usar Agilidade em vez de Presença em Diplomacia.",
+          "40": "O Sorriso: +2 em Diplomacia e Enganação. Pode gastar 2 PE para rerrolar um teste falho dessas perícias.",
+          "65": "Incógnito: Pode se acalmar sozinho como ação completa. Não sofre penalidade em Furtividade por movimento rápido.",
+          "99": "Multifacetado: Uma vez por cena, gasta 5 Sanidade para ganhar uma habilidade de até NEX 65% de qualquer outra trilha de Combatente ou Especialista."
+        },
+        "Monstruoso": {
+          "10": "Ser Amaldiçoado: Escolha um elemento. Você recebe resistência 5 a esse elemento. Precisa realizar um ritual diário (descrição narrativa) ou sofre penalidades.",
+          "40": "Ser Macabro: Você recebe visão no escuro e +2 em Intimidação. Seus ataques desarmados causam +1d6 de dano do elemento escolhido.",
+          "65": "Ser Assustador: Você causa medo. Inimigos que te veem pela primeira vez na cena devem fazer Vontade (DT Vig) ou ficam Abalados.",
+          "99": "Ser Aterrorizante: Resistência ao elemento aumenta para 20. Se enlouquecer, vira uma criatura controlada pelo mestre permanentemente. Seus ataques causam dano massivo."
+        }
+      }
+    },
+    "Especialista": {
+      "pv_inicial": 16,
+      "pv_por_nex": 4,
+      "pe_inicial": 3,
+      "pe_por_nex": 3,
+      "san_inicial": 16,
+      "san_por_nex": 4,
+      "proficiencias": ["Armas Simples", "Proteção Leve"],
+      "trilhas_base": ["Atirador de Elite", "Infiltrador", "Médico de Campo", "Negociador", "Técnico"],
+      "trilhas_sah": {
+        "Bibliotecário": {
+          "10": "Conhecimento Prático: Gaste 2 PE para usar Intelecto em vez do atributo base em um teste de perícia (exceto Luta/Pontaria).",
+          "40": "Leitor Voraz: Ação de interlúdio 'Ler' dá bônus de 1d8. Pode gastar 2 PE para aumentar para 2d8.",
+          "65": "Rato de Laboratório: Em locais com livros/informação, gasta minutos para ganhar benefício de 'Ler' ou 'Revisar Caso' instantaneamente.",
+          "99": "Poder do Saber: Intelecto +1 permanente. Soma Intelecto ao limite de PE por turno."
+        },
+        "Muambeiro": {
+          "10": "Mascate: Treinado em Profissão (escolha). +5 carga. DT para fabricar itens improvisados reduz em 10.",
+          "40": "Fabricação Própria: Cria itens na metade do tempo (ex: ação de interlúdio cria 2 itens).",
+          "65": "Item Paranormal: Pode fabricar itens paranormais e amaldiçoados em interlúdios.",
+          "99": "Achado Conveniente: Gasta ação completa e 5 PE para 'encontrar' (criar) um item mundano qualquer instantaneamente."
+        },
+        "Perseverante": {
+          "10": "Soluções Improvisadas: Gaste 2 PE para rerrolar um dado de um teste recém feito.",
+          "40": "Fuga Obstinada: Vantagem em perícias para fugir. Em perseguição (como presa), aguenta mais falhas.",
+          "65": "Determinação Inquestionável: Gaste 5 PE para remover condições de Medo ou Paralisia de si mesmo.",
+          "99": "Só Mais Um Passo: Uma vez por rodada, se for a 0 PV, gasta 5 PE para ficar com 1 PV."
+        }
+      }
+    },
+    "Ocultista": {
+      "pv_inicial": 12,
+      "pv_por_nex": 3,
+      "pe_inicial": 4,
+      "pe_por_nex": 4,
+      "san_inicial": 20,
+      "san_por_nex": 5,
+      "proficiencias": ["Armas Simples"],
+      "trilhas_base": ["Conduíte", "Flagelador", "Graduado", "Intuitivo", "Lâmina Paranormal"],
+      "trilhas_sah": {
+        "Exorcista": {
+          "10": "Revelação do Mal: Treinado em Religião (ou +2). Pode usar Religião para investigar o paranormal.",
+          "40": "Poder da Fé: Veterano em Religião (ou +1d20). Gasta 2 PE para usar Religião em um teste de resistência falho.",
+          "65": "Proteção Divina: Pode gastar 10 PV (como reação) para anular um efeito de dano mental ou enlouquecimento imediato.",
+          "99": "Mente Exorcizada: Quase imune à insanidade. Pode conjurar 'Mente Medonha' (efeito especial de medo/dano mental)."
+        },
+        "Possuído": {
+          "10": "Poder Não Desejado: Ao ganhar poder de classe, deve Transcender. Pode sacrificar PV para ganhar PE (2 PV = 1 PE).",
+          "40": "As Sombras Dentro de Mim: Gasta 2 PE para +1d20 em Furtividade/Acrobacia por uma rodada.",
+          "65": "Ele Me Ensina: Escolhe Transcender ou ganha 1º poder de outra trilha de Ocultista.",
+          "99": "Tornamo-nos Um: Recebe 'Presente' da entidade (forma de avatar poderosa baseada no elemento afinado, ex: recuperar PV, bônus massivos)."
+        }
+      }
+    },
+    "Sobrevivente": {
+      "pv_inicial": 8,
+      "pv_por_estagio": 2,
+      "pe_inicial": 2,
+      "pe_por_estagio": 1,
+      "san_inicial": 8,
+      "san_por_estagio": 2,
+      "pericias_iniciais": "1 + Intelecto",
+      "proficiencias": ["Armas Simples"],
+      "atributos_iniciais": "3 pontos para distribuir (máx 3)",
+      "estagios": {
+        "1": "Empenho: Gaste 1 PE para +2 em qualquer teste.",
+        "2": "Trilha: Escolha Durão, Esperto ou Esotérico.",
+        "3": "Aumento de Atributo: +1 em um atributo (máx 3).",
+        "4": "Poder de Trilha II: Habilidade avançada da trilha.",
+        "5": "Cicatrizado: Escolha um perigo para ter fraqueza (-1d20). Pode sacrificar 1 PV permanente para anular dano mental ou 1 PE permanente para reduzir dano físico."
+      }
+    }
   }
 }

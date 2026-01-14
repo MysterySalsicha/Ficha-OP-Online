@@ -1,0 +1,280 @@
+{
+  "origins": [
+    {
+      "id": "academico",
+      "name": "Acadêmico",
+      "description": "Você era um estudioso, professor ou pesquisador.",
+      "benefit": "Perícias: Ciências e Investigação. Poder: Saber é Poder. Quando faz um teste de Intelecto usando uma perícia, você pode gastar 2 PE para receber +5 no teste."
+    },
+    {
+      "id": "agente_de_saude",
+      "name": "Agente de Saúde",
+      "description": "Você trabalhava na área da saúde, como médico, enfermeiro ou socorrista.",
+      "benefit": "Perícias: Intuição e Medicina. Poder: Técnica Medicinal. Sempre que você cura PV, você adiciona seu Intelecto no total curado."
+    },
+    {
+      "id": "amnesico",
+      "name": "Amnésico",
+      "description": "Você não lembra quem era antes de tudo isso começar.",
+      "benefit": "Perícias: Duas a sua escolha. Poder: Lembranças Fragmentadas. Uma vez por sessão, você pode fazer um teste de Intelecto (DT 10) para reconhecer pessoas ou lugares familiares. Se passar, recebe 1d4 PE temporários e uma informação útil."
+    },
+    {
+      "id": "artista",
+      "name": "Artista",
+      "description": "Você usava sua arte para se expressar.",
+      "benefit": "Perícias: Artes e Enganação. Poder: Magnum Opus. Você recebe +2 em testes de Presença e em testes de perícias baseadas em Presença."
+    },
+    {
+      "id": "atleta",
+      "name": "Atleta",
+      "description": "Você dedicou sua vida ao esporte.",
+      "benefit": "Perícias: Acrobacia e Atletismo. Poder: 110%. Quando faz um teste de Agilidade ou Força usando uma perícia (exceto Luta e Pontaria), você pode gastar 2 PE para receber +5 no teste."
+    },
+    {
+      "id": "chef",
+      "name": "Chef",
+      "description": "Você trabalhava em uma cozinha profissional.",
+      "benefit": "Perícias: Fortitude e Profissão (Cozinheiro). Poder: Ingrediente Secreto. Em cenas de interlúdio, você pode gastar uma ação para cozinhar um prato especial. Um número de aliados igual ao seu nível de treinamento em Profissão (Cozinheiro) que se alimentar recebe 1d6 PV temporários."
+    },
+    {
+      "id": "criminoso",
+      "name": "Criminoso",
+      "description": "Você viveu à margem da lei.",
+      "benefit": "Perícias: Crime e Furtividade. Poder: O Crime Compensa. Você escolhe uma perícia entre Crime e Furtividade. Quando faz um teste com a perícia escolhida, pode gastar 2 PE para receber +5 no teste."
+    },
+    {
+      "id": "cultista_arrependido",
+      "name": "Cultista Arrependido",
+      "description": "Você fez parte de um grupo cultista, mas conseguiu escapar.",
+      "benefit": "Perícias: Ocultismo e Religião. Poder: Traços do Outro Lado. Você recebe um poder paranormal a sua escolha. Porém, começa com metade da Sanidade inicial normal."
+    },
+    {
+      "id": "desgarrado",
+      "name": "Desgarrado",
+      "description": "Você não tem um lar fixo e aprendeu a se virar.",
+      "benefit": "Perícias: Fortitude e Sobrevivência. Poder: Calejado. Você recebe +1 PV para cada 5% de NEX."
+    },
+    {
+      "id": "engenheiro",
+      "name": "Engenheiro",
+      "description": "Você trabalhava projetando ou construindo coisas.",
+      "benefit": "Perícias: Profissão (Engenheiro) e Tecnologia. Poder: Ferramentas Favoritas. Você escolhe uma ferramenta ou kit de perícia. Quando usa esse item, recebe +2 no teste."
+    },
+    {
+      "id": "executivo",
+      "name": "Executivo",
+      "description": "Você trabalhava no mundo corporativo.",
+      "benefit": "Perícias: Diplomacia e Profissão (Executivo). Poder: Processo Otimizado. Sempre que falha em um teste de perícia, pode gastar 2 PE para rolar novamente o teste."
+    },
+    {
+      "id": "investigador",
+      "name": "Investigador",
+      "description": "Você trabalhava desvendando mistérios.",
+      "benefit": "Perícias: Investigação e Percepção. Poder: Faro para Pistas. Uma vez por cena, ao fazer um teste de Investigação para procurar pistas, você pode gastar 2 PE para receber +5 no teste."
+    },
+    {
+      "id": "lutador",
+      "name": "Lutador",
+      "description": "Você ganhava a vida lutando.",
+      "benefit": "Perícias: Luta e Fortitude. Poder: Mão Pesada. Você recebe +2 em rolagens de dano com ataques corpo a corpo."
+    },
+    {
+      "id": "magnata",
+      "name": "Magnata",
+      "description": "Você tem muito dinheiro.",
+      "benefit": "Perícias: Diplomacia e Pilotagem. Poder: Patrocinador da Ordem. Seu limite de crédito é sempre considerado um nível acima do atual."
+    },
+    {
+      "id": "mercenario",
+      "name": "Mercenário",
+      "description": "Você lutava por dinheiro.",
+      "benefit": "Perícias: Iniciativa e Intimidação. Poder: Posição de Combate. No primeiro turno de cada cena de ação, você pode gastar 2 PE para receber uma ação de movimento adicional."
+    },
+    {
+      "id": "militar",
+      "name": "Militar",
+      "description": "Você serviu nas forças armadas.",
+      "benefit": "Perícias: Pontaria e Tática. Poder: Para Bellum. Você recebe +2 em rolagens de dano com armas de fogo."
+    },
+    {
+      "id": "operario",
+      "name": "Operário",
+      "description": "Você trabalhava em fábricas ou construção civil.",
+      "benefit": "Perícias: Fortitude e Profissão (Operário). Poder: Ferramenta de Trabalho. Escolha uma arma simples ou tática que possa ser usada como ferramenta (como uma marreta ou pé de cabra). Você recebe +1 em testes de ataque, rolagens de dano e margem de ameaça com essa arma."
+    },
+    {
+      "id": "policial",
+      "name": "Policial",
+      "description": "Você servia às forças de segurança.",
+      "benefit": "Perícias: Percepção e Pontaria. Poder: Alerta. Você recebe +2 em Defesa."
+    },
+    {
+      "id": "religioso",
+      "name": "Religioso",
+      "description": "Você dedicou sua vida à fé.",
+      "benefit": "Perícias: Religião e Vontade. Poder: Acalentar. Você recebe +5 em testes de Religião para acalmar. Além disso, quando acalma uma pessoa, ela recupera 1d6 de Sanidade."
+    },
+    {
+      "id": "servidor_publico",
+      "name": "Servidor Público",
+      "description": "Você trabalhava para o governo.",
+      "benefit": "Perícias: Intuição e Vontade. Poder: Espírito Cívico. Sempre que faz um teste de ajuda, o bônus concedido aumenta para +5."
+    },
+    {
+      "id": "teorico_da_conspiracao",
+      "name": "Teórico da Conspiração",
+      "description": "Você sabia que havia algo errado com o mundo.",
+      "benefit": "Perícias: Investigação e Tecnologia. Poder: Eu Já Sabia. Você recebe resistência a dano mental igual ao seu Intelecto."
+    },
+    {
+      "id": "ti",
+      "name": "TI",
+      "description": "Você trabalhava com computadores.",
+      "benefit": "Perícias: Investigação e Tecnologia. Poder: Motor de Busca. A critério do Mestre, sempre que tiver acesso a internet, você pode gastar 2 PE para substituir um teste de qualquer perícia de Conhecimento por um teste de Tecnologia."
+    },
+    {
+      "id": "trabalhador_rural",
+      "name": "Trabalhador Rural",
+      "description": "Você vivia e trabalhava no campo.",
+      "benefit": "Perícias: Adestramento e Sobrevivência. Poder: Desbravador. Você ignora penalidades por terreno difícil e pode gastar 2 PE para receber +5 em testes de Adestramento ou Sobrevivência."
+    },
+    {
+      "id": "trambiqueiro",
+      "name": "Trambiqueiro",
+      "description": "Você vivia enganando os outros.",
+      "benefit": "Perícias: Crime e Enganação. Poder: Impostor. Uma vez por cena, você pode substituir um teste de perícia qualquer por um teste de Enganação."
+    },
+    {
+      "id": "universitario",
+      "name": "Universitário",
+      "description": "Você estava cursando o ensino superior.",
+      "benefit": "Perícias: Atualidades e Investigação. Poder: Dedicação. Você recebe +1 PE. Além disso, seu limite de PE aumenta em 1 (sem alterar sua rodada)."
+    },
+    {
+      "id": "vitima",
+      "name": "Vítima",
+      "description": "Você sobreviveu a um evento paranormal.",
+      "benefit": "Perícias: Reflexos e Vontade. Poder: Cicatrizes Psicológicas. Você recebe +1 de Sanidade para cada 5% de NEX."
+    },
+    {
+      "id": "amigo_dos_animais",
+      "name": "Amigo dos Animais",
+      "description": "Você tem uma afinidade natural com animais.",
+      "benefit": "Perícias: Adestramento e Percepção. Poder: Companheiro Animal. Você possui um animal de estimação (pequeno ou médio) que obedece seus comandos simples."
+    },
+    {
+      "id": "astronauta",
+      "name": "Astronauta",
+      "description": "Você foi treinado para o espaço.",
+      "benefit": "Perícias: Ciências e Fortitude. Poder: Acostumado ao Extremo. Você não sofre penalidades por ambientes hostis (como vácuo ou temperaturas extremas) por um curto período de tempo."
+    },
+    {
+      "id": "chef_do_outro_lado",
+      "name": "Chef do Outro Lado",
+      "description": "Você cozinha com ingredientes paranormais.",
+      "benefit": "Perícias: Ocultismo e Profissão (Cozinheiro). Poder: Fome do Outro Lado. Você pode preparar pratos usando partes de criaturas paranormais, concedendo bônus baseados no elemento da criatura."
+    },
+    {
+      "id": "colegial",
+      "name": "Colegial",
+      "description": "Você ainda está na escola.",
+      "benefit": "Perícias: Atualidades e Tecnologia. Poder: Poder da Amizade. Escolha um aliado. Enquanto estiverem em alcance médio e puderem se ver, você recebe +2 em todos os testes de perícia."
+    },
+    {
+      "id": "cosplayer",
+      "name": "Cosplayer",
+      "description": "Você cria e veste fantasias detalhadas.",
+      "benefit": "Perícias: Artes e Vontade. Poder: Não é Fantasia, é Cosplay! Você pode usar Artes para testes de Disfarce. Recebe +2 em testes se o cosplay tiver relação com a ação."
+    },
+    {
+      "id": "diplomata",
+      "name": "Diplomata",
+      "description": "Você sabe negociar e lidar com pessoas.",
+      "benefit": "Perícias: Atualidades e Diplomacia. Poder: Conexões. Você recebe +2 em testes de Diplomacia e pode encontrar contatos úteis em qualquer lugar civilizado."
+    },
+    {
+      "id": "experimento",
+      "name": "Experimento",
+      "description": "Você foi alvo de experimentos paranormais.",
+      "benefit": "Perícias: Atletismo e Fortitude. Poder: Mutação. Você recebe RD 2 e +2 em uma perícia física à sua escolha, mas sofre -1d20 em testes de Diplomacia."
+    },
+    {
+      "id": "explorador",
+      "name": "Explorador",
+      "description": "Você explora lugares remotos.",
+      "benefit": "Perícias: Fortitude e Sobrevivência. Poder: Manual do Sobrevivente. Você pode gastar 2 PE para rolar novamente um teste de Fortitude ou Sobrevivência."
+    },
+    {
+      "id": "fanatico_por_criaturas",
+      "name": "Fanático por Criaturas",
+      "description": "Você estuda obsessivamente monstros.",
+      "benefit": "Perícias: Investigação e Ocultismo. Poder: Conhecimento Oculto. Escolha um elemento. Você tem +1d20 em testes contra criaturas desse elemento."
+    },
+    {
+      "id": "fotografo",
+      "name": "Fotógrafo",
+      "description": "Você documenta o mundo através de lentes.",
+      "benefit": "Perícias: Artes e Percepção. Poder: Através da Lente. Quando usa uma câmera para observar, recebe +5 em testes de Percepção."
+    },
+    {
+      "id": "inventor_paranormal",
+      "name": "Inventor Paranormal",
+      "description": "Você cria engenhocas com ocultismo.",
+      "benefit": "Perícias: Profissão (Inventor) e Ocultismo. Poder: Tecnologia Oculta. Você pode criar inventos que replicam efeitos de rituais ou equipamentos."
+    },
+    {
+      "id": "jovem_mistico",
+      "name": "Jovem Místico",
+      "description": "Você acredita em forças além da compreensão.",
+      "benefit": "Perícias: Ocultismo e Religião. Poder: Destino Conveniente. Ao falhar em um teste, pode gastar 1 PE para rolar seu número da sorte (1d20). Se cair o número, é um sucesso automático."
+    },
+    {
+      "id": "legista_do_turno_da_noite",
+      "name": "Legista do Turno da Noite",
+      "description": "Você trabalha com mortos.",
+      "benefit": "Perícias: Ciências e Medicina. Poder: Luto Habitual. Sofre metade do dano mental por cenas de morte. Pode gastar 2 PE para +5 em Medicina (necropsia/primeiros socorros)."
+    },
+    {
+      "id": "mateiro",
+      "name": "Mateiro",
+      "description": "Você conhece a natureza como ninguém.",
+      "benefit": "Perícias: Percepção e Sobrevivência. Poder: Mapa Celeste. Você nunca se perde ao ar livre e pode gastar 2 PE para rolar novamente um teste de Sobrevivência."
+    },
+    {
+      "id": "mergulhador",
+      "name": "Mergulhador",
+      "description": "Você explora as profundezas.",
+      "benefit": "Perícias: Atletismo e Fortitude. Poder: Fôlego de Nadador. +5 PV e pode prender a respiração pelo dobro do tempo normal."
+    },
+    {
+      "id": "motorista",
+      "name": "Motorista",
+      "description": "Você é um ás no volante.",
+      "benefit": "Perícias: Pilotagem e Reflexos. Poder: Mãos no Volante. Não sofre penalidade de ataque em movimento e pode gastar 2 PE para +5 em Pilotagem."
+    },
+    {
+      "id": "nerd_entusiasta",
+      "name": "Nerd Entusiasta",
+      "description": "Você ama cultura pop e conhecimento.",
+      "benefit": "Perícias: Ciências e Tecnologia. Poder: Inteligentão. Você pode usar interlúdios para ganhar dados de vantagem em testes de Intelecto."
+    },
+    {
+      "id": "profetizado",
+      "name": "Profetizado",
+      "description": "Seu destino foi previsto.",
+      "benefit": "Perícias: Vontade e uma à escolha. Poder: Luta ou Fuga. Quando encontra sinais de sua profecia (morte), recebe +2 em testes."
+    },
+    {
+      "id": "psicologo",
+      "name": "Psicólogo",
+      "description": "Você trata da mente humana.",
+      "benefit": "Perícias: Intuição e Profissão (Psicólogo). Poder: Terapia. Você pode gastar uma ação de interlúdio para curar Sanidade de aliados."
+    },
+    {
+      "id": "reporter_investigativo",
+      "name": "Repórter Investigativo",
+      "description": "Você busca a verdade a todo custo.",
+      "benefit": "Perícias: Diplomacia e Investigação. Poder: Interrogação Cordial. NPCs te tratam melhor (uma categoria de atitude acima) e você pode usar Diplomacia para obter informações."
+    }
+  ]
+}

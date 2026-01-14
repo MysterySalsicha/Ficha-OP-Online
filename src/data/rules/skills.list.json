@@ -1,14 +1,226 @@
 [
-  { "name": "Atletismo", "attribute": "forca" },
-  { "name": "Acrobacia", "attribute": "agilidade" },
-  { "name": "Pontaria", "attribute": "agilidade" },
-  { "name": "Furtividade", "attribute": "agilidade" },
-  { "name": "Investigacao", "attribute": "intelecto" },
-  { "name": "Tecnologia", "attribute": "intelecto" },
-  { "name": "Ocultismo", "attribute": "intelecto" },
-  { "name": "Medicina", "attribute": "intelecto" },
-  { "name": "Diplomacia", "attribute": "presenca" },
-  { "name": "Intimidacao", "attribute": "presenca" },
-  { "name": "Vontade", "attribute": "presenca" },
-  { "name": "Percepcao", "attribute": "presenca" }
+  {
+    "id": "acrobacia",
+    "name": "Acrobacia",
+    "attribute": "agi",
+    "trainedOnly": false,
+    "loadPenalty": true,
+    "description": "Usada para se equilibrar, escapar de amarras e realizar manobras físicas complexas."
+  },
+  {
+    "id": "adestramento",
+    "name": "Adestramento",
+    "attribute": "pre",
+    "trainedOnly": true,
+    "loadPenalty": false,
+    "description": "Usada para lidar com animais, acalmá-los ou ensinar truques."
+  },
+  {
+    "id": "artes",
+    "name": "Artes",
+    "attribute": "pre",
+    "trainedOnly": true,
+    "loadPenalty": false,
+    "description": "Usada para avaliar, criar ou falsificar obras de arte, além de atuar e disfarçar."
+  },
+  {
+    "id": "atletismo",
+    "name": "Atletismo",
+    "attribute": "for",
+    "trainedOnly": false,
+    "loadPenalty": true,
+    "description": "Usada para escalar, nadar, saltar e realizar proezas de força física."
+  },
+  {
+    "id": "atualidades",
+    "name": "Atualidades",
+    "attribute": "int",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Conhecimento sobre notícias, fofocas, política e cultura pop geral."
+  },
+  {
+    "id": "ciencias",
+    "name": "Ciências",
+    "attribute": "int",
+    "trainedOnly": true,
+    "loadPenalty": false,
+    "description": "Conhecimento acadêmico sobre física, química, matemática e biologia."
+  },
+  {
+    "id": "crime",
+    "name": "Crime",
+    "attribute": "agi",
+    "trainedOnly": true,
+    "loadPenalty": true,
+    "description": "Usada para arrombar fechaduras, bater carteiras, sabotar e operar no submundo."
+  },
+  {
+    "id": "diplomacia",
+    "name": "Diplomacia",
+    "attribute": "pre",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para persuadir, negociar e causar boa impressão em interações sociais."
+  },
+  {
+    "id": "enganacao",
+    "name": "Enganação",
+    "attribute": "pre",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para mentir, ludibriar e ocultar intenções."
+  },
+  {
+    "id": "fortitude",
+    "name": "Fortitude",
+    "attribute": "vig",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para resistir a doenças, venenos e efeitos físicos, além de bloquear ataques."
+  },
+  {
+    "id": "furtividade",
+    "name": "Furtividade",
+    "attribute": "agi",
+    "trainedOnly": false,
+    "loadPenalty": true,
+    "description": "Usada para se esconder, mover-se em silêncio e passar despercebido."
+  },
+  {
+    "id": "iniciativa",
+    "name": "Iniciativa",
+    "attribute": "agi",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para determinar a ordem de ação em combates e reagir rapidamente a perigos."
+  },
+  {
+    "id": "intimidacao",
+    "name": "Intimidação",
+    "attribute": "pre",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para assustar, coagir e impor sua presença sobre outros."
+  },
+  {
+    "id": "intuicao",
+    "name": "Intuição",
+    "attribute": "int",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para perceber mentiras, sentir motivações e ter palpites sobre situações."
+  },
+  {
+    "id": "investigacao",
+    "name": "Investigação",
+    "attribute": "int",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para procurar pistas, deduzir informações e analisar cenas de crime."
+  },
+  {
+    "id": "luta",
+    "name": "Luta",
+    "attribute": "for",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para realizar ataques corpo a corpo e manobras de combate."
+  },
+  {
+    "id": "medicina",
+    "name": "Medicina",
+    "attribute": "int",
+    "trainedOnly": true,
+    "loadPenalty": false,
+    "description": "Usada para estabilizar moribundos, tratar ferimentos, doenças e venenos."
+  },
+  {
+    "id": "ocultismo",
+    "name": "Ocultismo",
+    "attribute": "int",
+    "trainedOnly": true,
+    "loadPenalty": false,
+    "description": "Conhecimento sobre o paranormal, rituais, criaturas e o Outro Lado."
+  },
+  {
+    "id": "percepcao",
+    "name": "Percepção",
+    "attribute": "pre",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para notar coisas através dos sentidos (visão, audição, olfato, etc.)."
+  },
+  {
+    "id": "pilotagem",
+    "name": "Pilotagem",
+    "attribute": "agi",
+    "trainedOnly": true,
+    "loadPenalty": true,
+    "description": "Usada para conduzir veículos terrestres, aquáticos ou aéreos, e realizar manobras."
+  },
+  {
+    "id": "pontaria",
+    "name": "Pontaria",
+    "attribute": "agi",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para realizar ataques à distância e arremessar objetos."
+  },
+  {
+    "id": "profissao",
+    "name": "Profissão",
+    "attribute": "int",
+    "trainedOnly": true,
+    "loadPenalty": false,
+    "description": "Conhecimento técnico e prática em um ofício específico não coberto por outras perícias."
+  },
+  {
+    "id": "reflexos",
+    "name": "Reflexos",
+    "attribute": "agi",
+    "trainedOnly": false,
+    "loadPenalty": true,
+    "description": "Usada para reagir a perigos físicos, como armadilhas e explosões, e evitar ataques."
+  },
+  {
+    "id": "religiao",
+    "name": "Religião",
+    "attribute": "pre",
+    "trainedOnly": true,
+    "loadPenalty": false,
+    "description": "Conhecimento sobre mitos, crenças, dogmas e ritos religiosos."
+  },
+  {
+    "id": "sobrevivencia",
+    "name": "Sobrevivência",
+    "attribute": "int",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para rastrear, encontrar recursos e se orientar na natureza."
+  },
+  {
+    "id": "tatica",
+    "name": "Tática",
+    "attribute": "int",
+    "trainedOnly": true,
+    "loadPenalty": false,
+    "description": "Conhecimento militar, estratégia de combate e análise de terreno."
+  },
+  {
+    "id": "tecnologia",
+    "name": "Tecnologia",
+    "attribute": "int",
+    "trainedOnly": true,
+    "loadPenalty": false,
+    "description": "Usada para operar computadores, invadir sistemas e lidar com eletrônicos avançados."
+  },
+  {
+    "id": "vontade",
+    "name": "Vontade",
+    "attribute": "pre",
+    "trainedOnly": false,
+    "loadPenalty": false,
+    "description": "Usada para resistir a efeitos mentais, medo e poderes paranormais."
+  }
 ]

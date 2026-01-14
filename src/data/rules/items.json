@@ -1,21 +1,237 @@
 {
-  "categories": {
-    "0": "I",
-    "1": "II",
-    "2": "III",
-    "3": "IV"
-  },
-  "limits": {
-    "Recruta": { "I": 2, "II": 0, "III": 0, "IV": 0 },
-    "Operador": { "I": 3, "II": 1, "III": 0, "IV": 0 },
-    "Agente Especial": { "I": 3, "II": 2, "III": 1, "IV": 0 },
-    "Oficial de Operações": { "I": 4, "II": 3, "III": 2, "IV": 1 },
-    "Agente de Elite": { "I": 99, "II": 99, "III": 3, "IV": 2 }
-  },
-  "list": [
-    { "name": "Pistola", "category": 1, "space": 1 },
-    { "name": "Fuzil de Assalto", "category": 2, "space": 2 },
-    { "name": "Kit Médico", "category": 1, "space": 1 },
-    { "name": "Colete Leve", "category": 1, "space": 2 }
+  "armas_simples": [
+    {
+      "nome": "Adaga",
+      "dano": "1d4",
+      "critico": "19/x2",
+      "alcance": "Curto (Arremesso)",
+      "tipo": "Perfuração",
+      "espacos": 1,
+      "categoria": 0
+    },
+    {
+      "nome": "Bastão",
+      "dano": "1d6/1d8",
+      "critico": "x2",
+      "alcance": "-",
+      "tipo": "Impacto",
+      "espacos": 1,
+      "categoria": 0
+    },
+    {
+      "nome": "Faca",
+      "dano": "1d4",
+      "critico": "19/x2",
+      "alcance": "Curto (Arremesso)",
+      "tipo": "Corte/Perfuração",
+      "espacos": 1,
+      "categoria": 0
+    },
+    {
+      "nome": "Machadinha",
+      "dano": "1d6",
+      "critico": "x3",
+      "alcance": "Curto (Arremesso)",
+      "tipo": "Corte",
+      "espacos": 1,
+      "categoria": 0
+    },
+    {
+      "nome": "Pistola (Simples)",
+      "dano": "1d12",
+      "critico": "18/x2",
+      "alcance": "Curto",
+      "tipo": "Balístico",
+      "espacos": 1,
+      "categoria": 1
+    }
+  ],
+  "armas_taticas": [
+    {
+      "nome": "Espada",
+      "dano": "1d8/1d10",
+      "critico": "19/x2",
+      "alcance": "-",
+      "tipo": "Corte",
+      "espacos": 1,
+      "categoria": 1
+    },
+    {
+      "nome": "Katana",
+      "dano": "1d10/1d12",
+      "critico": "19/x2",
+      "alcance": "-",
+      "tipo": "Corte",
+      "espacos": 1,
+      "categoria": 1
+    },
+    {
+      "nome": "Machado",
+      "dano": "1d8",
+      "critico": "x3",
+      "alcance": "-",
+      "tipo": "Corte",
+      "espacos": 1,
+      "categoria": 1
+    },
+    {
+      "nome": "Fuzil de Assalto",
+      "dano": "2d10",
+      "critico": "19/x3",
+      "alcance": "Médio",
+      "tipo": "Balístico",
+      "espacos": 2,
+      "categoria": 2
+    },
+    {
+      "nome": "Submetralhadora",
+      "dano": "2d6",
+      "critico": "19/x3",
+      "alcance": "Curto",
+      "tipo": "Balístico",
+      "espacos": 1,
+      "categoria": 1
+    },
+    {
+      "nome": "Espingarda",
+      "dano": "4d6",
+      "critico": "x3",
+      "alcance": "Curto",
+      "tipo": "Balístico",
+      "espacos": 2,
+      "categoria": 1
+    },
+    {
+      "nome": "Rifle de Precisão",
+      "dano": "2d10",
+      "critico": "19/x3",
+      "alcance": "Longo",
+      "tipo": "Balístico",
+      "espacos": 2,
+      "categoria": 2
+    }
+  ],
+  "armas_pesadas": [
+    {
+      "nome": "Bazuca",
+      "dano": "10d8",
+      "critico": "x2",
+      "alcance": "Médio",
+      "tipo": "Impacto",
+      "espacos": 2,
+      "categoria": 3
+    },
+    {
+      "nome": "Lança-Chamas",
+      "dano": "6d6",
+      "critico": "-",
+      "alcance": "Cone 9m",
+      "tipo": "Fogo",
+      "espacos": 2,
+      "categoria": 2
+    },
+    {
+      "nome": "Metralhadora",
+      "dano": "2d12",
+      "critico": "x3",
+      "alcance": "Médio",
+      "tipo": "Balístico",
+      "espacos": 2,
+      "categoria": 3
+    }
+  ],
+  "protecoes": [
+    {
+      "nome": "Proteção Leve",
+      "defesa": 5,
+      "penalidade": 0,
+      "categoria": 1,
+      "espacos": 1
+    },
+    {
+      "nome": "Proteção Pesada",
+      "defesa": 10,
+      "penalidade": -5,
+      "categoria": 3,
+      "espacos": 5
+    },
+    {
+      "nome": "Escudo Leve",
+      "defesa": 2,
+      "penalidade": -1,
+      "categoria": 1,
+      "espacos": 1
+    },
+    {
+      "nome": "Escudo Pesado",
+      "defesa": 4,
+      "penalidade": -3,
+      "categoria": 2,
+      "espacos": 2
+    }
+  ],
+  "equipamentos_gerais": [
+    {
+      "nome": "Algemas",
+      "efeito": "Impedem o uso das mãos. DT 30 para escapar ou quebrar.",
+      "espacos": 1,
+      "categoria": 0
+    },
+    {
+      "nome": "Bandoleira",
+      "efeito": "Permite sacar armas como ação livre.",
+      "espacos": 1,
+      "categoria": 1
+    },
+    {
+      "nome": "Binóculos",
+      "efeito": "+5 em testes de Percepção para observar longe.",
+      "espacos": 1,
+      "categoria": 1
+    },
+    {
+      "nome": "Kit de Perícia",
+      "efeito": "Necessário para usar certas perícias sem penalidade (Medicina, Crime, etc).",
+      "espacos": 1,
+      "categoria": 0
+    },
+    {
+      "nome": "Mochila Militar",
+      "efeito": "+5 espaços de carga (mas ocupa 2 espaços).",
+      "espacos": 0,
+      "categoria": 1
+    },
+    {
+      "nome": "Vestimenta",
+      "efeito": "Concede +2 em uma perícia específica.",
+      "espacos": 1,
+      "categoria": 1
+    },
+    {
+      "nome": "Utensílio",
+      "efeito": "Concede +2 em uma perícia específica (ocupa mão).",
+      "espacos": 1,
+      "categoria": 1
+    }
+  ],
+  "acessorios": [
+    {
+      "nome": "Mira Laser",
+      "efeito": "+2 em testes de ataque com a arma acoplada.",
+      "espacos": 0,
+      "categoria": 1
+    },
+    {
+      "nome": "Silenciador",
+      "efeito": "Torna os disparos silenciosos (Furtividade para não ser ouvido).",
+      "espacos": 0,
+      "categoria": 1
+    },
+    {
+      "nome": "Munição",
+      "efeito": "Pacote de munição para armas de fogo.",
+      "espacos": 1,
+      "categoria": 0
+    }
   ]
 }

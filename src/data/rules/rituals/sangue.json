@@ -1,0 +1,287 @@
+[
+  {
+    "name": "Amaldiçoar Arma",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 arma",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "A arma causa +1d6 de dano de Sangue e goteja sangue constantemente.",
+      "discente": "(+2 PE): O dano adicional aumenta para +2d6. Requer 2º círculo.",
+      "verdadeiro": "(+5 PE): O dano adicional aumenta para +4d6. Requer afinidade."
+    }
+  },
+  {
+    "name": "Arma Atroz",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 arma corpo a corpo",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "A arma cresce e se torna ameaçadora. Aumenta o passo de dano da arma em +1 e a margem de ameaça em +1.",
+      "discente": "(+2 PE): Aumenta o passo de dano em +2.",
+      "verdadeiro": "(+5 PE): Aumenta a margem de ameaça em +2 e o multiplicador de crítico em +1. Requer afinidade."
+    }
+  },
+  {
+    "name": "Armadura de Sangue",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Sangue endurecido cobre sua pele. Você recebe +5 na Defesa.",
+      "discente": "(+2 PE): Aumenta o bônus na Defesa para +10.",
+      "verdadeiro": "(+5 PE): Além da Defesa, você recebe Resistência a Dano 5 (exceto Sangue)."
+    }
+  },
+  {
+    "name": "Corpo Adaptado",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Fortitude anula (se involuntário)",
+    "effects": {
+      "normal": "O alvo se adapta a ambientes hostis. Não sofre dano por temperaturas extremas (frio/calor), respira na água e ignora gases tóxicos.",
+      "discente": "(+2 PE): A duração aumenta para 1 dia.",
+      "verdadeiro": "(+5 PE): O alcance muda para Curto e pode afetar seres escolhidos."
+    }
+  },
+  {
+    "name": "Distorcer Aparência",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você altera suas feições faciais e corporais (dentro do seu tamanho). Recebe +10 em testes de Enganação para disfarce.",
+      "discente": "(+2 PE): Pode imitar a aparência de uma pessoa específica que você já viu.",
+      "verdadeiro": "(+5 PE): A duração aumenta para 1 dia."
+    }
+  },
+  {
+    "name": "Esfolar",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Fortitude parcial",
+    "effects": {
+      "normal": "Rasga a pele do alvo. Causa 2d8+2 de dano de Sangue e deixa o alvo Sangrando (1d6/rodada). Se passar, metade do dano e não sangra.",
+      "discente": "(+2 PE): O dano aumenta para 4d8+4.",
+      "verdadeiro": "(+5 PE): O alvo fica Fraco enquanto estiver sangrando."
+    }
+  },
+  {
+    "name": "Fortalecimento Sensorial",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Aguça os sentidos. O alvo recebe +5 em Percepção e Visão no Escuro.",
+      "discente": "(+2 PE): O alvo também recebe +2 em testes de ataque à distância.",
+      "verdadeiro": "(+5 PE): O alvo ganha Faro e percebe criaturas invisíveis."
+    }
+  },
+  {
+    "name": "Ódio Incontrolável",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "O alvo entra em fúria. Recebe +2 em ataques corpo a corpo e rolagens de dano, e Resistência a Dano 2. Porém, não pode usar perícias de Intelecto/Presença ou conjurar rituais, e deve atacar o inimigo mais próximo.",
+      "discente": "(+2 PE): Os bônus aumentam para +5 no ataque/dano e RD 5.",
+      "verdadeiro": "(+5 PE): O alvo ganha um ataque extra por rodada."
+    }
+  },
+  {
+    "name": "Aprimorar Físico",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Aumenta a Força ou Agilidade do alvo em +1.",
+      "discente": "(+3 PE): Aumenta Força E Agilidade em +1.",
+      "verdadeiro": "(+7 PE): Aumenta Força e Agilidade em +2. Requer afinidade."
+    }
+  },
+  {
+    "name": "Descarnar",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Fortitude parcial",
+    "effects": {
+      "normal": "Causa 6d8 de dano de Sangue e deixa o alvo Sangrando (2d8/rodada). Se passar, metade do dano e sangramento menor (1d8).",
+      "discente": "(+3 PE): Dano aumenta para 10d8.",
+      "verdadeiro": "(+7 PE): Se falhar na resistência, o alvo também fica Enjoado."
+    }
+  },
+  {
+    "name": "Hemofagia",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Fortitude parcial",
+    "effects": {
+      "normal": "Drena a vida do alvo. Causa 6d6 de dano de Sangue e você recupera PV igual à metade do dano causado. Se passar, metade do dano e cura.",
+      "discente": "(+3 PE): Dano aumenta para 10d6.",
+      "verdadeiro": "(+7 PE): Dano aumenta para 12d6 e você recupera PV igual ao dano total."
+    }
+  },
+  {
+    "name": "Transfusão Vital",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você sacrifica seus PV para curar outro. Transfere até 30 PV seus para o alvo.",
+      "discente": "(+3 PE): Transfere até 50 PV e remove uma condição de sangramento ou veneno.",
+      "verdadeiro": "(+7 PE): Transfere até 100 PV."
+    }
+  },
+  {
+    "name": "Ferver Sangue",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Sustentada",
+    "resistance": "Fortitude parcial",
+    "effects": {
+      "normal": "O sangue do alvo ferve. No início de cada turno dele, sofre 4d8 de dano de Sangue e fica Fraco. Se passar, metade do dano e evita a condição na rodada.",
+      "discente": "(+4 PE): Dano aumenta para 6d8.",
+      "verdadeiro": "(+9 PE): Se falhar na resistência, o alvo fica Exausto em vez de Fraco."
+    }
+  },
+  {
+    "name": "Forma Monstruosa",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Completa",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você se transforma em uma besta. Ganha +5 em Força, tamanho Grande, garras (1d8, x3) e +30 PV temporários. Não pode conjurar rituais.",
+      "discente": "(+4 PE): Ganha +50 PV temporários e asas (voo 9m).",
+      "verdadeiro": "(+9 PE): Ganha Tamanho Enorme, +10 em Força e +100 PV temporários."
+    }
+  },
+  {
+    "name": "Purgatório",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Médio",
+    "target": "Círculo de 6m de raio",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "O chão se torna carne pulsante. Terreno difícil. Quem começar o turno na área sofre 4d6 de dano de Sangue e fica Agarrado pelos tentáculos de carne (teste de Força solta).",
+      "discente": "(+4 PE): Dano aumenta para 6d6.",
+      "verdadeiro": "(+9 PE): Quem falhar para se soltar sofre 10d6 de dano extra."
+    }
+  },
+  {
+    "name": "Vomitar Pestes",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Cone de 9m",
+    "target": "Área",
+    "duration": "Instantânea",
+    "resistance": "Reflexos reduz à metade",
+    "effects": {
+      "normal": "Cospe um enxame de insetos de sangue. Causa 10d6 de dano de Sangue/Perfuração. Quem falhar fica Enjoado.",
+      "discente": "(+4 PE): O enxame permanece na área por 1 rodada, causando 4d6 de dano em quem entrar ou terminar o turno lá.",
+      "verdadeiro": "(+9 PE): Dano inicial aumenta para 15d6."
+    }
+  },
+  {
+    "name": "Vínculo de Sangue",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Fortitude parcial",
+    "effects": {
+      "normal": "Conecta sua vida à do alvo. Metade do dano que você sofre é transferido para ele (ele faz Fortitude para negar). Pode inverter o efeito (você recebe o dano dele).",
+      "discente": "(+5 PE): Não permite teste de resistência se o alvo for voluntário ou estiver inconsciente.",
+      "verdadeiro": "(+10 PE): Todo o dano é transferido (você não sofre nada, o alvo sofre tudo)."
+    }
+  },
+  {
+    "name": "Capturar o Coração",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 ser",
+    "duration": "Permanente",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "Você arranca (metaforicamente ou não) o coração do alvo. Ele se torna seu servo leal e obedece a todas as suas ordens.",
+      "discente": "(+5 PE): Pode afetar criaturas paranormais (com penalidade na resistência).",
+      "verdadeiro": "(+10 PE): O alvo ganha +10 PV e +5 em dano enquanto servir você."
+    }
+  },
+  {
+    "name": "Invólucro de Carne",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você cria uma armadura biológica impenetrável. Ganha 100 PV temporários e Imunidade a Dano Crítico e Furtivo.",
+      "discente": "(+5 PE): Ganha Resistência a Dano 10 (todos).",
+      "verdadeiro": "(+10 PE): Ao perder os PV temporários, a armadura explode, causando 10d6 de dano de Sangue em área próxima."
+    }
+  }
+]

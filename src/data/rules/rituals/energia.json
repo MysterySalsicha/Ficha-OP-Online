@@ -1,0 +1,287 @@
+[
+  {
+    "name": "Amaldiçoar Arma",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 arma",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "A arma causa +1d6 de dano de Energia e brilha com faíscas coloridas.",
+      "discente": "(+2 PE): O dano adicional aumenta para +2d6. Requer 2º círculo.",
+      "verdadeiro": "(+5 PE): O dano adicional aumenta para +4d6. Requer afinidade."
+    }
+  },
+  {
+    "name": "Amaldiçoar Tecnologia",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 item eletrônico ou cibernético",
+    "duration": "Instantânea",
+    "resistance": "Vontade anula (se objeto estiver em posse)",
+    "effects": {
+      "normal": "O item falha e para de funcionar. Se for uma arma de fogo com mira eletrônica, ela perde os benefícios. Celulares, rádios e computadores desligam e precisam ser reiniciados (ação completa).",
+      "discente": "(+2 PE): O item quebra e precisa de conserto (teste de Tecnologia DT 20). Se for cibernético, o alvo sofre 2d6 de dano de Energia.",
+      "verdadeiro": "(+5 PE): O item explode, causando 4d6 de dano de Energia em uma área de 3m de raio (Reflexos reduz à metade) e é destruído."
+    }
+  },
+  {
+    "name": "Coincidência Forçada",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "O alvo recebe +2 em testes de perícia.",
+      "discente": "(+2 PE): O alvo escolhe dois atributos; em testes baseados neles, pode rolar 2d20 e escolher o melhor.",
+      "verdadeiro": "(+5 PE): O bônus aumenta para +5 e afeta aliados em alcance Curto (máx 3). Requer afinidade."
+    }
+  },
+  {
+    "name": "Eletrocussão",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Fortitude parcial",
+    "effects": {
+      "normal": "Causa 2d6 de dano de eletricidade e deixa o alvo Vulnerável por 1 rodada. Se passar na resistência, sofre metade do dano e não fica vulnerável.",
+      "discente": "(+3 PE): O ritual afeta uma área (linha de 30m) e causa 6d6 de dano.",
+      "verdadeiro": "(+7 PE): O ritual atinge alvos escolhidos em alcance médio, causando 8d6 de dano em cada um."
+    }
+  },
+  {
+    "name": "Embaralhar",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Cria 3 cópias ilusórias. Você recebe +6 na Defesa. Cada erro contra você destrói uma cópia e reduz o bônus em 2.",
+      "discente": "(+2 PE): Cria 5 cópias (+10 na Defesa).",
+      "verdadeiro": "(+5 PE): Cria 8 cópias (+16 na Defesa). Cópias destruídas explodem em luz, ofuscando o atacante."
+    }
+  },
+  {
+    "name": "Luz",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 objeto",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "O objeto emite luz plena em 6m e penumbra em mais 6m. Pode ser usado para cegar (Vontade anula) se conjurado nos olhos.",
+      "discente": "(+2 PE): A luz é muito intensa (12m/12m). Ofusca seres na área.",
+      "verdadeiro": "(+5 PE): A luz causa 1d6 de dano de Energia por rodada a seres hostis na área de luz plena."
+    }
+  },
+  {
+    "name": "Polarização Caótica",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 objeto ou ser",
+    "duration": "Cena",
+    "resistance": "Fortitude anula (se ser)",
+    "effects": {
+      "normal": "Você magnetiza o alvo. Ataques com armas metálicas contra ele recebem +2 no teste de ataque.",
+      "discente": "(+2 PE): O alvo pode repelir ou atrair metal (escolha ao conjurar). Se repelir, recebe +5 na Defesa contra metal.",
+      "verdadeiro": "(+5 PE): O alvo flutua em campos magnéticos, recebendo deslocamento de voo 9m."
+    }
+  },
+  {
+    "name": "Chamas do Caos",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "1 ser",
+    "duration": "Instantânea",
+    "resistance": "Reflexos reduz à metade",
+    "effects": {
+      "normal": "Um jato de fogo causa 6d6 de dano de Fogo e deixa o alvo Em Chamas (1d6/rodada).",
+      "discente": "(+3 PE): O dano aumenta para 10d6 e o dano das chamas para 2d6/rodada.",
+      "verdadeiro": "(+7 PE): O jato se torna um cone de 9m. O dano aumenta para 12d6."
+    }
+  },
+  {
+    "name": "Contenção Fantasmagórica",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Médio",
+    "target": "1 ser",
+    "duration": "Cena",
+    "resistance": "Reflexos anula",
+    "effects": {
+      "normal": "Feixes de luz prendem o alvo. Ele fica Imóvel. Pode tentar se soltar a cada rodada (Força ou Acrobacia vs DT do ritual).",
+      "discente": "(+3 PE): O alvo também fica Vulnerável.",
+      "verdadeiro": "(+7 PE): O alvo fica Paralisado e sofre 2d6 de dano de Energia por rodada."
+    }
+  },
+  {
+    "name": "Dissonância Acústica",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Médio",
+    "target": "Esfera de 6m de raio",
+    "duration": "Cena",
+    "resistance": "Vontade anula",
+    "effects": {
+      "normal": "Sons caóticos ensurdecem e confundem. Todos na área ficam Surdos e sofrem -2 em testes de Vontade. Conjuradores na área devem passar em Vontade para lançar rituais.",
+      "discente": "(+3 PE): O som causa 2d6 de dano sônico por rodada.",
+      "verdadeiro": "(+7 PE): O som é tão intenso que causa Atordoamento por 1 rodada em quem falhar na resistência ao entrar na área."
+    }
+  },
+  {
+    "name": "Tela de Ruído",
+    "circle": 2,
+    "cost": 2,
+    "execution": "Reação (ao sofrer dano)",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Ganha 30 PV temporários contra o dano desencadeante (apenas balístico, corte, impacto, perfuração) ou RD 15 contra esse ataque específico.",
+      "discente": "(+3 PE): Os PV temporários aumentam para 60 e a RD para 30.",
+      "verdadeiro": "(+7 PE): Você anula completamente o dano do ataque. (Custo muda para Ação Padrão se usado preventivamente para imunidade a um tipo de dano pela cena)."
+    }
+  },
+  {
+    "name": "Tremeluzir",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Movimento",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "1 rodada",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você oscila entre a realidade e outra dimensão. Recebe 50% de chance de falha contra qualquer ataque que o alvoje.",
+      "discente": "(+3 PE): Você pode atravessar objetos sólidos (até 1,5m de espessura) durante seu movimento.",
+      "verdadeiro": "(+7 PE): A duração aumenta para Cena. Requer afinidade."
+    }
+  },
+  {
+    "name": "Convocação Instantânea",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Ilimitado",
+    "target": "1 objeto marcado",
+    "duration": "Instantânea",
+    "resistance": "Vontade anula (se em posse)",
+    "effects": {
+      "normal": "Você teletransporta um objeto previamente marcado (com um ritual de 10 min) para sua mão.",
+      "discente": "(+4 PE): Pode convocar objetos grandes (que ocupam até 10 espaços).",
+      "verdadeiro": "(+9 PE): Pode convocar um ser voluntário marcado."
+    }
+  },
+  {
+    "name": "Salto Fantasma",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Movimento",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Instantânea",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você se teletransporta para um ponto visível em alcance Curto.",
+      "discente": "(+4 PE): Pode usar como Reação para evitar um ataque (recebe +10 na Defesa contra aquele ataque e se teleporta).",
+      "verdadeiro": "(+9 PE): Alcance aumenta para Longo. Pode levar seres voluntários adjacentes."
+    }
+  },
+  {
+    "name": "Transfigurar Água",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "Área de água",
+    "duration": "Cena",
+    "resistance": "Reflexos (se usado para prender/dano)",
+    "effects": {
+      "normal": "Controla a água (congela, ferve, move). Pode criar barreiras ou ondas.",
+      "discente": "(+4 PE): Pode causar 8d6 de dano de Frio ou Impacto em área.",
+      "verdadeiro": "(+9 PE): Transforma a água em ácido ou vapor superaquecido (12d6 de dano)."
+    }
+  },
+  {
+    "name": "Transfigurar Terra",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "Área de terra/pedra",
+    "duration": "Cena",
+    "resistance": "Reflexos (se usado para prender/dano)",
+    "effects": {
+      "normal": "Moldar pedra/terra. Cria muros, abre buracos, terreno difícil.",
+      "discente": "(+4 PE): Prende alvos (Agarrado) ou causa 8d6 de dano de Impacto.",
+      "verdadeiro": "(+9 PE): Transforma terra em magma/lava (12d6 de dano de Fogo por rodada)."
+    }
+  },
+  {
+    "name": "Alterar Destino",
+    "circle": 4,
+    "cost": 4,
+    "execution": "Reação",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Instantânea",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você antecipa o perigo. Passa automaticamente em um teste de resistência ou anula um ataque crítico (transformando em normal).",
+      "discente": "(+5 PE): Você evita completamente o ataque ou efeito (nenhum dano/efeito).",
+      "verdadeiro": "(+9 PE): O alcance muda para Curto e o alvo para '1 aliado'."
+    }
+  },
+  {
+    "name": "Deflagração de Energia",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Completa",
+    "range": "Pessoal",
+    "target": "Área de 15m de raio",
+    "duration": "Instantânea",
+    "resistance": "Fortitude parcial",
+    "effects": {
+      "normal": "Uma explosão devastadora. Causa 30d10 de dano de Energia em todos na área. Objetos eletrônicos são destruídos. Estruturas sofrem dano dobrado.",
+      "discente": "(+5 PE): O dano aumenta para 40d10.",
+      "verdadeiro": "(+10 PE): A área dobra (30m de raio) e o dano ignora resistência a energia."
+    }
+  },
+  {
+    "name": "Teletransporte",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Completa",
+    "range": "Toque",
+    "target": "Você e até 8 seres voluntários",
+    "duration": "Instantânea",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Transporta os alvos para qualquer lugar conhecido no mesmo mundo (até 1000km).",
+      "discente": "(+5 PE): Alcance ilimitado no mesmo mundo.",
+      "verdadeiro": "(+10 PE): Pode viajar para outras dimensões ou 'Lados' (requer conhecimento do local ou item de lá)."
+    }
+  }
+]

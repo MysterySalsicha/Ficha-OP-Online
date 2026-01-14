@@ -1,0 +1,107 @@
+[
+  {
+    "name": "Cinerária",
+    "circle": 1,
+    "cost": 1,
+    "execution": "Padrão",
+    "range": "Curto",
+    "target": "Névoa de 6m de raio",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Cria uma névoa cinzenta. A DT para resistir a rituais conjurados dentro da névoa aumenta em +5. A visibilidade na área é de Penumbra.",
+      "discente": "(+2 PE): O custo de PE de rituais conjurados dentro da névoa diminui em -1 (mínimo 1).",
+      "verdadeiro": "(+5 PE): O dano de rituais conjurados dentro da névoa é maximizado."
+    }
+  },
+  {
+    "name": "Rejeitar a Névoa",
+    "circle": 2,
+    "cost": 3,
+    "execution": "Padrão",
+    "range": "Pessoal",
+    "target": "Esfera de 9m de raio",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você afasta a Realidade da Membrana. A área ao seu redor se torna livre de efeitos ambientais paranormais (como a Névoa do Medo em missões). Criaturas paranormais na área sofrem -2 em testes.",
+      "discente": "(+3 PE): A área de proteção aumenta para 18m. Aliados na área recebem +5 em testes de resistência contra o paranormal.",
+      "verdadeiro": "Não possui."
+    }
+  },
+  {
+    "name": "Dissipar Ritual",
+    "circle": 3,
+    "cost": 6,
+    "execution": "Padrão",
+    "range": "Médio",
+    "target": "1 ritual ou efeito mágico",
+    "duration": "Instantânea",
+    "resistance": "Teste de Ocultismo oposto",
+    "effects": {
+      "normal": "Você encerra um ritual ativo. Faça um teste de Ocultismo (DT = DT do ritual alvo). Se passar, o ritual termina.",
+      "discente": "(+4 PE): Você recebe +5 no teste de Ocultismo para dissipar.",
+      "verdadeiro": "(+9 PE): Você dissipa automaticamente qualquer ritual de 3º círculo ou menor sem teste."
+    }
+  },
+  {
+    "name": "Canalizar o Medo",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você sacrifica 2d4 de Sanidade permanente. Seus rituais custam -2 PE (mínimo 1) e suas armas amaldiçoadas causam +5 de dano.",
+      "discente": "Não possui.",
+      "verdadeiro": "Não possui."
+    }
+  },
+  {
+    "name": "Lâmina do Medo",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Toque",
+    "target": "1 criatura",
+    "duration": "Instantânea",
+    "resistance": "Fortitude parcial",
+    "effects": {
+      "normal": "Você toca o alvo com uma fenda na realidade. Se ele falhar na resistência, seus PV são reduzidos a 0. Se passar, sofre 10d8 de dano de Medo (ignora resistência) e fica Apavorado por 1 rodada.",
+      "discente": "Não possui.",
+      "verdadeiro": "Não possui."
+    }
+  },
+  {
+    "name": "Medo Tangível",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Pessoal",
+    "target": "Você",
+    "duration": "Cena",
+    "resistance": "Nenhuma",
+    "effects": {
+      "normal": "Você se torna uma entidade de Medo. Fica imune a acertos críticos, ataques furtivos, doenças e condições físicas (Atordoado, Cego, etc.). Dano físico não pode reduzir seus PV abaixo de 1.",
+      "discente": "Não possui.",
+      "verdadeiro": "Não possui."
+    }
+  },
+  {
+    "name": "Presença do Medo",
+    "circle": 4,
+    "cost": 10,
+    "execution": "Padrão",
+    "range": "Pessoal",
+    "target": "Área de 9m de raio",
+    "duration": "Cena",
+    "resistance": "Vontade parcial",
+    "effects": {
+      "normal": "Todos os seres na área (exceto você) sentem o pavor absoluto. No início de seus turnos, sofrem 4d6 de dano mental e ficam Abalados. Se passarem, metade do dano e sem condição.",
+      "discente": "(+5 PE): A condição muda para Apavorado.",
+      "verdadeiro": "(+10 PE): O dano mental aumenta para 8d6 e ignora imunidade a dano mental de criaturas."
+    }
+  }
+]

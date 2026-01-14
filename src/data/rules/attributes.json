@@ -1,7 +1,29 @@
 {
-  "agi": "Agilidade",
-  "for": "Força",
-  "int": "Intelecto",
-  "pre": "Presença",
-  "vig": "Vigor"
+  "attributes": [
+    {
+      "id": "agi",
+      "name": "Agilidade",
+      "description": "Define a coordenação motora, velocidade de reação e destreza manual. Mecanicamente, afeta sua Iniciativa, Defesa, capacidade de evitar ataques à distância e perícias de movimento e furtividade."
+    },
+    {
+      "id": "for",
+      "name": "Força",
+      "description": "Define a potência muscular e o porte físico. Mecanicamente, afeta o dano de ataques corpo a corpo, a capacidade de carga (inventário) e testes de atletismo e luta."
+    },
+    {
+      "id": "int",
+      "name": "Intelecto",
+      "description": "Define o raciocínio, memória e educação. Mecanicamente, define o número de perícias treinadas adicionais, a compreensão de rituais e perícias de conhecimento e investigação."
+    },
+    {
+      "id": "pre",
+      "name": "Presença",
+      "description": "Define a força de personalidade, magnetismo social e autocontrole. Mecanicamente, define seus Pontos de Esforço (PE) iniciais por nível, resistência mental (Vontade) e perícias sociais."
+    },
+    {
+      "id": "vig",
+      "name": "Vigor",
+      "description": "Define a saúde, resistência física e imunidade. Mecanicamente, define seus Pontos de Vida (PV) iniciais por nível e resistência física (Fortitude)."
+    }
+  ]
 }
