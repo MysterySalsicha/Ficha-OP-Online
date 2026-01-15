@@ -46,7 +46,9 @@ interface GameState {
     messages: any[];
     logs: any[];
     isLoading: boolean;
-    needsCharacterCreation: boolean; // Novo estado
+    needsCharacterCreation: boolean;
+    approvalStatus: 'pending' | 'approved' | 'rejected' | 'none';
+    playerRole: 'player' | 'gm' | 'none'; // Novo estado
 
     initialize: (user: User, mesaId: string) => Promise<void>;
     sendChatMessage: (content: string, type?: string) => Promise<void>;
@@ -80,11 +82,43 @@ export const useGameStore = create<GameState>((set, get) => ({
     logs: [],
     isLoading: false,
     needsCharacterCreation: false,
+    approvalStatus: 'none',
+    playerRole: 'none',
 
     initialize: async (user, mesaId) => {
-        set({ isLoading: true, currentUser: user, needsCharacterCreation: false });
+        set({ isLoading: true, currentUser: user, needsCharacterCreation: false, approvalStatus: 'none', playerRole: 'none' });
 
         try {
+            // 0. Verificar Status de Aprovação
+            const { data: playerStatus, error: statusError } = await supabase
+                .from('mesa_players')
+                .select('status, role')
+                .eq('mesa_id', mesaId)
+                .eq('user_id', user.id)
+                .maybeSingle();
+
+            if (!playerStatus) {
+                // Se não tem status, cria solicitação pendente
+                await supabase.from('mesa_players').insert({
+                    mesa_id: mesaId, user_id: user.id, status: 'pending'
+                });
+                set({ approvalStatus: 'pending', isLoading: false });
+                return;
+            }
+
+            if (playerStatus.status === 'pending') {
+                set({ approvalStatus: 'pending', isLoading: false });
+                return;
+            }
+            
+            if (playerStatus.status === 'banned' || playerStatus.status === 'rejected') {
+                set({ approvalStatus: 'rejected', isLoading: false });
+                return;
+            }
+
+            // Se aprovado, continua o fluxo normal...
+            set({ approvalStatus: 'approved', playerRole: playerStatus.role as 'player' | 'gm' });
+
             // 1. Buscar Mesa (Real)
             const { data: mesa, error: mesaError } = await supabase.from('mesas').select('*').eq('id', mesaId).single();
             if (mesaError || !mesa) throw new Error("Mesa não encontrada ou acesso negado.");
@@ -95,7 +129,10 @@ export const useGameStore = create<GameState>((set, get) => ({
             let myChar = allChars?.find(c => c.user_id === user.id);
 
             // 3. Se não tem personagem e NÃO é o GM -> Precisa Criar
-            if (!myChar && mesa.gm_id !== user.id) {
+            // Agora checamos se o role é 'gm' na tabela mesa_players, além do dono da mesa
+            const isGM = mesa.gm_id === user.id || playerStatus.role === 'gm';
+
+            if (!myChar && !isGM) {
                 set({ needsCharacterCreation: true, isLoading: false });
                 return; // Para aqui e a UI redireciona
             }

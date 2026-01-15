@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { createMesa, joinMesa } from '../lib/mesa';
+import { createMesa, joinMesa, requestJoinMesa } from '../lib/mesa';
 import { OpButton } from '../components/ui-op/OpButton';
 import { OpInput } from '../components/ui-op/OpInput';
 import { OpFileUpload } from '../components/ui-op/OpFileUpload';
@@ -34,10 +34,16 @@ export const Lobby: React.FC = () => {
   };
 
   const handleJoin = async () => {
-    if (!joinCode) return;
+    if (!joinCode || !user) return;
     setLoading(true);
     try {
+      // 1. Verifica se a mesa existe
       const mesa = await joinMesa(joinCode.toUpperCase().trim());
+      
+      // 2. Cria solicitação de entrada
+      await requestJoinMesa(mesa.id, user.id);
+      
+      // 3. Redireciona (a GameRoom vai mostrar "Aguardando Aprovação")
       navigate(`/mesa/${mesa.id}`);
     } catch (error: any) {
       alert(error.message);

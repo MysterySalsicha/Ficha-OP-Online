@@ -16,20 +16,20 @@ export const translateError = (error: any): string => {
         return "Este e-mail já está recrutado pela Ordem. Tente fazer login.";
     }
 
+    if (message.includes('Database error saving new user')) {
+        return "Este nome de agente já está em uso por outro recruta. Escolha um codinome diferente.";
+    }
+
     if (message.includes('Password should be at least 6 characters')) {
         return "A senha de segurança deve ter pelo menos 6 caracteres.";
     }
 
     if (message.includes('Email not confirmed')) {
-        return "Verifique seu e-mail para confirmar seu recrutamento antes de entrar.";
+        return "Este acesso ainda não foi liberado. O mestre precisa desabilitar a confirmação de e-mail no painel da Ordem ou confirmar seu acesso manualmente.";
     }
 
-    if (message.includes('Project not found') || message.includes('apikey')) {
-        return "Erro de Configuração: As chaves da Ordem não foram encontradas no .env";
-    }
-
-    // Erros genéricos de validação do Postgres
     if (message.includes('duplicate key value')) {
+        if (message.includes('username')) return "Este nome de agente já está em uso.";
         return "Este registro já existe na base de dados.";
     }
 

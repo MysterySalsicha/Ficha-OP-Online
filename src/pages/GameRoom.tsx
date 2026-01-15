@@ -11,7 +11,8 @@ import { useToast } from '../components/ui-op/OpToast';
 import { 
     Users, MessageSquare, History, Package, Map as MapIcon, 
     User as UserIcon, LogOut, Copy, Shield, Skull, PlusCircle, 
-    ChevronRight, ChevronLeft, Dices, Menu, Eye, Heart, Zap, BookOpen
+    ChevronRight, ChevronLeft, Dices, Menu, Eye, Heart, Zap, BookOpen,
+    Check, XCircle, UserPlus, Crown
 } from 'lucide-react';
 import { OpInput } from '../components/ui-op/OpInput';
 import { OpFileUpload } from '../components/ui-op/OpFileUpload';
@@ -19,6 +20,7 @@ import monstersData from '../data/rules/monsters.json';
 import itemsData from '../data/rules/items.json';
 import { rollDice } from '../engine/dice';
 import { AttributeName } from '../core/types';
+import { getPendingPlayers, updatePlayerStatus, promotePlayer } from '../lib/mesa';
 
 export const GameRoom: React.FC = () => {
   const { id: mesaId } = useParams();
@@ -29,14 +31,14 @@ export const GameRoom: React.FC = () => {
   const { 
     initialize, isLoading, currentMesa, allCharacters, unsubscribe, 
     spawnMonster, sendChatMessage, giveItemToCharacter, activeScene, createScene,
-    messages, logs, needsCharacterCreation, character
+    messages, logs, needsCharacterCreation, character, approvalStatus, playerRole
   } = useGameStore();
   
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'sheet' | 'map'>('sheet');
   const [leftTab, setLeftTab] = useState<'chat' | 'players' | 'log'>('chat');
-  const [rightTab, setRightTab] = useState<'players' | 'library'>('players');
+  const [rightTab, setRightTab] = useState<'players' | 'library' | 'requests'>('players');
   const [librarySubTab, setLibrarySubTab] = useState<'bestiario' | 'itens'>('bestiario');
   const [chatInput, setChatInput] = useState('');
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
@@ -48,6 +50,8 @@ export const GameRoom: React.FC = () => {
   const [newMapName, setNewMapName] = useState('');
   const [newMapImage, setNewMapImage] = useState('');
   
+  const [pendingPlayers, setPendingPlayers] = useState<any[]>([]);
+
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,15 +60,65 @@ export const GameRoom: React.FC = () => {
     return () => unsubscribe();
   }, [user, mesaId]);
 
+  // isGM agora verifica se o playerRole é 'gm' (que inclui o dono e os co-gms)
+  const isGM = playerRole === 'gm';
+  const isOwner = currentMesa?.gm_id === user?.id;
+
+  const loadPending = async () => {
+    if (isGM && mesaId) {
+        const p = await getPendingPlayers(mesaId);
+        setPendingPlayers(p || []);
+    }
+  };
+
   useEffect(() => {
-      if (needsCharacterCreation && mesaId) navigate(`/criar-personagem/${mesaId}`);
-  }, [needsCharacterCreation, mesaId, navigate]);
+    if (isGM) {
+        loadPending();
+        const interval = setInterval(loadPending, 10000); // Polling simples
+        return () => clearInterval(interval);
+    }
+  }, [isGM, mesaId]);
+
+  const handleApprove = async (userId: string) => {
+      if (!mesaId) return;
+      try {
+          await updatePlayerStatus(mesaId, userId, 'approved');
+          showToast('Agente aprovado!', 'success');
+          loadPending();
+      } catch (e) {
+          showToast('Erro ao aprovar.', 'error');
+      }
+  };
+
+  const handleReject = async (userId: string) => {
+      if (!mesaId) return;
+      try {
+          await updatePlayerStatus(mesaId, userId, 'rejected');
+          showToast('Solicitação rejeitada.', 'success');
+          loadPending();
+      } catch (e) {
+          showToast('Erro ao rejeitar.', 'error');
+      }
+  };
+
+  const handlePromote = async (userId: string, userName: string) => {
+      if (!mesaId || !confirm(`Tem certeza que deseja promover ${userName} a Mestre Auxiliar? Ele terá controle total sobre a mesa.`)) return;
+      try {
+          await promotePlayer(mesaId, userId);
+          showToast(`${userName} promovido a Mestre!`, 'success');
+      } catch (e) {
+          showToast('Erro ao promover.', 'error');
+      }
+  };
+
+  useEffect(() => {
+      if (needsCharacterCreation && mesaId && approvalStatus === 'approved') navigate(`/criar-personagem/${mesaId}`);
+  }, [needsCharacterCreation, mesaId, navigate, approvalStatus]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const isGM = currentMesa?.gm_id === user?.id;
 
   const handleCopyCode = () => {
       navigator.clipboard.writeText(currentMesa?.code || '');
@@ -126,13 +180,41 @@ export const GameRoom: React.FC = () => {
       setIsRolling(false);
   };
 
-  if (isLoading || !currentMesa) {
+  if (isLoading) {
     return (
       <div className="h-screen bg-op-bg flex items-center justify-center text-op-red">
         <p className="animate-pulse text-xl font-bold uppercase tracking-widest font-typewriter">Sincronizando Realidade...</p>
       </div>
     );
   }
+
+  if (approvalStatus === 'pending') {
+      return (
+          <div className="h-screen bg-op-bg flex flex-col items-center justify-center text-zinc-300 p-8 text-center bg-noise">
+              <div className="bg-op-panel p-8 border border-op-gold/50 shadow-2xl max-w-md w-full relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-2 opacity-20"><Shield className="w-24 h-24 text-op-gold" /></div>
+                  <h2 className="text-2xl font-bold font-typewriter text-op-gold mb-4 uppercase tracking-widest">Acesso Restrito</h2>
+                  <p className="mb-6 leading-relaxed">Suas credenciais estão sob análise da Ordo Realitas. Aguarde a autorização do oficial responsável (Mestre) para acessar esta missão.</p>
+                  <OpButton onClick={() => navigate('/lobby')} variant="ghost" className="w-full"><LogOut className="w-4 h-4 mr-2" /> Retornar ao QG</OpButton>
+              </div>
+          </div>
+      );
+  }
+
+  if (approvalStatus === 'rejected') {
+    return (
+        <div className="h-screen bg-op-bg flex flex-col items-center justify-center text-zinc-300 p-8 text-center bg-noise">
+            <div className="bg-op-panel p-8 border border-op-red shadow-2xl max-w-md w-full relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-2 opacity-20"><Skull className="w-24 h-24 text-op-red" /></div>
+                <h2 className="text-2xl font-bold font-typewriter text-op-red mb-4 uppercase tracking-widest">Acesso Negado</h2>
+                <p className="mb-6 leading-relaxed">Suas credenciais foram rejeitadas ou sua presença nesta operação foi revogada.</p>
+                <OpButton onClick={() => navigate('/lobby')} variant="ghost" className="w-full"><LogOut className="w-4 h-4 mr-2" /> Retornar ao QG</OpButton>
+            </div>
+        </div>
+    );
+  }
+
+  if (!currentMesa) return null;
 
   return (
     <div className="flex h-screen bg-op-bg text-zinc-100 overflow-hidden font-sans relative bg-noise">
@@ -212,6 +294,12 @@ export const GameRoom: React.FC = () => {
                                     <div className="h-1 flex-1 bg-zinc-800 rounded overflow-hidden"><div className="h-full bg-yellow-500" style={{ width: `${(char.stats_current.pe / char.stats_max.pe) * 100}%` }}></div></div>
                                 </div>
                             </div>
+                            {isOwner && char.user_id && char.user_id !== user?.id && !char.is_npc && (
+                                <button onClick={() => handlePromote(char.user_id!, char.name)} className="p-1 hover:bg-op-gold/20 rounded text-zinc-600 hover:text-op-gold transition-colors" title="Promover a Mestre Auxiliar">
+                                    <Crown className="w-4 h-4" />
+                                </button>
+                            )}
+                            {isGM && <Eye className="w-4 h-4 text-zinc-600 hover:text-white cursor-pointer" />}
                         </div>
                     ))}
                 </div>
@@ -259,7 +347,13 @@ export const GameRoom: React.FC = () => {
             {viewMode === 'sheet' ? (
                 <div className="h-full overflow-y-auto p-4 md:p-8 custom-scrollbar">
                     <div className="max-w-5xl mx-auto shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-sm overflow-hidden border border-op-border bg-op-panel">
-                        <CharacterSheet />
+                        {character ? <CharacterSheet /> : (
+                            <div className="flex flex-col items-center justify-center h-full text-zinc-500 py-20">
+                                <Crown className="w-16 h-16 text-op-gold mb-4 opacity-50" />
+                                <h3 className="text-xl font-bold font-typewriter text-zinc-400">Modo Observador</h3>
+                                <p className="text-sm">Você é um Mestre Auxiliar. Você tem acesso total à mesa, mas não possui uma ficha de personagem.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             ) : (
@@ -305,6 +399,9 @@ export const GameRoom: React.FC = () => {
         <div className="flex p-2 gap-1 border-b border-op-border bg-op-bg/50">
             <button onClick={() => setRightTab('players')} className={`flex-1 py-2 text-[10px] uppercase font-bold rounded-sm border ${rightTab === 'players' ? 'bg-zinc-800 text-white border-zinc-600' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>Mesa</button>
             {isGM && <button onClick={() => setRightTab('library')} className={`flex-1 py-2 text-[10px] uppercase font-bold rounded-sm border ${rightTab === 'library' ? 'bg-zinc-800 text-white border-zinc-600' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>Biblioteca</button>}
+            {isGM && <button onClick={() => setRightTab('requests')} className={`flex-1 py-2 text-[10px] uppercase font-bold rounded-sm border ${rightTab === 'requests' ? 'bg-zinc-800 text-white border-zinc-600' : 'text-zinc-500 border-transparent hover:text-zinc-300'} ${pendingPlayers.length > 0 ? 'text-op-gold' : ''}`}>
+               Reqs {pendingPlayers.length > 0 && `(${pendingPlayers.length})`}
+            </button>}
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
@@ -312,9 +409,37 @@ export const GameRoom: React.FC = () => {
                 <div key={char.id} className={`bg-zinc-900/50 border p-3 rounded flex items-center gap-3 mb-2 ${char.is_npc ? 'border-red-900/30' : 'border-zinc-700'}`}>
                     <div className={`w-8 h-8 rounded-full border flex items-center justify-center bg-zinc-950 font-bold text-xs ${char.is_npc ? 'border-red-500 text-red-500' : 'border-zinc-500 text-zinc-300'}`}>{char.name.substring(0, 2)}</div>
                     <span className="text-sm font-bold text-zinc-200 truncate flex-1">{char.name}</span>
+                    {isOwner && char.user_id && char.user_id !== user?.id && !char.is_npc && (
+                        <button onClick={() => handlePromote(char.user_id!, char.name)} className="p-1 hover:bg-op-gold/20 rounded text-zinc-600 hover:text-op-gold transition-colors" title="Promover a Mestre Auxiliar">
+                            <Crown className="w-4 h-4" />
+                        </button>
+                    )}
                     {isGM && <Eye className="w-4 h-4 text-zinc-600 hover:text-white cursor-pointer" />}
                 </div>
             ))}
+
+            {rightTab === 'requests' && isGM && (
+                <div className="space-y-2">
+                    {pendingPlayers.length === 0 && <p className="text-zinc-500 text-xs text-center py-4">Nenhuma solicitação pendente.</p>}
+                    {pendingPlayers.map(req => (
+                        <div key={req.user_id} className="bg-zinc-900/80 border border-zinc-700 p-3 rounded-lg">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="w-8 h-8 bg-black rounded-full border border-zinc-600 overflow-hidden">
+                                     {req.profiles?.avatar_url ? <img src={req.profiles.avatar_url} className="w-full h-full object-cover" /> : <UserIcon className="w-4 h-4 m-auto text-zinc-500" />}
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold text-zinc-200">{req.profiles?.username || 'Desconhecido'}</p>
+                                    <p className="text-[10px] text-op-gold uppercase">Solicitando acesso</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <button onClick={() => handleApprove(req.user_id)} className="flex-1 bg-green-900/20 border border-green-700/50 hover:bg-green-900/40 text-green-400 py-1 rounded text-xs font-bold flex items-center justify-center gap-1"><Check className="w-3 h-3" /> Aceitar</button>
+                                <button onClick={() => handleReject(req.user_id)} className="flex-1 bg-red-900/20 border border-red-700/50 hover:bg-red-900/40 text-red-400 py-1 rounded text-xs font-bold flex items-center justify-center gap-1"><XCircle className="w-3 h-3" /> Recusar</button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             {rightTab === 'library' && isGM && (
                 <div className="space-y-4">

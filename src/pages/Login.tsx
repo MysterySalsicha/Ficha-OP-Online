@@ -39,7 +39,7 @@ export const Login: React.FC = () => {
             });
             if (error) throw error;
             showToast('Recrutamento solicitado! Verifique seu e-mail.', 'success');
-            setIsSignUp(false); // Volta para login
+            setIsSignUp(false);
         } else {
             const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
@@ -47,7 +47,7 @@ export const Login: React.FC = () => {
             navigate('/lobby');
         }
     } catch (error: any) {
-        // Usa o nosso tradutor para mostrar a mensagem bonita
+        setLoading(false); // Limpa o loading IMEDIATAMENTE no erro
         const friendlyMessage = translateError(error);
         showToast(friendlyMessage, 'error');
     } finally {
