@@ -5,11 +5,13 @@ import { createMesa, joinMesa, requestJoinMesa } from '../lib/mesa';
 import { OpButton } from '../components/ui-op/OpButton';
 import { OpInput } from '../components/ui-op/OpInput';
 import { OpFileUpload } from '../components/ui-op/OpFileUpload';
-import { FileText, Users, Plus, Key, Edit, Save, X, LogOut } from 'lucide-react';
+import { useToast } from '../components/ui-op/OpToast';
+import { FileText, Users, Plus, Key, Edit, Save, X, LogOut, Loader2, Check } from 'lucide-react';
 
 export const Lobby: React.FC = () => {
   const { user, updateProfile, signOut } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   
   const [joinCode, setJoinCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,23 +20,35 @@ export const Lobby: React.FC = () => {
   const [editName, setEditName] = useState(user?.user_metadata?.full_name || '');
   const [editAvatar, setEditAvatar] = useState(user?.user_metadata?.avatar_url || '');
 
-  const handleCreate = async () => {
-    if (!user) return;
+  // Estados do Modal de Criação
+  const [isCreatingMesa, setIsCreatingMesa] = useState(false);
+  const [newMesaName, setNewMesaName] = useState('');
+
+  const handleOpenCreateModal = () => {
+      setNewMesaName('');
+      setIsCreatingMesa(true);
+  };
+
+  const confirmCreateMesa = async () => {
+    if (!user || !newMesaName.trim()) return;
     setLoading(true);
     try {
-      const mesaName = prompt("Nome da Missão:");
-      if (!mesaName) return;
-      const newMesa = await createMesa(mesaName, user.id);
+      const newMesa = await createMesa(newMesaName, user.id);
+      setIsCreatingMesa(false);
+      showToast('Operação iniciada com sucesso!', 'success');
       navigate(`/mesa/${newMesa.id}`);
     } catch (error: any) {
-      alert(`Erro: ${error.message}`);
+      showToast(`Falha ao criar missão: ${error.message}`, 'error');
     } finally {
       setLoading(false);
     }
   };
 
   const handleJoin = async () => {
-    if (!joinCode || !user) return;
+    if (!joinCode || !user) {
+        showToast('Insira um código de acesso válido.', 'info');
+        return;
+    }
     setLoading(true);
     try {
       // 1. Verifica se a mesa existe
@@ -43,18 +57,25 @@ export const Lobby: React.FC = () => {
       // 2. Cria solicitação de entrada
       await requestJoinMesa(mesa.id, user.id);
       
+      showToast('Solicitação enviada! Aguarde a aprovação do Mestre.', 'success');
+      
       // 3. Redireciona (a GameRoom vai mostrar "Aguardando Aprovação")
       navigate(`/mesa/${mesa.id}`);
     } catch (error: any) {
-      alert(error.message);
+      showToast(error.message, 'error');
     } finally {
       setLoading(false);
     }
   };
 
   const handleSaveProfile = async () => {
-      await updateProfile(editName, editAvatar);
-      setIsEditingProfile(false);
+      try {
+        await updateProfile(editName, editAvatar);
+        setIsEditingProfile(false);
+        showToast('Credenciais atualizadas.', 'success');
+      } catch (error: any) {
+        showToast('Erro ao atualizar perfil.', 'error');
+      }
   };
 
   const handleLogout = async () => {
@@ -92,9 +113,10 @@ export const Lobby: React.FC = () => {
         </div>
       </header>
 
+      {/* MODAL DE EDIÇÃO DE PERFIL */}
       {isEditingProfile && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-              <div className="bg-op-panel border border-op-border p-6 w-full max-w-sm shadow-2xl relative">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+              <div className="bg-op-panel border border-op-border p-6 w-full max-w-sm shadow-2xl relative animate-in fade-in zoom-in duration-200">
                   <h3 className="text-lg font-bold text-zinc-200 mb-4 font-typewriter">Editar Credenciais</h3>
                   <div className="space-y-4">
                       <OpInput label="Nome do Agente" value={editName} onChange={(e) => setEditName(e.target.value)} />
@@ -108,12 +130,42 @@ export const Lobby: React.FC = () => {
           </div>
       )}
 
+      {/* MODAL DE CRIAÇÃO DE MISSÃO */}
+      {isCreatingMesa && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+              <div className="bg-op-panel border border-op-border p-6 w-full max-w-sm shadow-2xl relative animate-in fade-in zoom-in duration-200">
+                  <h3 className="text-lg font-bold text-op-red mb-1 font-typewriter uppercase tracking-widest">Nova Operação</h3>
+                  <p className="text-xs text-zinc-500 mb-6 font-mono">Defina o codinome da missão para o arquivo.</p>
+                  
+                  <div className="space-y-6">
+                      <OpInput 
+                        label="Nome da Missão" 
+                        placeholder="EX: OPERAÇÃO ESPINHO" 
+                        value={newMesaName} 
+                        onChange={(e) => setNewMesaName(e.target.value)}
+                        autoFocus
+                      />
+                      
+                      <div className="flex gap-2 pt-2">
+                          <OpButton variant="ghost" onClick={() => setIsCreatingMesa(false)} className="flex-1" disabled={loading}>
+                              <X className="w-4 h-4 mr-2" /> Abortar
+                          </OpButton>
+                          <OpButton onClick={confirmCreateMesa} className="flex-1" disabled={loading || !newMesaName.trim()}>
+                              {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Check className="w-4 h-4 mr-2" />}
+                              Iniciar
+                          </OpButton>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      )}
+
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto relative z-10">
         <div className="bg-op-panel p-8 border border-op-border hover:border-op-red transition-all group relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><FileText className="w-32 h-32" /></div>
           <h2 className="text-xl font-bold mb-2 font-typewriter text-zinc-200 group-hover:text-op-red transition-colors flex items-center gap-2"><Plus className="w-5 h-5" /> Nova Operação</h2>
           <p className="text-zinc-500 text-sm mb-8 leading-relaxed">Inicie um novo caso. Você assumirá o papel de Mestre, controlando a narrativa e as ameaças.</p>
-          <OpButton onClick={handleCreate} disabled={loading} className="w-full">{loading ? 'Inicializando...' : 'Criar Mesa'}</OpButton>
+          <OpButton onClick={handleOpenCreateModal} disabled={loading} className="w-full">{loading ? 'Carregando...' : 'Criar Mesa'}</OpButton>
         </div>
 
         <div className="bg-op-panel p-8 border border-op-border hover:border-zinc-500 transition-all group relative">
