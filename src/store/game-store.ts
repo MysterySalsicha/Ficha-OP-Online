@@ -61,6 +61,7 @@ interface GameState {
     selectTarget: (tokenId: string | null) => void;
     moveToken: (tokenId: string, x: number, y: number) => Promise<void>;
     createScene: (name: string, imageUrl: string) => Promise<ActionResult>;
+    createCharacter: (data: any) => Promise<ActionResult>;
     
     subscribeToChanges: (mesaId: string) => void;
     unsubscribe: () => void;
@@ -137,6 +138,41 @@ export const useGameStore = create<GameState>((set, get) => ({
         } finally {
             set({ isLoading: false });
         }
+    },
+
+    createCharacter: async (data) => {
+        const { currentMesa, currentUser } = get();
+        if (!currentMesa || !currentUser) return { success: false, message: "Erro de sessão" };
+
+        const newChar: Partial<Character> = {
+            user_id: currentUser.id,
+            mesa_id: currentMesa.id,
+            name: data.name,
+            class: data.class,
+            nex: data.isSurvivor ? 0 : 5,
+            patente: data.isSurvivor ? 'Mundano' : 'Recruta',
+            origin: data.origin,
+            attributes: data.attributes,
+            stats_max: data.isSurvivor ? { pv: 8, pe: 2, san: 8 } : { pv: 20, pe: 2, san: 12 }, // Base inicial
+            stats_current: data.isSurvivor ? { pv: 8, pe: 2, san: 8 } : { pv: 20, pe: 2, san: 12 },
+            defenses: { passiva: 10 + data.attributes.agi, esquiva: 0, bloqueio: 0 },
+            inventory_slots_max: 5 + data.attributes.for,
+            is_npc: false,
+            is_gm_mode: false,
+            skills: {},
+            powers: [],
+            rituals: []
+        };
+
+        const { data: created, error } = await supabase.from('characters').insert(newChar).select().single();
+        if (error) return { success: false, message: "Erro ao criar ficha" };
+
+        // Recalcular com regras de classe (PV/PE iniciais reais)
+        const finalChar = recalculateCharacter(created as Character, []);
+        await supabase.from('characters').update(finalChar).eq('id', created.id);
+
+        set({ character: finalChar, needsCharacterCreation: false });
+        return { success: true, message: "Agente registrado com sucesso!" };
     },
 
     subscribeToChanges: (mesaId) => {
