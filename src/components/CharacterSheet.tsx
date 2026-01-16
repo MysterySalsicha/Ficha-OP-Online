@@ -6,9 +6,10 @@ import { Shield, Brain, Heart, Zap, Crosshair, ChevronUp, Dice1, X, Check } from
 import { EvolutionModal } from './modals/EvolutionModal';
 import { SheetWizard } from './wizard/SheetWizard';
 import { ReactionModal } from './modals/ReactionModal';
-import { AttackResult, Character } from '../core/types';
+import { AttackResult, Character, AttributeName } from '../core/types';
 import { OpButton } from './ui-op/OpButton'; // Import OpButton
 import { OpInput } from './ui-op/OpInput'; // Import OpInput
+import skillsList from '../data/rules/skills.list.json';
 
 export const CharacterSheet: React.FC = () => {
     // --- STATE & STORES ---
@@ -17,6 +18,7 @@ export const CharacterSheet: React.FC = () => {
     const { showToast } = useToast();
     
     const [rollInput, setRollInput] = useState(''); // State for roll input inside the modal
+    const [rollDialog, setRollDialog] = useState<{ type: 'attr_click' | 'skill_click', target: string } | null>(null);
 
     const [activeTab, setActiveTab] = useState<'pericias' | 'inventario' | 'habilidades' | 'configuracoes'>('pericias');
     const [isShowingReactionModal, setIsShowingReactionModal] = useState(false);
@@ -106,10 +108,44 @@ export const CharacterSheet: React.FC = () => {
         }
     };
 
-    const handleAttributeRoll = (attributeName: 'for' | 'agi' | 'int' | 'pre' | 'vig') => {
-        const rollData = getRollData('none', attributeName); // 'none' for skillName as it's an attribute roll
-        setRollInput(rollData.explanation);
+    const performRoll = (dice: string, reason: string) => {
+        setRollInput(`${dice} # ${reason}`);
         setIsRollModalOpen(true);
+        setRollDialog(null); // Close intermediate dialogs
+    }
+
+    const handleAttributeClick = (attr: AttributeName) => {
+        setRollDialog({ type: 'attr_click', target: attr });
+    };
+
+    const handleSkillClick = (skillId: string) => {
+        setRollDialog({ type: 'skill_click', target: skillId });
+    };
+
+    const resolveAttributeClick = (useSkill: boolean, skillId?: string) => {
+        if (!character || !rollDialog || rollDialog.type !== 'attr_click') return;
+        const attr = rollDialog.target as AttributeName;
+        const attrValue = character.attributes[attr];
+
+        if (!useSkill) {
+            performRoll(`${attrValue}d20`, `Teste de ${attr.toUpperCase()}`);
+        } else if (skillId) {
+             const skillData = character.skills[skillId];
+             const bonus = skillData ? skillData.bonus : 0;
+             const skillName = skillsList.find(s => s.id === skillId)?.name || skillId;
+             performRoll(`${attrValue}d20+${bonus}`, `Teste de ${skillName} (${attr.toUpperCase()})`);
+        }
+    };
+
+    const resolveSkillClick = (attr: AttributeName) => {
+         if (!character || !rollDialog || rollDialog.type !== 'skill_click') return;
+         const skillId = rollDialog.target;
+         const skillData = character.skills[skillId];
+         const bonus = skillData ? skillData.bonus : 0;
+         const attrValue = character.attributes[attr];
+         const skillName = skillsList.find(s => s.id === skillId)?.name || skillId;
+
+         performRoll(`${attrValue}d20+${bonus}`, `Teste de ${skillName} (${attr.toUpperCase()})`);
     };
 
     const handleOpenRollModal = () => {
@@ -137,6 +173,51 @@ export const CharacterSheet: React.FC = () => {
             {mode === 'evolution' && <EvolutionModal />}
             {isShowingReactionModal && attackResultForReaction && (
                 <ReactionModal attackResult={attackResultForReaction} onReact={handleReaction} onClose={() => setIsShowingReactionModal(false)} />
+            )}
+
+            {/* Intermediate Roll Dialogs */}
+            {rollDialog && (
+                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="bg-op-panel border border-op-border p-6 w-full max-w-sm shadow-2xl relative animate-in zoom-in duration-200">
+                        {rollDialog.type === 'attr_click' && (
+                            <>
+                                <h3 className="text-lg font-bold text-op-red mb-4 uppercase">Usar Perícia?</h3>
+                                <p className="text-zinc-400 mb-4 text-sm">Você clicou em <span className="text-white font-bold">{rollDialog.target.toUpperCase()}</span>. Deseja adicionar uma perícia ao teste?</p>
+                                <div className="space-y-2">
+                                    <OpButton onClick={() => resolveAttributeClick(false)} className="w-full" variant="secondary">Não, rolar puro</OpButton>
+                                    <div className="max-h-40 overflow-y-auto border border-zinc-800 rounded p-2 bg-zinc-900/50">
+                                        <p className="text-xs text-zinc-500 mb-2 uppercase font-bold">Selecionar Perícia:</p>
+                                        {skillsList.filter(s => s.attribute === rollDialog.target).map(s => (
+                                            <button
+                                                key={s.id}
+                                                className="w-full text-left p-1 text-sm hover:bg-zinc-800 text-zinc-300 hover:text-white"
+                                                onClick={() => resolveAttributeClick(true, s.id)}
+                                            >
+                                                {s.name} ({character.skills[s.id]?.bonus || 0})
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <OpButton variant="ghost" onClick={() => setRollDialog(null)} className="w-full">Cancelar</OpButton>
+                                </div>
+                            </>
+                        )}
+
+                        {rollDialog.type === 'skill_click' && (
+                            <>
+                                <h3 className="text-lg font-bold text-op-red mb-4 uppercase">Com qual Atributo?</h3>
+                                <p className="text-zinc-400 mb-4 text-sm">Rolando <span className="text-white font-bold">{skillsList.find(s => s.id === rollDialog.target)?.name}</span>. Escolha o atributo base.</p>
+                                <div className="grid grid-cols-3 gap-2 mb-4">
+                                    {['agi', 'for', 'int', 'pre', 'vig'].map(attr => (
+                                        <OpButton key={attr} onClick={() => resolveSkillClick(attr as AttributeName)} variant={attr === skillsList.find(s => s.id === rollDialog.target)?.attribute ? 'primary' : 'secondary'}>
+                                            {attr.toUpperCase()}
+                                        </OpButton>
+                                    ))}
+                                </div>
+                                <OpButton variant="ghost" onClick={() => setRollDialog(null)} className="w-full">Cancelar</OpButton>
+                            </>
+                        )}
+                    </div>
+                </div>
             )}
 
             {/* Roll Dice Modal */}
@@ -245,11 +326,11 @@ export const CharacterSheet: React.FC = () => {
                 {/* Attributes Column */}
                 <div className="md:col-span-6 flex items-center justify-center py-8">
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                        <AttrHex label="Agi" value={character.attributes.agi} color="text-yellow-500" onClick={() => handleAttributeRoll('agi')} />
-                        <AttrHex label="Int" value={character.attributes.int} color="text-blue-500" onClick={() => handleAttributeRoll('int')} />
-                        <AttrHex label="For" value={character.attributes.for} color="text-red-500" onClick={() => handleAttributeRoll('for')} />
-                        <AttrHex label="Pre" value={character.attributes.pre} color="text-purple-500" onClick={() => handleAttributeRoll('pre')} />
-                        <AttrHex label="Vig" value={character.attributes.vig} color="text-green-500" onClick={() => handleAttributeRoll('vig')} />
+                        <AttrHex label="Agi" value={character.attributes.agi} color="text-yellow-500" onClick={() => handleAttributeClick('agi')} />
+                        <AttrHex label="Int" value={character.attributes.int} color="text-blue-500" onClick={() => handleAttributeClick('int')} />
+                        <AttrHex label="For" value={character.attributes.for} color="text-red-500" onClick={() => handleAttributeClick('for')} />
+                        <AttrHex label="Pre" value={character.attributes.pre} color="text-purple-500" onClick={() => handleAttributeClick('pre')} />
+                        <AttrHex label="Vig" value={character.attributes.vig} color="text-green-500" onClick={() => handleAttributeClick('vig')} />
                     </div>
                 </div>
 
@@ -261,6 +342,31 @@ export const CharacterSheet: React.FC = () => {
                         <button onClick={() => setActiveTab('configuracoes')} className={`flex-1 py-2 text-[10px] font-bold uppercase ${activeTab === 'configuracoes' ? 'bg-zinc-800 text-white' : 'text-zinc-500'}`}>Configurações</button>
                     </div>
                     <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                         {activeTab === 'pericias' && (
+                            <div className="space-y-1">
+                                {skillsList.map((skill) => {
+                                    const charSkill = character.skills[skill.id];
+                                    const bonus = charSkill ? charSkill.bonus : 0;
+                                    const grau = charSkill ? charSkill.grau : 'destreinado';
+
+                                    return (
+                                        <div
+                                            key={skill.id}
+                                            className="flex justify-between items-center p-2 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 cursor-pointer group"
+                                            onClick={() => handleSkillClick(skill.id)}
+                                        >
+                                            <div>
+                                                <span className="text-xs font-bold text-zinc-300 block group-hover:text-white transition-colors">{skill.name}</span>
+                                                <span className="text-[9px] text-zinc-500 uppercase">{skill.attribute} • {grau}</span>
+                                            </div>
+                                            <span className={`text-sm font-mono font-bold ${bonus > 0 ? 'text-op-gold' : 'text-zinc-600'}`}>
+                                                {bonus >= 0 ? `+${bonus}` : bonus}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
                         {activeTab === 'inventario' && (
                             <div className="space-y-2">
                                 {items.map((item) => (

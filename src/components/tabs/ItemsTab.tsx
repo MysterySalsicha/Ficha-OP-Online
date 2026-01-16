@@ -1,18 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useGameStore } from '../../store/game-store';
-import { Plus, Search, Trash2, Edit, X, Loader2, Check } from 'lucide-react';
+import { Plus, Search, Trash2, Edit, X, Loader2, Check, Download } from 'lucide-react';
 import { OpButton } from '../ui-op/OpButton';
 import { OpInput } from '../ui-op/OpInput';
 import { ItemTemplate, ItemCategory } from '../../core/types';
 import { useAuth } from '../../contexts/AuthContext'; // Import useAuth
+import { useToast } from '../ui-op/OpToast'; // Added
 
 export const ItemsTab: React.FC = () => {
-    const { items, fetchItems, createItem, deleteItem, playerRole, currentMesa } = useGameStore();
+    const { items, fetchItems, createItem, deleteItem, searchGlobalItems, playerRole, currentMesa } = useGameStore();
+    const { showToast } = useToast(); // Added
     const [filter, setFilter] = useState('');
     const [isCreationModalOpen, setIsCreationModalOpen] = useState(false);
     const [newItemName, setNewItemName] = useState('');
     const [newItemCategory, setNewItemCategory] = useState<ItemCategory>('equipamento'); // Default category
     const [loadingCreation, setLoadingCreation] = useState(false);
+
+    // Import State
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+    const [importSearch, setImportSearch] = useState('');
+    const [globalItems, setGlobalItems] = useState<ItemTemplate[]>([]);
+    const [loadingImport, setLoadingImport] = useState(false);
 
     const isGM = playerRole === 'gm' || playerRole === 'co-gm';
 
@@ -44,17 +52,16 @@ export const ItemsTab: React.FC = () => {
                 owner_id: user?.id || null, // Add owner_id
             });
             if (result.success) {
-                // TODO: Add success toast
+                showToast(result.message, "success");
                 fetchItems(currentMesa!.id); // Refresh list
                 setIsCreationModalOpen(false);
                 setNewItemName('');
             } else {
-                // TODO: Add error toast
-                console.error("Erro ao criar item:", result.message);
+                showToast(result.message, "error");
             }
         } catch (error) {
             console.error("Erro inesperado ao criar item:", error);
-            // TODO: Add error toast
+            showToast("Erro inesperado ao criar item.", "error");
         } finally {
             setLoadingCreation(false);
         }
@@ -65,14 +72,38 @@ export const ItemsTab: React.FC = () => {
         try {
             const result = await deleteItem(itemId);
             if (result.success) {
-                // TODO: Add toast notification
+                showToast(result.message, "success");
                 fetchItems(currentMesa!.id); // Refresh list
             } else {
-                // TODO: Add error toast
-                console.error("Erro ao deletar item:", result.message);
+                showToast(result.message, "error");
             }
         } catch (error) {
-            console.error("Erro inesperado ao deletar item:", error);
+            showToast("Erro inesperado ao deletar item.", "error");
+        }
+    };
+
+    const handleSearchGlobal = async () => {
+        if (!importSearch.trim()) return;
+        setLoadingImport(true);
+        const results = await searchGlobalItems(importSearch);
+        setGlobalItems(results);
+        setLoadingImport(false);
+    };
+
+    const handleImportItem = async (item: ItemTemplate) => {
+        if (!confirm(`Importar ${item.name} para sua biblioteca?`)) return;
+
+        // Clone logic
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id, created_at, owner_id, ...data } = item;
+
+        const result = await createItem({ ...data, is_public: false, owner_id: null });
+        if (result.success) {
+            showToast("Item importado com sucesso!", "success");
+            fetchItems(currentMesa!.id);
+            setIsImportModalOpen(false);
+        } else {
+            showToast(result.message, "error");
         }
     };
 
@@ -113,10 +144,56 @@ export const ItemsTab: React.FC = () => {
             </div>
             
             {isGM && (
-                <div className="p-3 border-t border-op-border bg-zinc-950/70">
-                    <OpButton className="w-full" onClick={() => setIsCreationModalOpen(true)}>
-                        <Plus className="w-4 h-4 mr-2" /> Adicionar Item
+                <div className="p-3 border-t border-op-border bg-zinc-950/70 flex gap-2">
+                    <OpButton className="flex-1" onClick={() => setIsCreationModalOpen(true)}>
+                        <Plus className="w-4 h-4 mr-2" /> Criar
                     </OpButton>
+                    <OpButton className="flex-1" variant="secondary" onClick={() => setIsImportModalOpen(true)}>
+                        <Download className="w-4 h-4 mr-2" /> Importar
+                    </OpButton>
+                </div>
+            )}
+
+            {/* Import Modal */}
+            {isImportModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="bg-op-panel border border-op-border p-6 w-full max-w-2xl shadow-2xl relative flex flex-col max-h-[80vh]">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-bold text-op-red font-typewriter uppercase">Arsenal Comunitário</h3>
+                            <button onClick={() => setIsImportModalOpen(false)}><X className="w-5 h-5 text-zinc-500 hover:text-white" /></button>
+                        </div>
+
+                        <div className="flex gap-2 mb-4">
+                            <OpInput
+                                placeholder="Buscar item..."
+                                value={importSearch}
+                                onChange={(e) => setImportSearch(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearchGlobal()}
+                            />
+                            <OpButton onClick={handleSearchGlobal} disabled={loadingImport}>
+                                {loadingImport ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                            </OpButton>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto border border-zinc-800 rounded bg-zinc-900/50">
+                            {globalItems.length === 0 && !loadingImport && (
+                                <div className="p-4 text-center text-zinc-500">Busque por itens para importar.</div>
+                            )}
+                            <ul className="divide-y divide-zinc-800">
+                                {globalItems.map(item => (
+                                    <li key={item.id} className="p-3 flex items-center justify-between hover:bg-zinc-800/80">
+                                        <div>
+                                            <p className="font-bold text-zinc-200">{item.name}</p>
+                                            <p className="text-xs text-zinc-500">{item.category}</p>
+                                        </div>
+                                        <OpButton size="sm" onClick={() => handleImportItem(item)}>
+                                            Importar
+                                        </OpButton>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             )}
 
