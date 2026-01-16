@@ -1,6 +1,6 @@
 import { create, StateCreator } from 'zustand';
 import { supabase } from '../lib/supabase';
-import { Character, Mesa, User, Item, InventoryItem } from '../core/types';
+import { Character, Mesa, User, InventoryItem } from '../core/types';
 
 import { CharacterSlice, createCharacterSlice } from './slices/character-slice';
 import { CombatSlice, createCombatSlice } from './slices/combat-slice';
@@ -16,15 +16,16 @@ export type GameState = CharacterSlice & CombatSlice & UtilitySlice & WorldSlice
     currentMesa: Mesa | null;
     character: Character | null;
     allCharacters: Character[];
-    items: InventoryItem[];
-    logs: any[];
+    items: InventoryItem[]; // Note: This might be deprecated if inventory is fully in character object
+    messages: any[];
     isLoading: boolean;
     needsCharacterCreation: boolean;
     approvalStatus: 'pending' | 'approved' | 'rejected' | 'banned' | 'none';
     playerRole: 'player' | 'gm' | 'co-gm' | 'none';
 
     // Core lifecycle methods
-    initialize: (user: User, mesaId: string) => Promise<void>;
+    initialize: (user: User, mesaId: string, isFirstLoad?: boolean) => Promise<void>;
+    fetchUserMesas: (userId: string) => Promise<Mesa[]>;
     subscribeToChanges: (mesaId: string) => void;
     unsubscribe: () => void;
 };
@@ -36,15 +37,18 @@ const coreSlice: StateCreator<GameState, [], [], Omit<GameState, keyof (Characte
     character: null,
     allCharacters: [],
     items: [],
-    logs: [],
+    messages: [],
     isLoading: false,
     needsCharacterCreation: false,
     approvalStatus: 'none',
     playerRole: 'none',
 
     // --- INITIALIZATION & SUBSCRIPTIONS ---
-    initialize: async (user, mesaId) => {
-        set({ isLoading: true, currentUser: user, needsCharacterCreation: false, approvalStatus: 'none', playerRole: 'none' });
+    initialize: async (user, mesaId, isFirstLoad = false) => {
+        if (isFirstLoad) {
+            set({ isLoading: true, currentUser: user, needsCharacterCreation: false, approvalStatus: 'none', playerRole: 'none' });
+        }
+        
         try {
             const { data: playerStatus } = await supabase.from('mesa_players').select('status, role').eq('mesa_id', mesaId).eq('user_id', user.id).maybeSingle();
             
@@ -59,45 +63,80 @@ const coreSlice: StateCreator<GameState, [], [], Omit<GameState, keyof (Characte
 
             const { data: mesa, error: mesaError } = await supabase.from('mesas').select('*').eq('id', mesaId).single();
             if (mesaError || !mesa) throw new Error("Mesa não encontrada ou acesso negado.");
-            set({ currentMesa: mesa });
-
+            
             const { data: allChars } = await supabase.from('characters').select('*').eq('mesa_id', mesaId);
             const myChar = allChars?.find(c => c.user_id === user.id) || null;
             
+            const { data: messages } = await supabase.from('messages').select('*').eq('mesa_id', mesaId).order('created_at');
+
             const isGM = mesa.mestre_id === user.id || playerStatus.role === 'gm' || playerStatus.role === 'co-gm';
             if (!myChar && !isGM) {
-                set({ needsCharacterCreation: true, isLoading: false }); return;
+                set({ needsCharacterCreation: true });
             }
 
-            const { data: items } = myChar ? await supabase.from('items').select('*').eq('character_id', myChar.id) : { data: [] };
-            
             set({
-                character: myChar ? recalculateCharacter(myChar as Character, items as Item[] || []) : null,
-                items: items as InventoryItem[] || [],
-                allCharacters: (allChars as Character[]) || [],
+                currentMesa: mesa,
+                character: myChar ? recalculateCharacter(myChar as Character, myChar.inventory || []) : null,
+                allCharacters: (allChars?.map(c => recalculateCharacter(c, c.inventory || [])) as Character[]) || [],
+                messages: messages || [],
             });
 
-            get().subscribeToChanges(mesaId);
+            if (isFirstLoad) {
+                get().subscribeToChanges(mesaId);
+            }
         } catch (error) {
             console.error("Erro na Inicialização:", error);
         } finally {
-            set({ isLoading: false });
+            if (isFirstLoad) {
+                set({ isLoading: false });
+            }
         }
+    },
+    
+    fetchUserMesas: async (userId: string) => {
+        const { data: gmMesas, error: gmMesasError } = await supabase.from('mesas').select('*').eq('mestre_id', userId);
+        if (gmMesasError) return [];
+        const { data: playerMesaLinks, error: playerLinksError } = await supabase.from('mesa_players').select('mesa_id').eq('user_id', userId);
+        if (playerLinksError) return gmMesas || [];
+        const playerMesaIds = playerMesaLinks.map(link => link.mesa_id);
+        const { data: playerMesas, error: playerMesasError } = await supabase.from('mesas').select('*').in('id', playerMesaIds);
+        if (playerMesasError) return gmMesas || [];
+        const allMesas = [...(gmMesas || []), ...(playerMesas || [])];
+        return Array.from(new Map(allMesas.map(mesa => [mesa.id, mesa])).values());
     },
 
     subscribeToChanges: (mesaId) => {
-        const characterChannel = supabase.channel(`db-characters:${mesaId}`)
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'characters', filter: `mesa_id=eq.${mesaId}` }, payload => {
-                 console.log('Character change received!', payload);
-                 // Simple refetch for now
-                 get().initialize(get().currentUser!, mesaId);
-            }).subscribe();
+        const handleCharacterChange = (payload: any) => {
+            const newChar = recalculateCharacter(payload.new, payload.new.inventory || []) as Character;
+            const currentChars = get().allCharacters;
+            const charIndex = currentChars.findIndex(c => c.id === newChar.id);
+            let newChars = [...currentChars];
+            if (charIndex !== -1) {
+                newChars[charIndex] = newChar;
+            } else {
+                newChars.push(newChar);
+            }
+            const myChar = get().currentUser ? newChars.find(c => c.user_id === get().currentUser!.id) : null;
+            set({ allCharacters: newChars, character: myChar });
+        };
+
+        const channels = supabase.getChannels();
+        if (channels.some(c => c.topic === `realtime:public:characters:mesa_id=eq.${mesaId}`)) {
+            return; // Already subscribed
+        }
+
+        supabase.channel(`characters-changes:${mesaId}`)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'characters', filter: `mesa_id=eq.${mesaId}` }, handleCharacterChange)
+            .subscribe();
             
-        const itemsChannel = supabase.channel(`db-items:${mesaId}`)
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'items' }, payload => {
-                 console.log('Item change received!', payload);
-                 // Simple refetch for now
-                 get().initialize(get().currentUser!, mesaId);
+        supabase.channel(`mesas-changes:${mesaId}`)
+            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mesas', filter: `id=eq.${mesaId}` }, (payload) => {
+                 set({ currentMesa: payload.new as Mesa });
+            }).subscribe();
+
+        supabase.channel(`messages-changes:${mesaId}`)
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `mesa_id=eq.${mesaId}` }, (payload) => {
+                 set(state => ({ messages: [...state.messages, payload.new] }));
             }).subscribe();
     },
 
@@ -105,8 +144,6 @@ const coreSlice: StateCreator<GameState, [], [], Omit<GameState, keyof (Characte
         supabase.removeAllChannels();
     },
 });
-
-// --- COMBINED STORE ---
 
 export const useGameStore = create<GameState>()((...a) => ({
     ...coreSlice(...a),
