@@ -5,18 +5,21 @@ import {
   ActionResult,
   AttributeName,
   ItemDB,
-  RitualRule
+  ClassName,
+  SheetMode,
+  WizardStep
 } from '../types/Types';
 import classesData from '../data/rules/classes.json';
 import progressionData from '../data/rules/progression.json';
 import ritualsSeed from '../data/seed_rituals.json';
+import { validateAttributeIncrease, validateAttack, validateRitualCast } from '../engine/validator';
 
 // --- MOCK INITIAL DATA ---
 const initialCharacter: CharacterDB = {
   id: 'temp-id',
   user_id: 'temp-user',
   name: 'Agente Novato',
-  class: 'combatente',
+  class: 'combatente', // Default, will be reset in creation
   nex: 5,
   patente: 'Recruta',
   attributes: { agi: 1, for: 1, int: 1, pre: 1, vig: 1 },
@@ -29,7 +32,7 @@ const initialCharacter: CharacterDB = {
   stress: 0,
   skills: {},
   powers: [],
-  rituals: [], // Starts empty, learns from seed
+  rituals: [],
   status_flags: { vida: 'vivo', mental: 'sao', sobrecarregado: false },
   is_gm_mode: false,
   created_at: new Date().toISOString()
@@ -37,8 +40,9 @@ const initialCharacter: CharacterDB = {
 
 // --- HELPER FUNCTIONS ---
 function getClassData(className: string): any {
+  const key = className.charAt(0).toUpperCase() + className.slice(1);
   // @ts-ignore
-  return classesData[className.charAt(0).toUpperCase() + className.slice(1)];
+  return classesData.classes[key];
 }
 
 function getProgressionLimit(nex: number): number {
@@ -53,20 +57,27 @@ function getProgressionLimit(nex: number): number {
 
 function calculateMaxStats(char: CharacterDB) {
     const cls = getClassData(char.class);
+    if (!cls) return { ...char.stats_max, slots: char.inventory_slots_max }; // Fail safe
+
     const nex = char.nex;
     const vig = char.attributes.vig;
     const pre = char.attributes.pre;
+
+    // Survivor Mode Special Logic (Stage based)
+    if (char.class === 'sobrevivente') {
+        const stage = char.survivor_stage || 1;
+        const pv = cls.pv_inicial + vig + (stage - 1) * (cls.pv_por_estagio + vig);
+        const pe = cls.pe_inicial + pre + (stage - 1) * (cls.pe_por_estagio + pre);
+        const san = cls.san_inicial + (stage - 1) * cls.san_por_estagio;
+        const slots = 5 + (char.attributes.for * 5); // Default rule for now
+        return { pv, pe, san, slots };
+    }
+
+    // Standard NEX Logic
     const levels = Math.floor(nex / 5);
-
-    const pv = cls.pvBase + vig + (levels - 1) * (cls.pvPerNex + vig);
-    const pe = cls.peBase + pre + (levels - 1) * (cls.pePerNex + pre);
-    const san = cls.sanBase + (levels - 1) * cls.sanPerNex;
-
-    // Inventory: 5 + FOR * 5 (from prompt, though typically 5*FOR)
-    // Wait, typical OP is 5 per Strength point, base 2?
-    // The previous prompt said "Força * 5".
-    // Let's assume Slots = 5 + (For * 5) for now to be generous, or stick to standard (5 * For) if For > 0?
-    // Let's use: 5 Base + 5 per point of Strength.
+    const pv = cls.pv_inicial + vig + (levels - 1) * (cls.pv_por_nex + vig);
+    const pe = cls.pe_inicial + pre + (levels - 1) * (cls.pe_por_nex + pre);
+    const san = cls.san_inicial + (levels - 1) * cls.san_por_nex;
     const slots = 5 + (char.attributes.for * 5);
 
     return { pv, pe, san, slots };
@@ -75,115 +86,166 @@ function calculateMaxStats(char: CharacterDB) {
 export const useSheetStore = create<SheetStore>((set, get) => ({
   character: initialCharacter,
   items: [],
+  mode: 'view',
+  creation_step: 'concept',
+  creation_points_spent: 0,
 
   // --- ACTIONS ---
 
-  setName: (name) => set((s) => ({ character: { ...s.character, name } })),
+  toggleMode: (mode: SheetMode) => set({ mode }),
+  setCreationStep: (step: WizardStep) => set({ creation_step: step }),
+
+  setName: (name) => {
+      const { mode, character } = get();
+      if (mode !== 'creation' && mode !== 'edit' && !character.is_gm_mode) return;
+      set((s) => ({ character: { ...s.character, name } }));
+  },
+
+  setClass: (className: ClassName): ActionResult => {
+      const { mode, character, creation_step } = get();
+
+      // Strict Check: Only in Creation (Step Class) or if GM
+      if (!character.is_gm_mode) {
+          if (mode !== 'creation' || creation_step !== 'class') {
+              return { success: false, message: "Mudança de classe bloqueada." };
+          }
+      }
+
+      // Check Requirements (e.g. Survivor -> Base Class requires Stage 5/NEX 5)
+      // For now, allow simple set.
+      set((s) => ({ character: { ...s.character, class: className } }));
+      get().recalculateDerivedStats();
+
+      return { success: true, message: `Classe definida: ${className}` };
+  },
+
+  setOrigin: (origin: string): ActionResult => {
+      const { mode, character, creation_step } = get();
+       if (!character.is_gm_mode) {
+          if (mode !== 'creation' || creation_step !== 'origin') {
+              return { success: false, message: "Mudança de origem bloqueada." };
+          }
+      }
+      set((s) => ({ character: { ...s.character, origin } }));
+      // Should apply skills here? For MVP just set string.
+      return { success: true, message: "Origem definida" };
+  },
 
   increaseAttribute: (attr: AttributeName): ActionResult => {
-    const state = get();
-    const char = state.character;
+    const { character, mode, creation_points_spent } = get();
 
-    // Validation
-    const limit = getProgressionLimit(char.nex);
-    if (char.attributes[attr] >= limit && !char.is_gm_mode) {
-       return {
-           success: false,
-           message: "Limite Atingido",
-           explanation: `NEX ${char.nex}% limita atributos em ${limit}.`
-       };
+    // GM Override
+    if (character.is_gm_mode) {
+         const newAttrs = { ...character.attributes, [attr]: character.attributes[attr] + 1 };
+         set((s) => ({ character: { ...s.character, attributes: newAttrs } }));
+         get().recalculateDerivedStats();
+         return { success: true, message: "Atributo editado (GM)" };
     }
 
-    // Apply
-    const newAttrs = { ...char.attributes, [attr]: char.attributes[attr] + 1 };
+    // Creation Mode Logic
+    if (mode === 'creation') {
+        if (creation_points_spent >= 4) {
+            return { success: false, message: "Pontos esgotados", explanation: "Você só pode distribuir 4 pontos extras." };
+        }
+        if (character.attributes[attr] >= 3) {
+            return { success: false, message: "Máximo inicial atingido", explanation: "Atributos iniciais não podem passar de 3." };
+        }
 
-    // Impact Calculation
-    let impact: any = {};
-    if (attr === 'vig') impact.pv_increase = true;
-    if (attr === 'pre') impact.pe_increase = true;
-    if (attr === 'for') impact.slots_increase = true;
+        const newAttrs = { ...character.attributes, [attr]: character.attributes[attr] + 1 };
+        set((s) => ({
+            character: { ...s.character, attributes: newAttrs },
+            creation_points_spent: s.creation_points_spent + 1
+        }));
+        get().recalculateDerivedStats();
+        return { success: true, message: "+1 ponto aplicado" };
+    }
 
-    set((s) => ({
-        character: { ...s.character, attributes: newAttrs }
-    }));
+    // Evolution Mode Logic
+    if (mode === 'evolution') {
+        const limit = getProgressionLimit(character.nex);
+        const validation = validateAttributeIncrease(character, attr);
+        if (!validation.success) return validation;
 
-    // Recalculate
-    get().recalculateDerivedStats();
+        const newAttrs = { ...character.attributes, [attr]: character.attributes[attr] + 1 };
+        set((s) => ({ character: { ...s.character, attributes: newAttrs } }));
+        get().recalculateDerivedStats();
+        return { success: true, message: "Atributo evoluído!" };
+    }
 
-    const newVal = get().character.attributes[attr];
-
-    return {
-        success: true,
-        message: `${attr.toUpperCase()} aumentado para ${newVal}`,
-        impact
-    };
+    return { success: false, message: "Edição bloqueada", explanation: "Entre no modo de Evolução ou Criação." };
   },
 
   increaseNEX: (amount: number): ActionResult => {
-    const state = get();
-    let char = state.character;
+    const { character } = get();
+    // Logic: Only GM or explicit Event? Usually GM controls NEX.
 
-    const oldNex = char.nex;
-    const newNex = oldNex + amount;
-
-    if (newNex > 99) return { success: false, message: "NEX Máximo é 99%" };
+    let newNex = character.nex + amount;
+    if (newNex > 99) newNex = 99;
 
     set((s) => ({ character: { ...s.character, nex: newNex } }));
     get().recalculateDerivedStats();
 
-    // Triggers
-    let trigger = null;
-    if (oldNex < 10 && newNex >= 10) trigger = 'LEVEL_UP_TRAIL';
-    if (oldNex < 50 && newNex >= 50) trigger = 'LEVEL_UP_AFFINITY';
+    return { success: true, message: `NEX ${newNex}%` };
+  },
 
-    return {
-        success: true,
-        message: `NEX subiu para ${newNex}%!`,
-        trigger: trigger as any
-    };
+  transcend: (): ActionResult => {
+      const { character, mode } = get();
+      if (mode !== 'evolution' && !character.is_gm_mode) return { success: false, message: "Apenas na evolução" };
+
+      // Logic: Cost Sanity, Pick Power.
+      // 1. Sanity Cost check (simplified)
+      // usually costs nothing to pick, but permanent Sanity is lost?
+      // Rule: "Ao transcender, você não perde sanidade atual, mas deixa de ganhar sanidade máxima no próximo nível?"
+      // Actually rule is: "Escolher um poder paranormal... transcender...".
+      // Let's assume standard rule: No immediate cost, but narrative/mechanic implications.
+
+      // For now, just a stub.
+      return { success: true, message: "Transcender iniciado (Stub)" };
   },
 
   equipItem: (item: ItemDB): ActionResult => {
-    // Basic implementation: Add to list
     set((s) => ({ items: [...s.items, item] }));
     get().recalculateDerivedStats();
     return { success: true, message: "Item adicionado" };
   },
 
   castRitual: (ritualId: string): ActionResult => {
-    const state = get();
-    const char = state.character;
-
-    // Find ritual in learned list or seed?
-    // Usually cast from Learned. Assuming it's learned.
+    const { character } = get();
+    // Use seed for lookup
     const ritual = ritualsSeed.find(r => r.id === ritualId);
-    // In real app we check char.rituals. finding from seed for now to simulate "knowing" it or just looking it up.
-    if (!ritual) return { success: false, message: "Ritual desconhecido" };
+    if (!ritual) return { success: false, message: "Erro ritual" };
 
-    // Check PE
-    if (char.stats_current.pe < ritual.cost_pe && !char.is_gm_mode) {
-        return { success: false, message: "PE Insuficiente" };
-    }
+    const validation = validateRitualCast(character, ritual);
+    if (!validation.success) return validation;
 
-    // Check Components
-    // Mock check: Look for item with category 'componente'?
-    // For MVP we skip strict component check unless we want to implement it fully.
-    // Let's implement basic deduction.
-
-    const newPE = char.stats_current.pe - ritual.cost_pe;
-
+    const newPE = character.stats_current.pe - ritual.cost_pe;
     set((s) => ({
-        character: {
-            ...s.character,
-            stats_current: { ...s.character.stats_current, pe: newPE }
-        }
+        character: { ...s.character, stats_current: { ...s.character.stats_current, pe: newPE } }
     }));
 
-    return {
-        success: true,
-        message: `Ritual ${ritual.name} conjurado!`,
-        impact: { pe_spent: ritual.cost_pe }
-    };
+    return { success: true, message: "Ritual Conjurado" };
+  },
+
+  performAttack: (weaponId: string): ActionResult => {
+      const { character, items } = get();
+      const weapon = items.find(i => i.id === weaponId);
+      if (!weapon) return { success: false, message: "Arma não encontrada" };
+
+      // Validate Ammo
+      // Logic to find ammo item?
+      const ammo = items.find(i => i.category === 'municao'); // Simplistic
+      const validation = validateAttack(character, weapon, ammo);
+
+      if (!validation.success) return validation;
+
+      // Deduct Ammo if needed
+      if (weapon.stats.uses_ammo && ammo) {
+          // decrement ammo logic
+           const newItems = items.map(i => i.id === ammo.id ? { ...i, quantity: i.quantity - 1 } : i);
+           set({ items: newItems });
+      }
+
+      return { success: true, message: "Ataque realizado!" };
   },
 
   // --- HELPERS ---
@@ -196,10 +258,6 @@ export const useSheetStore = create<SheetStore>((set, get) => ({
 
       const totalSlots = state.items.reduce((sum, i) => sum + i.slots * i.quantity, 0);
       const sobrecarregado = totalSlots > slots;
-
-      // Update Max Stats (Current stays same unless we want to auto-heal on level up? usually no)
-      // But if Max increases, we might want to increase Current by the delta?
-      // For now, just update Max.
 
       set((s) => ({
           character: {

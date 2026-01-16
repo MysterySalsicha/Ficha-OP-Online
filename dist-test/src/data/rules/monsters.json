@@ -1,0 +1,51 @@
+[
+    {
+        "id": "zumbi_sangue",
+        "name": "Zumbi de Sangue",
+        "element": "Sangue",
+        "vd": 20,
+        "size": "Médio",
+        "stats": {
+            "pv": 45,
+            "defesa": 15,
+            "resistencia": "Sangue 5, Balístico 2"
+        },
+        "attacks": [
+            { "name": "Garras", "test": "2d20+5", "damage": "1d8+5", "crit": "19/x2" },
+            { "name": "Mordida", "test": "2d20+5", "damage": "2d6+5", "crit": "20/x2" }
+        ],
+        "description": "Um corpo humano reanimado pelo ódio e pela dor. Sua carne é viva e pulsa constantemente."
+    },
+    {
+        "id": "vulto",
+        "name": "Vulto",
+        "element": "Morte",
+        "vd": 40,
+        "size": "Médio",
+        "stats": {
+            "pv": 80,
+            "defesa": 20,
+            "resistencia": "Morte 10, Imune a Mundano"
+        },
+        "attacks": [
+            { "name": "Toque do Fim", "test": "3d20+10", "damage": "4d8+5 (Morte)", "crit": "19/x2" }
+        ],
+        "description": "Uma sombra distorcida que drena o tempo de vida de quem toca."
+    },
+    {
+        "id": "anomalia_energia",
+        "name": "Anomalia",
+        "element": "Energia",
+        "vd": 60,
+        "size": "Grande",
+        "stats": {
+            "pv": 120,
+            "defesa": 18,
+            "resistencia": "Energia 10, Eletricidade 20"
+        },
+        "attacks": [
+            { "name": "Descarga", "test": "Reflexos DT 20", "damage": "6d6 (Energia)", "crit": "-" }
+        ],
+        "description": "Um ser caótico feito de pura luz e ruído estático."
+    }
+]

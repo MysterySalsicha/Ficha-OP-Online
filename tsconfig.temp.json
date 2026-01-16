@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.test.json",
+  "compilerOptions": {
+    "outDir": "./dist-test",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/store/useSheetStore.ts",
+    "src/types/**/*",
+    "src/core/**/*",
+    "src/engine/**/*",
+    "src/data/**/*",
+    "tests/verify_rules.ts"
+  ],
+  "exclude": [
+    "src/lib/**/*",
+    "src/store/game-store.ts",
+    "tests/test_interactive_logic*.ts"
+  ]
+}

@@ -1,0 +1,28 @@
+[
+    {
+        "id": "decadencia",
+        "name": "Decadência",
+        "element": "Morte",
+        "circle": 1,
+        "execution": "padrão",
+        "range": "toque",
+        "target": "1 ser",
+        "duration": "instantânea",
+        "resistance": "Fortitude reduz à metade",
+        "cost_pe": 1,
+        "tutorial_text": "Acelera o tempo no corpo do alvo. Causa dano de Morte.",
+        "mechanical_effect": { "damage": "2d8+2", "type": "Morte" },
+        "components": ["Cinzas humanas", "Relógio quebrado"]
+    },
+    {
+        "id": "ouvir_sussurros",
+        "name": "Ouvir os Sussurros",
+        "element": "Conhecimento",
+        "circle": 1,
+        "execution": "completa",
+        "range": "pessoal",
+        "cost_pe": 1,
+        "tutorial_text": "Permite fazer uma pergunta de Sim/Não ao mestre sobre o futuro imediato.",
+        "components": ["Vela dourada", "Livro antigo"]
+    }
+]

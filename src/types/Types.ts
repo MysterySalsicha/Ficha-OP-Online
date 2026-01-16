@@ -1,5 +1,7 @@
-export type ClassName = 'combatente' | 'especialista' | 'ocultista';
+export type ClassName = 'combatente' | 'especialista' | 'ocultista' | 'sobrevivente' | 'mundano';
 export type AttributeName = 'agi' | 'for' | 'int' | 'pre' | 'vig';
+export type SheetMode = 'view' | 'edit' | 'evolution' | 'creation';
+export type WizardStep = 'concept' | 'attributes' | 'origin' | 'class' | 'trail' | 'skills' | 'powers' | 'inventory' | 'finished';
 export type SkillName = string;
 export type ItemCategory = 'arma' | 'equipamento' | 'veiculo' | 'pet' | 'componente' | 'municao' | 'poder';
 export type Affinity = 'morte' | 'sangue' | 'energia' | 'conhecimento' | 'medo' | null;
@@ -23,6 +25,7 @@ export interface CharacterDB {
   name: string;
   class: ClassName;
   nex: number;
+  survivor_stage?: number; // 0-5
   patente: string;
 
   // Identidade Mecânica
@@ -131,12 +134,25 @@ export interface SheetStore {
   character: CharacterDB;
   items: ItemDB[];
 
+  mode: SheetMode;
+  creation_step: WizardStep;
+  creation_points_spent: number; // Track attribute points spent during creation
+
   // Actions
+  toggleMode: (mode: SheetMode) => void;
+  setCreationStep: (step: WizardStep) => void;
+
   setName: (name: string) => void;
+  setClass: (className: ClassName) => ActionResult;
+  setOrigin: (origin: string) => ActionResult;
+
   increaseAttribute: (attr: AttributeName) => ActionResult;
   increaseNEX: (amount: number) => ActionResult;
+  transcend: () => ActionResult;
+
   equipItem: (item: ItemDB) => ActionResult;
   castRitual: (ritualId: string) => ActionResult;
+  performAttack: (weaponId: string) => ActionResult;
 
   // Helpers
   recalculateDerivedStats: () => void;

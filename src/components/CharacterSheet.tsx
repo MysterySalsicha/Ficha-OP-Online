@@ -1,14 +1,44 @@
 import React, { useState } from 'react';
-import { useGameStore } from '../store/game-store';
+import { useSheetStore } from '../store/useSheetStore';
 import { useToast } from './ui-op/OpToast';
 import { Shield, Brain, Heart, Zap, Crosshair, ChevronUp } from 'lucide-react';
-import { LevelUpModal } from './modals/LevelUpModal';
+import { EvolutionModal } from './modals/EvolutionModal';
+import { SheetWizard } from './wizard/SheetWizard';
+
+import { useGameStore } from '../store/game-store';
 
 export const CharacterSheet: React.FC = () => {
-    const { character, items } = useGameStore(); // Removido increaseAttribute direto
+    const { character: gameCharacter, items: gameItems } = useGameStore();
+    const { character, items, mode, toggleMode, setName } = useSheetStore();
     const { showToast } = useToast();
     const [activeTab, setActiveTab] = useState<'pericias' | 'inventario' | 'habilidades'>('pericias');
-    const [isLevelingUp, setIsLevelingUp] = useState(false);
+
+    // Sync Store (One-way: GameStore -> SheetStore) for initial load or updates
+    // CAUTION: This might overwrite local changes if not careful.
+    // Ideally SheetStore is the "Draft" and on save it goes to GameStore.
+    // But for now, let's assume GameStore is truth.
+
+    React.useEffect(() => {
+        if (gameCharacter && gameCharacter.id !== character.id) {
+            // Load character into local sheet store
+            // We need a way to "Load" full char.
+            // For MVP, we just rely on the fact that we might need a 'setAll' action.
+            // Or we manually set properties.
+            useSheetStore.setState({
+                character: gameCharacter,
+                items: gameItems,
+                // If character is new/empty, force creation?
+                mode: gameCharacter.nex === 0 && !gameCharacter.class ? 'creation' : 'view'
+            });
+        }
+    }, [gameCharacter, gameItems]);
+
+    // --- RENDER MODES ---
+
+    // 1. Wizard Mode (Creation)
+    if (mode === 'creation') {
+        return <SheetWizard />;
+    }
 
     if (!character) return <div className="p-8 text-center text-zinc-500 font-typewriter">Carregando Dossiê...</div>;
 
@@ -25,7 +55,9 @@ export const CharacterSheet: React.FC = () => {
 
     return (
         <div className="bg-op-panel w-full h-full flex flex-col font-sans text-zinc-200 overflow-hidden relative">
-            {isLevelingUp && <LevelUpModal onClose={() => setIsLevelingUp(false)} />}
+
+            {/* 2. Evolution Modal Overlay */}
+            {mode === 'evolution' && <EvolutionModal />}
             
             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                 <img src="https://ordemparanormal.com.br/wp-content/uploads/2022/05/simbolo-ordem.png" className="w-64 h-64 grayscale" alt="" />
@@ -42,9 +74,9 @@ export const CharacterSheet: React.FC = () => {
                         <span>NEX {character.nex}%</span>
                         <span>{character.patente}</span>
                         
-                        {/* Botão de Evolução (Simulação: Sempre visível para teste) */}
+                        {/* Botão de Evolução (Controlado pelo modo) */}
                         <button 
-                            onClick={() => setIsLevelingUp(true)}
+                            onClick={() => toggleMode('evolution')}
                             className="flex items-center gap-1 bg-op-gold/10 text-op-gold border border-op-gold/50 px-2 py-0.5 rounded hover:bg-op-gold/20 transition-colors animate-pulse"
                         >
                             <ChevronUp className="w-3 h-3" /> Evoluir
