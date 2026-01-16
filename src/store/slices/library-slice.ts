@@ -7,10 +7,12 @@ export interface LibrarySlice {
     monsters: MonsterTemplate[];
     items: ItemTemplate[];
     fetchMonsters: (mesaId: string) => Promise<void>;
+    searchGlobalMonsters: (term: string) => Promise<MonsterTemplate[]>;
     createMonster: (monster: Omit<MonsterTemplate, 'id' | 'created_at'>) => Promise<ActionResult>;
     updateMonster: (monsterId: string, updates: Partial<MonsterTemplate>) => Promise<ActionResult>;
     deleteMonster: (monsterId: string) => Promise<ActionResult>;
     fetchItems: (mesaId: string) => Promise<void>;
+    searchGlobalItems: (term: string) => Promise<ItemTemplate[]>;
     createItem: (item: Omit<ItemTemplate, 'id' | 'created_at'>) => Promise<ActionResult>;
     updateItem: (itemId: string, updates: Partial<ItemTemplate>) => Promise<ActionResult>;
     deleteItem: (itemId: string) => Promise<ActionResult>;
@@ -21,6 +23,7 @@ export const createLibrarySlice: StateCreator<GameState, [], [], LibrarySlice> =
     items: [],
 
     fetchMonsters: async (mesaId: string) => {
+        const userId = get().currentUser?.id;
         // Fetch official (owner_id is null) and user-owned monsters
         const { data: officialMonsters, error: officialError } = await supabase
             .from('library_monsters')
@@ -30,7 +33,7 @@ export const createLibrarySlice: StateCreator<GameState, [], [], LibrarySlice> =
         const { data: userMonsters, error: userError } = await supabase
             .from('library_monsters')
             .select('*')
-            .eq('owner_id', get().currentUser?.id);
+            .eq('owner_id', userId);
 
         if (officialError || userError) {
             console.error("Error fetching monsters:", officialError || userError);
@@ -39,6 +42,21 @@ export const createLibrarySlice: StateCreator<GameState, [], [], LibrarySlice> =
 
         const allMonsters = [...(officialMonsters || []), ...(userMonsters || [])];
         set({ monsters: allMonsters });
+    },
+
+    searchGlobalMonsters: async (term: string) => {
+        const { data, error } = await supabase
+            .from('library_monsters')
+            .select('*')
+            .eq('is_public', true)
+            .ilike('name', `%${term}%`)
+            .limit(20);
+
+        if (error) {
+            console.error("Error searching global monsters:", error);
+            return [];
+        }
+        return data || [];
     },
 
     createMonster: async (monster) => {
@@ -84,6 +102,7 @@ export const createLibrarySlice: StateCreator<GameState, [], [], LibrarySlice> =
     },
 
     fetchItems: async (mesaId: string) => {
+        const userId = get().currentUser?.id;
         // Fetch official (owner_id is null) and user-owned items
         const { data: officialItems, error: officialError } = await supabase
             .from('library_items')
@@ -93,7 +112,7 @@ export const createLibrarySlice: StateCreator<GameState, [], [], LibrarySlice> =
         const { data: userItems, error: userError } = await supabase
             .from('library_items')
             .select('*')
-            .eq('owner_id', get().currentUser?.id);
+            .eq('owner_id', userId);
 
         if (officialError || userError) {
             console.error("Error fetching items:", officialError || userError);
@@ -102,6 +121,21 @@ export const createLibrarySlice: StateCreator<GameState, [], [], LibrarySlice> =
 
         const allItems = [...(officialItems || []), ...(userItems || [])];
         set({ items: allItems });
+    },
+
+    searchGlobalItems: async (term: string) => {
+        const { data, error } = await supabase
+            .from('library_items')
+            .select('*')
+            .eq('is_public', true)
+            .ilike('name', `%${term}%`)
+            .limit(20);
+
+        if (error) {
+            console.error("Error searching global items:", error);
+            return [];
+        }
+        return data || [];
     },
 
     createItem: async (item) => {

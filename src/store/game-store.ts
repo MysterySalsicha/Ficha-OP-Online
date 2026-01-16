@@ -1,4 +1,5 @@
 import { create, StateCreator } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { supabase } from '../lib/supabase';
 import { Character, Mesa, User, InventoryItem, ItemTemplate } from '../core/types';
 
@@ -163,12 +164,28 @@ const coreSlice: StateCreator<GameState, [], [], Omit<GameState, keyof (Characte
     },
 });
 
-export const useGameStore = create<GameState>()((...a) => ({
-    ...coreSlice(...a),
-    ...createCharacterSlice(...a),
-    ...createCombatSlice(...a),
-    ...createUtilitySlice(...a),
-    ...createWorldSlice(...a),
-    ...createLibrarySlice(...a),
-    ...createJournalSlice(...a), // Added JournalSlice
-}));
+export const useGameStore = create<GameState>()(
+    persist(
+        (...a) => ({
+            ...coreSlice(...a),
+            ...createCharacterSlice(...a),
+            ...createCombatSlice(...a),
+            ...createUtilitySlice(...a),
+            ...createWorldSlice(...a),
+            ...createLibrarySlice(...a),
+            ...createJournalSlice(...a), // Added JournalSlice
+        }),
+        {
+            name: 'game-storage',
+            storage: createJSONStorage(() => localStorage),
+            partialize: (state) => ({
+                currentUser: state.currentUser,
+                currentMesa: state.currentMesa,
+                character: state.character,
+                currentMesaId: state.currentMesaId,
+                playerRole: state.playerRole,
+                visualMode: state.visualMode,
+            }),
+        }
+    )
+);

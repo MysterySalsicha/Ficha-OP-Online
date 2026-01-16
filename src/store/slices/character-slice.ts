@@ -6,9 +6,10 @@ import { calculateMaxPV, calculateMaxPE, calculateMaxSAN, calculatePassiveDefens
 import { getProgressionInfo } from '../../engine/progression';
 
 export interface CharacterSlice {
-    createCharacter: (data: { name: string, isSurvivor: boolean, origin: string, class: ClassName, attributes: Record<AttributeName, number> }) => Promise<ActionResult>;
+    createCharacter: (data: { name: string, isSurvivor: boolean, origin: string, class: ClassName, attributes: Record<AttributeName, number>, ownerId?: string }) => Promise<ActionResult>;
     updateCharacterStatus: (characterId: string, newStatus: Partial<Character['stats_current']>) => Promise<ActionResult>;
     updateCharacterFull: (data: Partial<Character>) => Promise<ActionResult>;
+    assignCharacterToUser: (characterId: string, userId: string) => Promise<ActionResult>;
     toggleCanEvolve: (characterId: string, value: boolean) => Promise<ActionResult>;
     completeLevelUp: (choices: LevelUpChoices) => Promise<ActionResult>;
     increaseAttribute: (attribute: AttributeName, characterId: string) => Promise<ActionResult>;
@@ -26,7 +27,7 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
         const passiveDefense = calculatePassiveDefense(charForRules);
 
         const newChar: Omit<Character, 'id' | 'created_at'> = {
-            user_id: currentUser.id,
+            user_id: data.ownerId || currentUser.id,
             mesa_id: currentMesa.id,
             name: data.name,
             class: data.class,
@@ -69,6 +70,12 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
         if (error) return { success: false, message: `Erro ao criar ficha: ${error.message}` };
 
         return { success: true, message: "Agente registrado com sucesso!" };
+    },
+
+    assignCharacterToUser: async (characterId, userId) => {
+        const { error } = await supabase.from('characters').update({ user_id: userId }).eq('id', characterId);
+        if (error) return { success: false, message: `Erro ao vincular: ${error.message}` };
+        return { success: true, message: "Personagem vinculado com sucesso!" };
     },
     
     updateCharacterStatus: async (characterId, newStatus) => {
