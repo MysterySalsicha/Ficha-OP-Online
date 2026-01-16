@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useGameStore } from '../store/game-store'; // Import useGameStore
 import { createMesa, joinMesa, requestJoinMesa } from '../lib/mesa';
 import { OpButton } from '../components/ui-op/OpButton';
 import { OpInput } from '../components/ui-op/OpInput';
 import { OpFileUpload } from '../components/ui-op/OpFileUpload';
 import { useToast } from '../components/ui-op/OpToast';
 import { FileText, Users, Plus, Key, Edit, Save, X, LogOut, Loader2, Check } from 'lucide-react';
+import { Mesa } from '../core/types'; // Import Mesa type
 
 export const Lobby: React.FC = () => {
   const { user, updateProfile, signOut } = useAuth();
   const navigate = useNavigate();
   const { showToast } = useToast();
   
+  const { fetchUserMesas } = useGameStore(); // Get fetchUserMesas from store
+
   const [joinCode, setJoinCode] = useState('');
   const [loading, setLoading] = useState(false);
   
@@ -23,6 +27,33 @@ export const Lobby: React.FC = () => {
   // Estados do Modal de Criação
   const [isCreatingMesa, setIsCreatingMesa] = useState(false);
   const [newMesaName, setNewMesaName] = useState('');
+
+  // Estados para as mesas do usuário
+  const [userMesas, setUserMesas] = useState<Mesa[]>([]);
+  const [isLoadingMesas, setIsLoadingMesas] = useState(true);
+
+  useEffect(() => {
+    const loadUserMesas = async () => {
+      if (user) {
+        setIsLoadingMesas(true);
+        try {
+          const mesas = await fetchUserMesas(user.id);
+          setUserMesas(mesas);
+        } catch (error) {
+          console.error("Erro ao carregar mesas do usuário:", error);
+          showToast('Erro ao carregar suas missões.', 'error');
+        } finally {
+          setIsLoadingMesas(false);
+        }
+      } else {
+        setUserMesas([]); // Clear mesas if user logs out
+        setIsLoadingMesas(false);
+      }
+    };
+
+    loadUserMesas();
+  }, [user, fetchUserMesas, showToast]);
+
 
   const handleOpenCreateModal = () => {
       setNewMesaName('');
@@ -36,6 +67,8 @@ export const Lobby: React.FC = () => {
       const newMesa = await createMesa(newMesaName, user.id);
       setIsCreatingMesa(false);
       showToast('Operação iniciada com sucesso!', 'success');
+      // Update local state after creating a new mesa
+      setUserMesas(prev => [...prev, newMesa]); 
       navigate(`/mesa/${newMesa.id}`);
     } catch (error: any) {
       showToast(`Falha ao criar missão: ${error.message}`, 'error');
@@ -59,7 +92,8 @@ export const Lobby: React.FC = () => {
       
       showToast('Solicitação enviada! Aguarde a aprovação do Mestre.', 'success');
       
-      // 3. Redireciona (a GameRoom vai mostrar "Aguardando Aprovação")
+      // Update local state after joining a mesa (it will appear if approved)
+      // For now, just navigate, the list will update on next load.
       navigate(`/mesa/${mesa.id}`);
     } catch (error: any) {
       showToast(error.message, 'error');
@@ -177,6 +211,34 @@ export const Lobby: React.FC = () => {
             <OpButton onClick={handleJoin} disabled={loading} variant="secondary" className="h-[38px] mb-[1px]">Entrar</OpButton>
           </div>
         </div>
+      </div>
+
+      {/* SEÇÃO DE SUAS MISSÕES */}
+      <div className="max-w-5xl mx-auto mt-16 relative z-10">
+        <h2 className="text-xl font-bold mb-4 font-typewriter text-zinc-200 border-b border-op-border pb-2 flex items-center gap-2"><FileText className="w-5 h-5" /> Suas Missões</h2>
+        
+        {isLoadingMesas ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="w-8 h-8 animate-spin text-op-gold" />
+            <p className="ml-3 text-zinc-400">Carregando suas missões...</p>
+          </div>
+        ) : userMesas.length === 0 ? (
+          <p className="text-zinc-500 text-center py-8">Você ainda não faz parte de nenhuma missão. Crie ou ingresse em uma!</p>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {userMesas.map(mesa => (
+              <div 
+                key={mesa.id} 
+                className="bg-op-panel p-4 border border-op-border hover:border-op-gold transition-colors cursor-pointer"
+                onClick={() => navigate(`/mesa/${mesa.id}`)}
+              >
+                <h3 className="font-bold text-lg text-zinc-200">{mesa.name}</h3>
+                <p className="text-xs text-zinc-500 font-mono">Código: {mesa.codigo}</p>
+                <p className="text-xs text-op-red mt-2">Mestre: {mesa.mestre_id === user?.id ? 'Você' : 'Outro'}</p> {/* TODO: Get actual GM name */}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
