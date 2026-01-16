@@ -84,7 +84,7 @@ export const CombatTab: React.FC = () => {
                         </OpButton>
                     ) : (
                         <>
-                            <OpButton variant='default' onClick={nextTurn}>Próximo Turno</OpButton>
+                            <OpButton variant='primary' onClick={nextTurn}>Próximo Turno</OpButton>
                             <OpButton variant='ghost' onClick={endCombat}>Encerrar Combate</OpButton>
                         </>
                     )}

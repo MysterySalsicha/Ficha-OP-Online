@@ -3,7 +3,7 @@ import { useSheetStore } from '../../store/useSheetStore';
 import { useGameStore } from '../../store/game-store';
 import { OpButton } from '../ui-op/OpButton';
 import { OpInput } from '../ui-op/OpInput';
-import { WizardStep, AttributeName, ClassName } from '../../types/Types';
+import { WizardStep, AttributeName, ClassName } from '../../core/types'; // Corrected import path
 import { ChevronRight, ChevronLeft, Info, Check } from 'lucide-react';
 import { validateAttributeIncrease } from '../../engine/validator';
 

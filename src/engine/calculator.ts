@@ -75,7 +75,7 @@ export function recalculateCharacter(char: Character, items: Item[]): Character 
     // Defesa
     let armorBonus = 0;
     items.forEach(item => {
-        if (item.category === 'equipamento' && item.stats.defense_bonus) {
+        if (item.category === 'equipamento' && item.stats?.defense_bonus) { // Added optional chaining
             armorBonus += item.stats.defense_bonus;
         }
     });

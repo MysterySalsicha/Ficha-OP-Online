@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSheetStore } from '../store/useSheetStore';
-import { AttributeName, ActionResult } from '../types/Types';
+import { AttributeName, ActionResult } from '../core/types';
 
 interface StatBlockProps {
   attribute: AttributeName;

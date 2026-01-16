@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/game-store';
 import { useAuth } from '../contexts/AuthContext';
@@ -35,13 +35,23 @@ export const GameRoom: React.FC = () => {
   
   const [activeTab, setActiveTab] = useState<TabName>('chat');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const hasInitialized = useRef(false); // Use useRef to track initialization
 
   useEffect(() => {
-    if (user && mesaId) {
+    // Only initialize if not already initialized and user/mesaId are available
+    if (user && mesaId && !hasInitialized.current) {
         initialize(user, mesaId, true);
+        hasInitialized.current = true; // Mark as initialized
     }
-    return () => unsubscribe();
-  }, [user, mesaId, initialize, unsubscribe]);
+    
+    // Cleanup function: unsubscribe when component unmounts
+    return () => {
+        if (hasInitialized.current) { // Only unsubscribe if we actually initialized
+            unsubscribe(); 
+            hasInitialized.current = false; // Reset on unmount
+        }
+    }
+  }, [user, mesaId, initialize, unsubscribe]); // Dependency array should be stable
 
   const renderActiveTabContent = () => {
     switch(activeTab) {

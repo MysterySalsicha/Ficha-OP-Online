@@ -8,7 +8,7 @@ export interface WorldSlice {
     activeScene: Scene | null;
     tokens: Token[];
     createScene: (name: string, imageUrl: string) => Promise<ActionResult>;
-    updateScene: (data: Partial<Omit<Scene, 'id' | 'mesa_id'>>) => Promise<ActionResult>;
+    updateScene: (mesaId: string, sceneId: string, updates: Partial<Scene>) => Promise<ActionResult>;
     createPlayerToken: (characterId: string) => Promise<ActionResult>;
     moveToken: (tokenId: string, x: number, y: number) => Promise<void>;
     spawnMonster: (monsterId: string, position: { x: number, y: number }) => Promise<ActionResult>;
@@ -55,14 +55,15 @@ export const createWorldSlice: StateCreator<GameState, [], [], WorldSlice> = (se
         return { success: true, message: "Cena criada com sucesso." };
     },
 
-    updateScene: async (data) => {
-        const { activeScene } = get();
-        if (!activeScene) return { success: false, message: 'Nenhuma cena ativa para atualizar.' };
-
-        const { error } = await supabase.from('scenes').update(data).eq('id', activeScene.id);
-        if (error) return { success: false, message: 'Não foi possível atualizar as configurações do mapa.' };
+    updateScene: async (mesaId, sceneId, updates) => {
+        const { error } = await supabase.from('scenes')
+            .update(updates)
+            .eq('mesa_id', mesaId)
+            .eq('id', sceneId);
+            
+        if (error) return { success: false, message: 'Não foi possível atualizar as configurações da cena.' };
         
-        return { success: true, message: 'Configurações do mapa atualizadas.' };
+        return { success: true, message: 'Configurações da cena atualizadas.' };
     },
 
     createPlayerToken: async (characterId) => {
@@ -106,7 +107,19 @@ export const createWorldSlice: StateCreator<GameState, [], [], WorldSlice> = (se
             origin: 'monstro',
             attributes: monsterTemplate.attributes,
             stats_max: { pv: monsterTemplate.stats.pv, pe: 0, san: 0 },
-            stats_current: { pv: monsterTemplate.stats.pv, pe: 0, san: 0, conditions: [], is_dying: false, is_stable: true },
+            stats_current: { 
+                pv: monsterTemplate.stats.pv, 
+                pe: 0, 
+                san: 0, 
+                max_pv: monsterTemplate.stats.pv, // Added
+                max_pe: 0, // Added
+                max_san: 0, // Added
+                conditions: [], 
+                is_dying: false, 
+                is_unconscious: false, // Added
+                is_stable: true, 
+                is_incapacitated: false // Added
+            },
             defenses: { passiva: monsterTemplate.stats.defesa, esquiva: 0, bloqueio: 0, mental: 0 },
             inventory_meta: { load_limit: 0, credit_limit: 'Nenhum', current_load: 0 },
             movement: monsterTemplate.stats.deslocamento,
@@ -120,8 +133,9 @@ export const createWorldSlice: StateCreator<GameState, [], [], WorldSlice> = (se
             user_id: null,
             patente: 'Criatura',
             survivor_mode: false,
-            status_flags: { vida: 'vivo', mental: 'sao', sobrecarregado: false },
             is_gm_mode: false,
+            image_url: null, // Added
+            type: 'npc', // Added
         };
 
         const { data: createdChar, error: charError } = await supabase.from('characters').insert(newMonsterChar).select().single();

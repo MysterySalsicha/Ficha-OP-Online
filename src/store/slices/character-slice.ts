@@ -34,7 +34,19 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
             origin: data.origin,
             attributes: data.attributes,
             stats_max: { pv: maxPV, pe: maxPE, san: maxSAN },
-            stats_current: { pv: maxPV, pe: maxPE, san: maxSAN, conditions: [], is_dying: false, is_stable: true },
+            stats_current: { 
+                pv: maxPV, 
+                pe: maxPE, 
+                san: maxSAN, 
+                max_pv: maxPV, // Added
+                max_pe: maxPE, // Added
+                max_san: maxSAN, // Added
+                conditions: [], 
+                is_dying: false, 
+                is_unconscious: false, // Added
+                is_stable: true, 
+                is_incapacitated: false // Added
+            },
             defenses: { passiva: passiveDefense, esquiva: 0, bloqueio: 0, mental: 0 },
             inventory_meta: { load_limit: 5 + (data.attributes.for || 0), credit_limit: 'I', current_load: 0 },
             movement: 9,
@@ -48,8 +60,9 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
             is_approved_evolve: false,
             survivor_mode: false,
             patente: 'Recruta',
-            status_flags: { vida: 'vivo', mental: 'sao', sobrecarregado: false },
             is_gm_mode: false,
+            image_url: null, // Added
+            type: 'player', // Added
         };
 
         const { data: created, error } = await supabase.from('characters').insert(newChar).select().single();
@@ -125,6 +138,10 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
         updatedCharacter.stats_current.pv = newMaxPV;
         updatedCharacter.stats_current.pe = newMaxPE;
         updatedCharacter.stats_current.san = newMaxSAN;
+        updatedCharacter.stats_current.max_pv = newMaxPV; // Added
+        updatedCharacter.stats_current.max_pe = newMaxPE; // Added
+        updatedCharacter.stats_current.max_san = newMaxSAN; // Added
+
 
         if(choices.selectedAffinity) {
             const sanityCostReward = progression.rewards.find(r => r.type === 'versatility');

@@ -3,7 +3,7 @@ import { useSheetStore } from '../../store/useSheetStore';
 import { useGameStore } from '../../store/game-store';
 import { OpButton } from '../ui-op/OpButton';
 import { ChevronUp, AlertTriangle } from 'lucide-react';
-import { AttributeName } from '../../types/Types';
+import { AttributeName } from '../../core/types'; // Corrected import path
 import { getProgressionLimits } from '../../engine/calculator';
 
 export const EvolutionModal: React.FC = () => {

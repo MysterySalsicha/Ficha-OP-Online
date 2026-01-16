@@ -1,4 +1,4 @@
-import { Character, AttributeName, ActionResult, RitualRule, Item, ClassName } from '../core/types';
+import { Character, AttributeName, ActionResult, RitualRule, Item, ClassName, InventoryItem } from '../core/types';
 import { getProgressionLimits } from './calculator';
 
 /**
@@ -72,11 +72,11 @@ export function validateItemAdd(char: Character, itemWeight: number, currentWeig
  * Validates attack execution (Ammo check).
  */
 export function validateAttack(char: Character, weapon: Item, ammoItem?: Item): ActionResult {
-    if (weapon.category === 'arma' && weapon.stats.uses_ammo) {
+    if (weapon.category === 'arma' && weapon.stats?.uses_ammo) { // Added optional chaining
         if (!ammoItem) {
              return { success: false, message: "Sem munição", explanation: "Esta arma exige munição para disparar." };
         }
-        if (ammoItem.quantity < 1) {
+        if ((ammoItem as InventoryItem).quantity < 1) { // Cast to InventoryItem
              return { success: false, message: "Munição esgotada", explanation: "Você não tem munição suficiente." };
         }
         // Check compatibility? (e.g. ammo type matches weapon type)

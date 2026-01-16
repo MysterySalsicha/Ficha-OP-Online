@@ -78,29 +78,42 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
 
     performAttack: async (weaponId, targetCharacterId) => {
         const { character, allCharacters, sendChatMessage, consumeItem } = get();
-        if (!character) return { success: false, message: "Personagem atacante não encontrado." };
+        // Helper to return a default AttackResult for early exits
+        const defaultAttackResult = (message: string): AttackResult => ({
+            success: false,
+            message,
+            isHit: false,
+            isCriticalThreat: false,
+            attackRoll: {} as DieRoll, // Empty DieRoll for type compatibility
+            targetDefense: 0,
+            weapon: {} as InventoryItem, // Empty InventoryItem for type compatibility
+            attackerId: character?.id || '',
+            targetId: targetCharacterId
+        });
+
+        if (!character) return defaultAttackResult("Personagem atacante não encontrado.");
 
         const weapon = character.inventory.find(item => item.id === weaponId);
-        if (!weapon) return { success: false, message: "Arma não encontrada no inventário." };
+        if (!weapon) return defaultAttackResult("Arma não encontrada no inventário.");
 
         const target = allCharacters.find(char => char.id === targetCharacterId);
-        if (!target) return { success: false, message: "Alvo não encontrado." };
+        if (!target) return defaultAttackResult("Alvo não encontrado.");
 
-        const attackAttribute = (weapon.stats.type === 'Arma de Fogo' || weapon.stats.type === 'Arma de Disparo') ? 'agi' : 'for';
+        const attackAttribute = (weapon.stats?.type === 'Arma de Fogo' || weapon.stats?.type === 'Arma de Disparo') ? 'agi' : 'for'; // Added optional chaining
         const attackerAttributeValue = character.attributes[attackAttribute];
         const attackRoll = rollDice('1d20', 'atributo', 20, attackerAttributeValue);
         
         const targetDefense = target.defenses.passiva;
         const isHit = attackRoll.total >= targetDefense;
 
-        const critString = weapon.stats.critico || '20';
+        const critString = weapon.stats?.critico || '20'; // Added optional chaining
         const weaponCritThreat = parseInt(critString.split('/')[0]);
         const isCriticalThreat = attackRoll.results[0] >= weaponCritThreat;
 
         const message = `${character.name} atacou ${target.name} com ${weapon.name}: Rolagem ${attackRoll.total} vs Defesa ${targetDefense}. ${isHit ? 'ACERTOU!' : 'ERROU!'}${isCriticalThreat && isHit ? ' (Ameaça de Crítico!)' : ''}`;
         await sendChatMessage(message, 'system');
 
-        if (weapon.stats.ammo_id && weapon.stats.ammo_per_shot) {
+        if (weapon.stats?.ammo_id && weapon.stats?.ammo_per_shot) { // Added optional chaining
             await consumeItem(character.id, weapon.stats.ammo_id, weapon.stats.ammo_per_shot);
         }
 
@@ -130,7 +143,7 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         let damageMultiplier = 1;
         let critMessage = '';
         if (isCriticalConfirmed) {
-            const critString = weapon.stats.critico || '20/x2';
+            const critString = weapon.stats?.critico || '20/x2'; // Added optional chaining
             damageMultiplier = parseInt(critString.split('/')[1]?.replace('x', '')) || 2;
             critMessage = ' (CRÍTICO!)';
         }

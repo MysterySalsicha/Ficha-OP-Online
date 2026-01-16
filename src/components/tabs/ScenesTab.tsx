@@ -17,13 +17,14 @@ export const ScenesTab: React.FC = () => {
 
     const handleCreateScene = () => {
         if (newSceneName.trim()) {
-            createScene(newSceneName);
+            createScene(newSceneName, ''); // Provide an empty string for imageUrl
             setNewSceneName('');
         }
     };
 
     const handleActivateScene = (sceneId: string) => {
         if (currentMesa) {
+            // This still has the wrong signature for updateScene, will fix world-slice.ts next
             updateScene(currentMesa.id, sceneId, { is_active: true });
         }
     };
@@ -65,7 +66,7 @@ export const ScenesTab: React.FC = () => {
                         value={newSceneName}
                         onChange={e => setNewSceneName(e.target.value)}
                     />
-                    <OpButton variant='default' onClick={handleCreateScene} className="w-full">
+                    <OpButton variant='primary' onClick={handleCreateScene} className="w-full">
                         <PlusCircle className="w-4 h-4 mr-2" /> Criar Cena
                     </OpButton>
                 </div>
