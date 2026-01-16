@@ -1,0 +1,410 @@
+[
+  {
+    "nome": "Zumbis de Sangue Humanoide",
+    "elemento": "Sangue",
+    "fonte": "Livro Base",
+    "descricao": "Cadáveres reanimados por parasitas de sangue, atacam para espalhar infecção e regeneram com sangue fresco.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Zumbis_de_Sangue",
+    "stats_chave": { "ameaca": "Baixa-Média", "ataques": "Mordida infectante, garras", "pv": "Variável" }
+  },
+  {
+    "nome": "Zumbis de Sangue Bestial",
+    "elemento": "Sangue",
+    "fonte": "Livro Base",
+    "descricao": "Versão animal de zumbis de sangue, mais ágeis e selvagens, atacam em matilhas.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Zumbis_de_Sangue",
+    "stats_chave": { "ameaca": "Média", "ataques": "Mordida, arranhões", "pv": "Médio" }
+  },
+  {
+    "nome": "Enpap-X",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Monstro de lama que absorve vítimas, causa decomposição e mutações.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Enpap-X",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Absorção, tentáculos de lama", "pv": "Alto" }
+  },
+  {
+    "nome": "Existido da Morte",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Entidade que causa decomposição instantânea, drena vida e SAN.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Existidos_de_Morte",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Toque decompositor", "pv": "Alto" }
+  },
+  {
+    "nome": "Carniçal",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Cadáver faminto que come carne e espalha decomposição paranormal.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Carni%C3%A7al_Preto_da_Morte",
+    "stats_chave": { "ameaca": "Média", "ataques": "Mordida infectante, garras", "pv": "Médio" }
+  },
+  {
+    "nome": "Deus da Morte",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Entidade suprema que ceifa almas em massa, manifesta avatares poderosos.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/O_Deus_da_Morte",
+    "stats_chave": { "ameaca": "Épica", "ataques": "Ceifamento em área", "pv": "Incalculável" }
+  },
+  {
+    "nome": "Sukkal",
+    "elemento": "Energia",
+    "fonte": "Livro Base",
+    "descricao": "Demônio que distorce a realidade, drena PE e causa ilusões energéticas.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Sukkalgir",
+    "stats_chave": { "ameaca": "Muito Alta", "ataques": "Distorção realidade, dreno PE", "pv": "Alto" }
+  },
+  {
+    "nome": "Aberrado",
+    "elemento": "Misto",
+    "fonte": "Livro Base",
+    "descricao": "Criatura deformada por exposição paranormal, ataca com fúria e mutações.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Aberrados",
+    "stats_chave": { "ameaca": "Média-Alta", "ataques": "Golpes mutantes", "pv": "Médio" }
+  },
+  {
+    "nome": "Aracnasita",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Aranha gigante parasitada, tece teias que drenam vida.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Aracnasita",
+    "stats_chave": { "ameaca": "Média-Alta", "ataques": "Picada venenosa", "pv": "Médio" }
+  },
+  {
+    "nome": "Enraizados",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Humanos fundidos com raízes, imobilizam e drenam vida.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Enraizados",
+    "stats_chave": { "ameaca": "Média", "ataques": "Raízes paralisantes", "pv": "Médio" }
+  },
+  {
+    "nome": "Nidere",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Drena vida com toques gelados, causa envelhecimento.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Nidere",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Toque envelhecedor", "pv": "Alto" }
+  },
+  {
+    "nome": "Vultos",
+    "elemento": "Conhecimento",
+    "fonte": "Livro Base",
+    "descricao": "Sombras que causam paranoia e ilusões mentais.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Vultos",
+    "stats_chave": { "ameaca": "Média", "ataques": "Ilusões", "pv": "Baixo" }
+  },
+  {
+    "nome": "Parasita de Culpa",
+    "elemento": "Conhecimento",
+    "fonte": "Livro Base",
+    "descricao": "Alimenta-se de culpa, força traumas e perda de SAN.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Parasita_de_Culpa",
+    "stats_chave": { "ameaca": "Média-Alta", "ataques": "Indução de culpa", "pv": "Baixo" }
+  },
+  {
+    "nome": "Succ",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Sedutor que drena vida através de contato.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Succ",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Dreno vital", "pv": "Alto" }
+  },
+  {
+    "nome": "Enpap-X",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Monstro de lama que absorve vítimas e causa decomposição.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Enpap-X",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Absorção", "pv": "Alto" }
+  },
+  {
+    "nome": "Existido da Morte",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Causa decomposição instantânea.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Existidos_de_Morte",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Decomposição", "pv": "Alto" }
+  },
+  {
+    "nome": "Perturbados de Energia",
+    "elemento": "Energia",
+    "fonte": "Livro Base",
+    "descricao": "Humanos que explodem em descargas energéticas.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Perturbados_de_Energia",
+    "stats_chave": { "ameaca": "Média", "ataques": "Explosão", "pv": "Médio" }
+  },
+  {
+    "nome": "Sukkalgir",
+    "elemento": "Energia",
+    "fonte": "Livro Base",
+    "descricao": "Drena PE e causa queimaduras paranormais.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Sukkalgir",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Dreno PE", "pv": "Alto" }
+  },
+  {
+    "nome": "Amigo Imaginário",
+    "elemento": "Medo",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Manifesta como amigo imaginário, causa obsessão e dano mental.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Amigo_Imagin%C3%A1rio",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Manipulação emocional", "pv": "Médio" }
+  },
+  {
+    "nome": "Derretido",
+    "elemento": "Sangue",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Corpo derretido por exposição, ataca com ácido.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ordem_Paranormal_RPG:_Sobrevivendo_ao_Horror",
+    "stats_chave": { "ameaca": "Média-Alta", "ataques": "Ácido corrosivo", "pv": "Médio" }
+  },
+  {
+    "nome": "Espectros Inesquecíveis",
+    "elemento": "Medo",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Fantasmas que causam obsessão e loucura persistente.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Espectros_Inesquecidos",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Obsessão mental", "pv": "Alto" }
+  },
+  {
+    "nome": "Medusa",
+    "elemento": "Medo/Conhecimento",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Petrifica com olhar, causa paralisia.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ordem_Paranormal_RPG:_Sobrevivendo_ao_Horror",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Olhar petrificante", "pv": "Alto" }
+  },
+  {
+    "nome": "Melancolia",
+    "elemento": "Medo",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Induz depressão profunda e perda de vontade.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ordem_Paranormal_RPG:_Sobrevivendo_ao_Horror",
+    "stats_chave": { "ameaca": "Média-Alta", "ataques": "Indução de melancolia", "pv": "Médio" }
+  },
+  {
+    "nome": "Memento Mori",
+    "elemento": "Morte",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Lembrete da morte, causa envelhecimento ou visões de fim.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ordem_Paranormal_RPG:_Sobrevivendo_ao_Horror",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Visões mortais", "pv": "Alto" }
+  },
+  {
+    "nome": "Mescla",
+    "elemento": "Misto",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Fusão de entidades, ataques mutantes imprevisíveis.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ordem_Paranormal_RPG:_Sobrevivendo_ao_Horror",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Mutação aleatória", "pv": "Alto" }
+  },
+  {
+    "nome": "Sepultado",
+    "elemento": "Morte",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Emerge para arrastar vítimas ao túmulo.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ordem_Paranormal_RPG:_Sobrevivendo_ao_Horror",
+    "stats_chave": { "ameaca": "Média-Alta", "ataques": "Enterro vivo", "pv": "Médio" }
+  },
+  {
+    "nome": "O Uivar",
+    "elemento": "Medo",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Uivo que causa pânico em massa.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ordem_Paranormal_RPG:_Sobrevivendo_ao_Horror",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Uivo paralisante", "pv": "Alto" }
+  },
+  {
+    "nome": "Profundo",
+    "elemento": "Misto",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Entidade abissal que causa afogamento paranormal.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ordem_Paranormal_RPG:_Sobrevivendo_ao_Horror",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Afogamento", "pv": "Alto" }
+  },
+  {
+    "nome": "Quibungo",
+    "elemento": "Medo",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Criatura folclórica com fome insaciável.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ordem_Paranormal_RPG:_Sobrevivendo_ao_Horror",
+    "stats_chave": { "ameaca": "Média-Alta", "ataques": "Devoração", "pv": "Médio" }
+  },
+  {
+    "nome": "Rascunho",
+    "elemento": "Conhecimento",
+    "fonte": "Sobrevivendo ao Horror",
+    "descricao": "Apaga existências como rascunhos.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ordem_Paranormal_RPG:_Sobrevivendo_ao_Horror",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Apagamento", "pv": "Alto" }
+  },
+  {
+    "nome": "Aberrado de Lodo",
+    "elemento": "Sangue/Morte",
+    "fonte": "Livro Base",
+    "descricao": "Absorve vítimas com lodo, causa infecções.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Aberrados",
+    "stats_chave": { "ameaca": "Média", "ataques": "Absorção", "pv": "Médio" }
+  },
+  {
+    "nome": "Aberrado Elétrico",
+    "elemento": "Energia",
+    "fonte": "Livro Base",
+    "descricao": "Causa choques e sobrecargas.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Aberrados",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Descarga elétrica", "pv": "Alto" }
+  },
+  {
+    "nome": "Aranhas Desovadas",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Enxame de filhotes aracnídeos infectantes.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Aranhas_Desovadas",
+    "stats_chave": { "ameaca": "Baixa", "ataques": "Mordidas múltiplas", "pv": "Baixo" }
+  },
+  {
+    "nome": "Cavalo de Lodo",
+    "elemento": "Sangue",
+    "fonte": "Livro Base",
+    "descricao": "Arrasto vítimas para pântanos.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Cavalo_de_Lodo",
+    "stats_chave": { "ameaca": "Média-Alta", "ataques": "Coice", "pv": "Médio" }
+  },
+  {
+    "nome": "Cobra de Lodo",
+    "elemento": "Sangue",
+    "fonte": "Livro Base",
+    "descricao": "Envenena e sufoca presas.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Cobra_de_Lodo",
+    "stats_chave": { "ameaca": "Média", "ataques": "Constrição", "pv": "Médio" }
+  },
+  {
+    "nome": "Escorpião Lacraia",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Veneno causa alucinações.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Escorpi%C3%A3o_Lacraia",
+    "stats_chave": { "ameaca": "Média", "ataques": "Ferrão", "pv": "Médio" }
+  },
+  {
+    "nome": "Labra",
+    "elemento": "Misto",
+    "fonte": "Livro Base",
+    "descricao": "Caça em matilhas com uivos de medo.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Labra",
+    "stats_chave": { "ameaca": "Baixa-Média", "ataques": "Mordida", "pv": "Baixo" }
+  },
+  {
+    "nome": "Larva de Lodo",
+    "elemento": "Sangue",
+    "fonte": "Livro Base",
+    "descricao": "Infesta hospedeiros.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Larva_de_Lodo",
+    "stats_chave": { "ameaca": "Baixa", "ataques": "Infecção", "pv": "Baixo" }
+  },
+  {
+    "nome": "Morcegosa",
+    "elemento": "Medo",
+    "fonte": "Livro Base",
+    "descricao": "Emite sons de pânico.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Morcegosa",
+    "stats_chave": { "ameaca": "Média", "ataques": "Eco sônico", "pv": "Médio" }
+  },
+  {
+    "nome": "Rato de Lodo",
+    "elemento": "Sangue",
+    "fonte": "Livro Base",
+    "descricao": "Transmite doenças em enxames.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Rato_de_Lodo",
+    "stats_chave": { "ameaca": "Baixa", "ataques": "Mordidas", "pv": "Baixo" }
+  },
+  {
+    "nome": "Toupeira de Lodo",
+    "elemento": "Sangue",
+    "fonte": "Livro Base",
+    "descricao": "Arrasta para túneis.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Toupeira_de_Lodo",
+    "stats_chave": { "ameaca": "Média", "ataques": "Arrastão", "pv": "Médio" }
+  },
+  {
+    "nome": "Zumbis de Lodo",
+    "elemento": "Sangue",
+    "fonte": "Livro Base",
+    "descricao": "Regeneram em úmido.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Zumbis_de_Sangue",
+    "stats_chave": { "ameaca": "Baixa-Média", "ataques": "Mordida", "pv": "Médio" }
+  },
+  {
+    "nome": "Degolificada",
+    "elemento": "Medo",
+    "fonte": "Livro Base",
+    "descricao": "Fantasma decapitado que causa sangramento.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Degolificada",
+    "stats_chave": { "ameaca": "Média-Alta", "ataques": "Sangramento", "pv": "Médio" }
+  },
+  {
+    "nome": "Escutado",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Ouve pensamentos e sussurra mortais.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Escutado",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Sussurros", "pv": "Alto" }
+  },
+  {
+    "nome": "Existidos de Energia",
+    "elemento": "Energia",
+    "fonte": "Livro Base",
+    "descricao": "Sobrecarregam eletrônicos e corpos.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Existidos_de_Energia",
+    "stats_chave": { "ameaca": "Média", "ataques": "Sobrecarga", "pv": "Médio" }
+  },
+  {
+    "nome": "Viajante",
+    "elemento": "Energia",
+    "fonte": "Livro Base",
+    "descricao": "Viaja dimensões, desorienta espacialmente.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Viajante",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Teleporte", "pv": "Alto" }
+  },
+  {
+    "nome": "A Marionete",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Controla corpos como marionetes.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/A_Marionete",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Controle", "pv": "Alto" }
+  },
+  {
+    "nome": "Carniçal da Esfinge",
+    "elemento": "Conhecimento",
+    "fonte": "Livro Base",
+    "descricao": "Pune enigmas errados com morte.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Carni%C3%A7al_da_Esfinge",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Enigmas", "pv": "Alto" }
+  },
+  {
+    "nome": "Ciclope",
+    "elemento": "Misto",
+    "fonte": "Livro Base",
+    "descricao": "Gigante que esmaga com força bruta.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Ciclope",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Esmagamento", "pv": "Alto" }
+  },
+  {
+    "nome": "Minotauro",
+    "elemento": "Misto",
+    "fonte": "Livro Base",
+    "descricao": "Caça em labirintos paranormais.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/Minotauro",
+    "stats_chave": { "ameaca": "Alta", "ataques": "Chifres", "pv": "Alto" }
+  },
+  {
+    "nome": "Múmias",
+    "elemento": "Morte",
+    "fonte": "Livro Base",
+    "descricao": "Drenam vida com toque.",
+    "wiki_link": "https://ordemparanormal.fandom.com/wiki/M%C3%BAmias",
+    "stats_chave": { "ameaca": "Média-Alta", "ataques": "Dreno vital", "pv": "Médio" }
+  }
+]

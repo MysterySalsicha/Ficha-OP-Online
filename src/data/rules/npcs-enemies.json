@@ -1,0 +1,33 @@
+[
+  {
+    "id": "cultista_sangue",
+    "name": "Cultista de Sangue",
+    "type": "Humano",
+    "vd": 10,
+    "stats": {
+      "pv": 20,
+      "defesa": 12,
+      "resistencia": "Sangue 2"
+    },
+    "attacks": [
+      { "name": "Adaga", "test": "1d20+3", "damage": "1d4+2", "crit": "19/x2" }
+    ],
+    "description": "Um seguidor fanático de uma entidade de Sangue. Geralmente encontrado em grupos."
+  },
+  {
+    "id": "mercenario",
+    "name": "Mercenário",
+    "type": "Humano",
+    "vd": 30,
+    "stats": {
+      "pv": 50,
+      "defesa": 16,
+      "resistencia": "Balístico 5"
+    },
+    "attacks": [
+      { "name": "Fuzil de Assalto", "test": "2d20+8", "damage": "2d10", "crit": "19/x3" },
+      { "name": "Faca de Combate", "test": "1d20+6", "damage": "1d6+4", "crit": "19/x2" }
+    ],
+    "description": "Um soldado de aluguel bem treinado e equipado. Perigoso em qualquer situação."
+  }
+]

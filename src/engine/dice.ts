@@ -14,7 +14,7 @@ interface RollResult {
  * @param type Tipo de rolagem: 'atributo' (pega maior) ou 'dano' (soma).
  * @param threat Margem de ameaça (para verificar crítico em testes de atributo).
  */
-export function rollDice(code: string, type: 'atributo' | 'dano' = 'atributo', threat: number = 20): RollResult {
+export function rollDice(code: string, type: 'atributo' | 'dano' = 'atributo', threat: number = 20, baseBonus: number = 0, advantageModifier: number = 0): RollResult {
     // Parser simples: N d X + B
     const match = code.toLowerCase().match(/^(\d*)d(\d+)([+-]\d+)?$/);
     
@@ -27,46 +27,60 @@ export function rollDice(code: string, type: 'atributo' | 'dano' = 'atributo', t
     const faces = parseInt(match[2]);
     const bonus = parseInt(match[3]) || 0;
 
-    const results: number[] = [];
-    for (let i = 0; i < count; i++) {
-        results.push(Math.floor(Math.random() * faces) + 1);
+    let allResults: number[] = [];
+    if (type === 'dano' || (type === 'atributo' && advantageModifier === 0 && count > 0)) {
+        for (let i = 0; i < count; i++) {
+            allResults.push(Math.floor(Math.random() * faces) + 1);
+        }
     }
 
     let total = 0;
     let details = '';
     let isCritical = false;
+    let returnedResults: number[] = []; // Para armazenar os dados que serão efetivamente mostrados
 
     if (type === 'atributo') {
-        // Regra de Atributo: Rola N dados, pega o MAIOR.
-        // Se N for 0 ou menor (desvantagem extrema), rola 2d20 e pega o MENOR (Regra opcional, vamos focar no padrão O.P. 1.1)
-        // Padrão O.P.: Atributo 0 = Rola 2d20, pega o menor.
-        
-        if (count <= 0) {
-             // Implementação de Atributo 0
-             const r1 = Math.floor(Math.random() * 20) + 1;
-             const r2 = Math.floor(Math.random() * 20) + 1;
-             results.push(r1, r2);
-             total = Math.min(r1, r2) + bonus;
-             details = `Menor de [${r1}, ${r2}]` + (bonus ? ` ${bonus > 0 ? '+' : ''}${bonus}` : '');
-             if (total >= threat) isCritical = true; // Crítico com atributo 0 é raro mas possível se bonus ajudar? Não, critico é no dado.
-             // Crítico em O.P. é natural do dado. Se o dado escolhido for >= margem.
-             if (Math.min(r1, r2) >= threat) isCritical = true;
-        } else {
-            const maxVal = Math.max(...results);
-            total = maxVal + bonus;
-            details = `Maior de [${results.join(', ')}]` + (bonus ? ` ${bonus > 0 ? '+' : ''}${bonus}` : '');
-            if (maxVal >= threat) isCritical = true;
+        let chosenRoll: number;
+
+        if (advantageModifier === 1) { // Vantagem
+            const r1 = Math.floor(Math.random() * faces) + 1;
+            const r2 = Math.floor(Math.random() * faces) + 1;
+            returnedResults = [r1, r2];
+            chosenRoll = Math.max(r1, r2);
+            details = `Maior de [${r1}, ${r2}]` + (baseBonus ? ` ${baseBonus > 0 ? '+' : ''}${baseBonus}` : '');
+        } else if (advantageModifier === -1) { // Desvantagem
+            const r1 = Math.floor(Math.random() * faces) + 1;
+            const r2 = Math.floor(Math.random() * faces) + 1;
+            returnedResults = [r1, r2];
+            chosenRoll = Math.min(r1, r2);
+            details = `Menor de [${r1}, ${r2}]` + (baseBonus ? ` ${baseBonus > 0 ? '+' : ''}${baseBonus}` : '');
+        } else { // Normal (usa a lógica baseada no count)
+            if (count <= 0) { // Caso de atributo 0, rola 2d20 e pega o menor
+                const r1 = Math.floor(Math.random() * faces) + 1;
+                const r2 = Math.floor(Math.random() * faces) + 1;
+                returnedResults = [r1, r2];
+                chosenRoll = Math.min(r1, r2);
+                details = `Menor de [${r1}, ${r2}]` + (baseBonus ? ` ${baseBonus > 0 ? '+' : ''}${baseBonus}` : '');
+            } else { // Rolagem normal baseada no atributo
+                returnedResults = allResults;
+                chosenRoll = Math.max(...returnedResults);
+                details = `Maior de [${returnedResults.join(', ')}]` + (baseBonus ? ` ${baseBonus > 0 ? '+' : ''}${baseBonus}` : '');
+            }
         }
+        
+        total = chosenRoll + baseBonus;
+        if (chosenRoll >= threat) isCritical = true;
 
     } else {
         // Regra de Dano: Soma tudo.
-        total = results.reduce((a, b) => a + b, 0) + bonus;
-        details = `Soma [${results.join(', ')}]` + (bonus ? ` ${bonus > 0 ? '+' : ''}${bonus}` : '');
+        returnedResults = allResults;
+        total = allResults.reduce((a, b) => a + b, 0) + bonus + baseBonus;
+        details = `Soma [${allResults.join(', ')}]` + (bonus + baseBonus ? ` ${bonus + baseBonus > 0 ? '+' : ''}${bonus + baseBonus}` : '');
     }
 
     return {
         total,
-        results,
+        results: returnedResults,
         diceCode: code,
         isCritical,
         details

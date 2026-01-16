@@ -5,16 +5,17 @@ import { useAuth } from '../contexts/AuthContext';
 import { CharacterSheet } from '../components/CharacterSheet';
 import { ChatPanel } from '../components/ChatPanel';
 import { MapBoard } from '../components/MapBoard';
-import { InitiativeTracker } from '../components/InitiativeTracker';
+
 import { OpButton } from '../components/ui-op/OpButton';
 import { useToast } from '../components/ui-op/OpToast';
 import { 
     Users, MessageSquare, History, Package, Map as MapIcon, 
     User as UserIcon, LogOut, Copy, Shield, Skull, PlusCircle, 
-    ChevronRight, ChevronLeft, Dices, Menu, Eye, Heart, Zap, BookOpen,
-    Check, XCircle, UserPlus, Crown
+    ChevronRight, ChevronLeft, Dice1, Menu, Eye, Heart, Zap, BookOpen,
+    Check, XCircle, UserPlus, Crown, Image, Send, ImagePlus
 } from 'lucide-react';
 import { OpInput } from '../components/ui-op/OpInput';
+import { CombatScreen } from './CombatScreen';
 import { OpFileUpload } from '../components/ui-op/OpFileUpload';
 import monstersData from '../data/rules/monsters.json';
 import itemsData from '../data/rules/items.json';
@@ -31,15 +32,19 @@ export const GameRoom: React.FC = () => {
   const { 
     initialize, isLoading, currentMesa, allCharacters, unsubscribe, 
     spawnMonster, sendChatMessage, giveItemToCharacter, activeScene, createScene,
-    messages, logs, needsCharacterCreation, character, approvalStatus, playerRole
+    messages, logs, needsCharacterCreation, character, approvalStatus, playerRole,
+    updateScene, createPlayerToken, shareImage, toggleCanEvolve
   } = useGameStore();
   
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'sheet' | 'map'>('sheet');
   const [leftTab, setLeftTab] = useState<'chat' | 'players' | 'log'>('chat');
-  const [rightTab, setRightTab] = useState<'players' | 'library' | 'requests'>('players');
-  const [librarySubTab, setLibrarySubTab] = useState<'bestiario' | 'itens'>('bestiario');
+  const [rightTab, setRightTab] = useState<'players' | 'bestiary' | 'requests' | 'monsters' | 'map-settings' | 'media'>('players');
+
+  const [isWhispering, setIsWhispering] = useState(false);
+  const [whisperTargetId, setWhisperTargetId] = useState<string | null>(null);
+
   const [chatInput, setChatInput] = useState('');
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   
@@ -51,6 +56,12 @@ export const GameRoom: React.FC = () => {
   const [newMapImage, setNewMapImage] = useState('');
   
   const [pendingPlayers, setPendingPlayers] = useState<any[]>([]);
+  const [mapSettings, setMapSettings] = useState({ grid_size: 50, scale_meters: 1.5 });
+
+  const [isSharingImage, setIsSharingImage] = useState(false);
+  const [shareImageData, setShareImageData] = useState<string | null>(null);
+  const [shareTargetIds, setShareTargetIds] = useState<string[]>([]);
+  const [sharedImageToShow, setSharedImageToShow] = useState<string | null>(null);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -60,6 +71,59 @@ export const GameRoom: React.FC = () => {
     return () => unsubscribe();
   }, [user, mesaId]);
 
+  useEffect(() => {
+    if (activeScene) {
+      setMapSettings({
+        grid_size: activeScene.grid_size || 50,
+        scale_meters: activeScene.scale_meters || 1.5
+      });
+    }
+  }, [activeScene]);
+
+    useEffect(() => {
+        const imageMessage = messages.find(msg => msg.type === 'image' && msg.target_user_id === user?.id);
+        if (imageMessage) {
+            setSharedImageToShow(imageMessage.content.imageUrl);
+        }
+    }, [messages, user]);
+
+  const handleUpdateMapSettings = async () => {
+      const result = await updateScene(mapSettings);
+      showToast(result.message, result.success ? 'success' : 'error');
+  };
+
+  const handleCreatePlayerToken = async (characterId: string) => {
+    const result = await createPlayerToken(characterId);
+    showToast(result.message, result.success ? 'success' : 'error');
+  };
+
+  const handleShareImage = async () => {
+    if (!shareImageData || shareTargetIds.length === 0) return;
+    await shareImage(shareImageData, shareTargetIds);
+    showToast('Imagem compartilhada!', 'success');
+    setIsSharingImage(false);
+    setShareImageData(null);
+    setShareTargetIds([]);
+  };
+
+    const handlePlayerSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const charId = e.target.value;
+        if (e.target.checked) {
+            setShareTargetIds(prev => [...prev, charId]);
+        } else {
+            setShareTargetIds(prev => prev.filter(id => id !== charId));
+        }
+    };
+
+    const handleSelectAllPlayers = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
+            const allPlayerIds = allCharacters.filter(c => !c.is_npc).map(c => c.id);
+            setShareTargetIds(allPlayerIds);
+        } else {
+            setShareTargetIds([]);
+        }
+    };
+  
   // isGM agora verifica se o playerRole é 'gm' (que inclui o dono e os co-gms)
   const isGM = playerRole === 'gm';
   const isOwner = currentMesa?.gm_id === user?.id;
@@ -128,7 +192,12 @@ export const GameRoom: React.FC = () => {
   const handleSendMessage = async (e?: React.FormEvent) => {
       e?.preventDefault();
       if (chatInput.trim()) {
-          await sendChatMessage(chatInput);
+          if (whisperTargetId) {
+              await sendChatMessage(chatInput, 'text', whisperTargetId); // Use 'text' type for content, whisper logic is in game-store
+              setWhisperTargetId(null);
+          } else {
+              await sendChatMessage(chatInput);
+          }
           setChatInput('');
       }
   };
@@ -172,10 +241,20 @@ export const GameRoom: React.FC = () => {
   const handleRollClick = () => setIsRolling(true);
 
   const confirmRoll = async () => {
-      const diceCount = (character?.attributes[rollConfig.attr as AttributeName] || 1) + (rollConfig.advantage);
-      const diceStr = `${diceCount > 0 ? diceCount : 2}d20`;
-      const rollType = rollConfig.advantage !== 0 ? (rollConfig.advantage > 0 ? 'Vantagem' : 'Desvantagem') : 'Normal';
-      const msg = `/roll ${diceStr} (${rollConfig.skill || rollConfig.attr.toUpperCase()} - ${rollType})`;
+      const baseAttributeValue = character?.attributes[rollConfig.attr as AttributeName] || 1;
+      let diceToRoll = baseAttributeValue;
+      let rollType = 'Normal';
+
+      if (rollConfig.advantage === 1) {
+          diceToRoll = 2; // Always roll 2d20 for advantage
+          rollType = 'Vantagem';
+      } else if (rollConfig.advantage === -1) {
+          diceToRoll = 2; // Always roll 2d20 for disadvantage
+          rollType = 'Desvantagem';
+      }
+
+      const diceStr = `${diceToRoll}d20`;
+      const msg = `/roll ${diceStr} (${rollConfig.skill || rollConfig.attr.toUpperCase()} - ${rollType} +${rollConfig.bonus})`;
       await sendChatMessage(msg);
       setIsRolling(false);
   };
@@ -260,6 +339,12 @@ export const GameRoom: React.FC = () => {
                                     <div className={`inline-block border px-2 py-1 rounded bg-zinc-900 ${msg.content.is_critical ? 'border-op-red text-op-red' : 'border-zinc-700 text-zinc-300'}`}>
                                         🎲 <strong>{msg.content.total}</strong> <span className="text-zinc-500 text-xs">({msg.content.details})</span>
                                     </div>
+                                ) : msg.type === 'whisper_sent' ? (
+                                    <span className="text-purple-400 italic">{msg.content.text}</span>
+                                ) : msg.type === 'whisper_received' ? (
+                                    <span className="text-pink-400 italic">{msg.content.text}</span>
+                                ) : msg.type === 'whisper_gm_copy' ? (
+                                    <span className="text-orange-400 italic">{msg.content.text}</span>
                                 ) : (
                                     <span className="text-zinc-300">{msg.content.text}</span>
                                 )}
@@ -270,8 +355,21 @@ export const GameRoom: React.FC = () => {
                     <div className="p-3 border-t border-op-border bg-op-panel">
                         <div className="flex gap-2">
                             <button onClick={handleRollClick} className="p-2 bg-zinc-800 hover:bg-op-gold/20 text-zinc-400 hover:text-op-gold border border-zinc-700 rounded transition-colors">
-                                <Dices className="w-5 h-5" />
+                                <Dice1 className="w-5 h-5" />
                             </button>
+                            <div className="relative">
+                                <button onClick={() => setIsWhispering(!isWhispering)} className="p-2 bg-zinc-800 hover:bg-op-gold/20 text-zinc-400 hover:text-op-gold border border-zinc-700 rounded transition-colors">
+                                    <MessageSquare className="w-5 h-5" />
+                                </button>
+                                {isWhispering && (
+                                    <div className="absolute bottom-full mb-2 w-48 bg-op-panel border border-op-border rounded shadow-lg z-10">
+                                        {isGM || <button onClick={() => { setWhisperTargetId(currentMesa?.gm_id || null); setIsWhispering(false); }} className="block w-full text-left px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800">Mestre</button>}
+                                        {allCharacters.filter(char => char.user_id !== user?.id && char.user_id !== currentMesa?.gm_id && !char.is_npc).map(char => (
+                                            <button key={char.id} onClick={() => { setWhisperTargetId(char.user_id || null); setIsWhispering(false); }} className="block w-full text-left px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800">{char.name}</button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                             <form onSubmit={handleSendMessage} className="flex-1 flex gap-2">
                                 <input className="flex-1 bg-black/40 border border-zinc-700 rounded p-2 text-sm outline-none focus:border-op-red transition-colors text-zinc-200 placeholder:text-zinc-600" placeholder="Mensagem..." value={chatInput} onChange={e => setChatInput(e.target.value)} />
                             </form>
@@ -323,6 +421,14 @@ export const GameRoom: React.FC = () => {
         <header className="h-14 bg-op-bg/90 border-b border-op-border flex items-center px-4 md:px-6 justify-between backdrop-blur-md z-20 pl-16 md:pl-6 shadow-sm">
           <div className="flex items-center gap-4">
             <h2 className="font-black tracking-tighter uppercase text-sm text-op-red truncate hidden sm:block font-typewriter">{currentMesa.name}</h2>
+            {isGM && (
+                <div className="flex items-center gap-1">
+                    <span className="text-[10px] text-zinc-500 font-mono tracking-widest">{currentMesa.code}</span>
+                    <button onClick={handleCopyCode} className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors">
+                        <Copy className="w-3 h-3" />
+                    </button>
+                </div>
+            )}
             <div className="flex bg-op-panel rounded p-0.5 border border-op-border">
                 <button onClick={() => setViewMode('sheet')} className={`px-3 py-1 rounded text-[10px] font-bold flex items-center gap-2 uppercase tracking-wide ${viewMode === 'sheet' ? 'bg-zinc-700 text-white shadow' : 'text-zinc-500 hover:text-zinc-300'}`}><UserIcon className="w-3 h-3" /> Ficha</button>
                 <button onClick={() => setViewMode('map')} className={`px-3 py-1 rounded text-[10px] font-bold flex items-center gap-2 uppercase tracking-wide ${viewMode === 'map' ? 'bg-zinc-700 text-white shadow' : 'text-zinc-500 hover:text-zinc-300'}`}><MapIcon className="w-3 h-3" /> Mapa</button>
@@ -342,24 +448,47 @@ export const GameRoom: React.FC = () => {
           </div>
         </header>
         
-        <div className="flex-1 overflow-hidden relative">
-            <InitiativeTracker />
-            {viewMode === 'sheet' ? (
-                <div className="h-full overflow-y-auto p-4 md:p-8 custom-scrollbar">
-                    <div className="max-w-5xl mx-auto shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-sm overflow-hidden border border-op-border bg-op-panel">
-                        {character ? <CharacterSheet /> : (
-                            <div className="flex flex-col items-center justify-center h-full text-zinc-500 py-20">
-                                <Crown className="w-16 h-16 text-op-gold mb-4 opacity-50" />
-                                <h3 className="text-xl font-bold font-typewriter text-zinc-400">Modo Observador</h3>
-                                <p className="text-sm">Você é um Mestre Auxiliar. Você tem acesso total à mesa, mas não possui uma ficha de personagem.</p>
+                <div className="flex-1 overflow-hidden relative">
+        
+                    {currentMesa.combat_active ? <CombatScreen /> : (
+        
+                      <>
+        
+                        {viewMode === 'sheet' ? (
+        
+                            <div className="h-full overflow-y-auto p-4 md:p-8 custom-scrollbar">
+        
+                                <div className="max-w-5xl mx-auto shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-sm overflow-hidden border border-op-border bg-op-panel">
+        
+                                    {character ? <CharacterSheet /> : (
+        
+                                        <div className="flex flex-col items-center justify-center h-full text-zinc-500 py-20">
+        
+                                            <Crown className="w-16 h-16 text-op-gold mb-4 opacity-50" />
+        
+                                            <h3 className="text-xl font-bold font-typewriter text-zinc-400">Modo Observador</h3>
+        
+                                            <p className="text-sm">Você é um Mestre Auxiliar. Você tem acesso total à mesa, mas não possui uma ficha de personagem.</p>
+        
+                                        </div>
+        
+                                    )}
+        
+                                </div>
+        
                             </div>
+        
+                        ) : (
+        
+                            <MapBoard />
+        
                         )}
-                    </div>
+        
+                      </>
+        
+                    )}
+        
                 </div>
-            ) : (
-                <MapBoard />
-            )}
-        </div>
 
         {character && (
             <footer className="h-16 bg-op-panel border-t border-op-border flex items-center px-6 gap-6 z-20 shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
@@ -374,16 +503,16 @@ export const GameRoom: React.FC = () => {
                 </div>
                 <div className="flex-1 grid grid-cols-3 gap-4 max-w-xl">
                     <div className="flex flex-col gap-1">
-                        <div className="flex justify-between text-[10px] uppercase font-bold text-red-500"><span>PV</span> <span>{character.stats_current.pv}/{character.stats_max.pv}</span></div>
-                        <div className="h-2 w-full bg-zinc-900 rounded-sm overflow-hidden border border-zinc-800"><div className="h-full bg-red-600 transition-all duration-500" style={{ width: `${(character.stats_current.pv / character.stats_max.pv) * 100}%` }}></div></div>
+                        <div className="flex justify-between text-[10px] uppercase font-bold text-red-500"><span>PV</span> <span>{character.current_status.pv}/{character.stats.max_pv}</span></div>
+                        <div className="h-2 w-full bg-zinc-900 rounded-sm overflow-hidden border border-zinc-800"><div className="h-full bg-red-600 transition-all duration-500" style={{ width: `${(character.current_status.pv / character.stats.max_pv) * 100}%` }}></div></div>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <div className="flex justify-between text-[10px] uppercase font-bold text-yellow-500"><span>PE</span> <span>{character.stats_current.pe}/{character.stats_max.pe}</span></div>
-                        <div className="h-2 w-full bg-zinc-900 rounded-sm overflow-hidden border border-zinc-800"><div className="h-full bg-yellow-500 transition-all duration-500" style={{ width: `${(character.stats_current.pe / character.stats_max.pe) * 100}%` }}></div></div>
+                        <div className="flex justify-between text-[10px] uppercase font-bold text-yellow-500"><span>PE</span> <span>{character.current_status.pe}/{character.stats.max_pe}</span></div>
+                        <div className="h-2 w-full bg-zinc-900 rounded-sm overflow-hidden border border-zinc-800"><div className="h-full bg-yellow-500 transition-all duration-500" style={{ width: `${(character.current_status.pe / character.stats.max_pe) * 100}%` }}></div></div>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <div className="flex justify-between text-[10px] uppercase font-bold text-blue-500"><span>SAN</span> <span>{character.stats_current.san}/{character.stats_max.san}</span></div>
-                        <div className="h-2 w-full bg-zinc-900 rounded-sm overflow-hidden border border-zinc-800"><div className="h-full bg-blue-500 transition-all duration-500" style={{ width: `${(character.stats_current.san / character.stats_max.san) * 100}%` }}></div></div>
+                        <div className="flex justify-between text-[10px] uppercase font-bold text-blue-500"><span>SAN</span> <span>{character.current_status.san}/{character.stats.max_san}</span></div>
+                        <div className="h-2 w-full bg-zinc-900 rounded-sm overflow-hidden border border-zinc-800"><div className="h-full bg-blue-500 transition-all duration-500" style={{ width: `${(character.current_status.san / character.stats.max_san) * 100}%` }}></div></div>
                     </div>
                 </div>
             </footer>
@@ -398,14 +527,17 @@ export const GameRoom: React.FC = () => {
         </div>
         <div className="flex p-2 gap-1 border-b border-op-border bg-op-bg/50">
             <button onClick={() => setRightTab('players')} className={`flex-1 py-2 text-[10px] uppercase font-bold rounded-sm border ${rightTab === 'players' ? 'bg-zinc-800 text-white border-zinc-600' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>Mesa</button>
-            {isGM && <button onClick={() => setRightTab('library')} className={`flex-1 py-2 text-[10px] uppercase font-bold rounded-sm border ${rightTab === 'library' ? 'bg-zinc-800 text-white border-zinc-600' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>Biblioteca</button>}
+            {isGM && <button onClick={() => setRightTab('monsters')} className={`flex-1 py-2 text-[10px] uppercase font-bold rounded-sm border ${rightTab === 'monsters' ? 'bg-zinc-800 text-white border-zinc-600' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>Monstros</button>}
+            {isGM && <button onClick={() => setRightTab('bestiary')} className={`flex-1 py-2 text-[10px] uppercase font-bold rounded-sm border ${rightTab === 'bestiary' ? 'bg-zinc-800 text-white border-zinc-600' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>Bestiário</button>}
             {isGM && <button onClick={() => setRightTab('requests')} className={`flex-1 py-2 text-[10px] uppercase font-bold rounded-sm border ${rightTab === 'requests' ? 'bg-zinc-800 text-white border-zinc-600' : 'text-zinc-500 border-transparent hover:text-zinc-300'} ${pendingPlayers.length > 0 ? 'text-op-gold' : ''}`}>
                Reqs {pendingPlayers.length > 0 && `(${pendingPlayers.length})`}
             </button>}
+            {isGM && activeScene && <button onClick={() => setRightTab('map-settings')} className={`flex-1 py-2 text-[10px] uppercase font-bold rounded-sm border ${rightTab === 'map-settings' ? 'bg-zinc-800 text-white border-zinc-600' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>Mapa</button>}
+            {isGM && <button onClick={() => setRightTab('media')} className={`flex-1 py-2 text-[10px] uppercase font-bold rounded-sm border ${rightTab === 'media' ? 'bg-zinc-800 text-white border-zinc-600' : 'text-zinc-500 border-transparent hover:text-zinc-300'}`}>Mídia</button>}
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-            {rightTab === 'players' && allCharacters.map(char => (
+            {rightTab === 'players' && allCharacters.filter(char => !char.is_npc).map(char => (
                 <div key={char.id} className={`bg-zinc-900/50 border p-3 rounded flex items-center gap-3 mb-2 ${char.is_npc ? 'border-red-900/30' : 'border-zinc-700'}`}>
                     <div className={`w-8 h-8 rounded-full border flex items-center justify-center bg-zinc-950 font-bold text-xs ${char.is_npc ? 'border-red-500 text-red-500' : 'border-zinc-500 text-zinc-300'}`}>{char.name.substring(0, 2)}</div>
                     <span className="text-sm font-bold text-zinc-200 truncate flex-1">{char.name}</span>
@@ -414,6 +546,28 @@ export const GameRoom: React.FC = () => {
                             <Crown className="w-4 h-4" />
                         </button>
                     )}
+                    {isGM && !char.is_npc && ( // Botão de evolução, visível apenas para GM e não-NPC
+                        <button
+                            onClick={() => toggleCanEvolve(char.id, !char.can_evolve)}
+                            className={`p-1 rounded transition-colors ${char.can_evolve ? 'text-op-gold hover:bg-op-gold/20' : 'text-zinc-600 hover:bg-zinc-800'}`}
+                            title={char.can_evolve ? "Revogar Permissão de Evolução" : "Conceder Permissão de Evolução"}
+                        >
+                            <ChevronUp className="w-4 h-4" />
+                        </button>
+                    )}
+                    {isGM && <Eye className="w-4 h-4 text-zinc-600 hover:text-white cursor-pointer" />}
+                    {isGM && activeScene && !char.is_npc && (
+                        <button onClick={() => handleCreatePlayerToken(char.id)} className="p-1 hover:bg-op-gold/20 rounded text-zinc-600 hover:text-op-gold transition-colors" title="Adicionar Token ao Mapa">
+                            <MapIcon className="w-4 h-4" />
+                        </button>
+                    )}
+                </div>
+            ))}
+
+            {rightTab === 'monsters' && allCharacters.filter(char => char.is_npc).map(char => (
+                <div key={char.id} className={`bg-zinc-900/50 border p-3 rounded flex items-center gap-3 mb-2 ${char.is_npc ? 'border-red-900/30' : 'border-zinc-700'}`}>
+                    <div className={`w-8 h-8 rounded-full border flex items-center justify-center bg-zinc-950 font-bold text-xs ${char.is_npc ? 'border-red-500 text-red-500' : 'border-zinc-500 text-zinc-300'}`}>{char.name.substring(0, 2)}</div>
+                    <span className="text-sm font-bold text-zinc-200 truncate flex-1">{char.name}</span>
                     {isGM && <Eye className="w-4 h-4 text-zinc-600 hover:text-white cursor-pointer" />}
                 </div>
             ))}
@@ -441,32 +595,33 @@ export const GameRoom: React.FC = () => {
                 </div>
             )}
 
-            {rightTab === 'library' && isGM && (
+            {rightTab === 'bestiary' && isGM && (
                 <div className="space-y-4">
-                    <div className="flex gap-1 mb-2">
-                        <button onClick={() => setLibrarySubTab('bestiario')} className={`flex-1 py-1 text-[10px] uppercase font-bold rounded ${librarySubTab === 'bestiario' ? 'bg-zinc-700 text-white' : 'text-zinc-500'}`}>Monstros</button>
-                        <button onClick={() => setLibrarySubTab('itens')} className={`flex-1 py-1 text-[10px] uppercase font-bold rounded ${librarySubTab === 'itens' ? 'bg-zinc-700 text-white' : 'text-zinc-500'}`}>Itens</button>
-                    </div>
-                    {librarySubTab === 'bestiario' && monstersData.map((m) => (
+                    {monstersData.map((m) => (
                         <div key={m.id} className="bg-zinc-900/50 border border-zinc-800 p-3 rounded hover:border-op-red/50 cursor-pointer group flex justify-between items-center">
                             <div><h4 className="font-bold text-xs text-zinc-200">{m.name}</h4><span className="text-[10px] text-op-red">VD {m.vd}</span></div>
                             <button onClick={() => handleSpawn(m.id)} className="opacity-0 group-hover:opacity-100 text-op-red hover:bg-op-red/10 p-1 rounded"><PlusCircle className="w-4 h-4" /></button>
                         </div>
                     ))}
-                    {librarySubTab === 'itens' && (itemsData.armas_simples as any[]).slice(0, 10).map((i: any, idx) => (
-                        <div key={idx} className="bg-zinc-900/50 border border-zinc-800 p-2 rounded hover:border-op-gold/50 flex justify-between items-center group relative">
-                            <span className="text-xs text-zinc-400">{i.nome}</span>
-                            <div className="relative group/btn">
-                                <button className="bg-zinc-700 hover:bg-green-600 hover:text-white text-zinc-400 p-1 rounded transition-colors" onClick={() => setSelectedItem(selectedItem === i ? null : i)}><Package className="w-3 h-3" /></button>
-                                {selectedItem === i && <div className="absolute right-0 top-full mt-1 bg-op-panel border border-op-border rounded shadow-xl p-1 z-50 w-32">
-                                    <p className="text-[9px] uppercase font-bold text-zinc-500 mb-1 px-1">Enviar para:</p>
-                                    {allCharacters.filter(c => !c.is_npc).map(char => (
-                                        <button key={char.id} onClick={() => handleGiveItem(char.id)} className="w-full text-left text-xs p-1.5 hover:bg-zinc-800 rounded text-zinc-300 truncate">{char.name}</button>
-                                    ))}
-                                </div>}
-                            </div>
-                        </div>
-                    ))}
+                </div>
+            )}
+            
+            {rightTab === 'map-settings' && isGM && activeScene && (
+                <div className="space-y-4">
+                    <h4 className="text-sm font-bold text-zinc-300">Configurações do Mapa</h4>
+                    <OpInput label="Tamanho do Grid (px)" type="number" value={mapSettings.grid_size} onChange={(e) => setMapSettings({...mapSettings, grid_size: parseInt(e.target.value)})} />
+                    <OpInput label="Escala (metros por quadrado)" type="number" value={mapSettings.scale_meters} onChange={(e) => setMapSettings({...mapSettings, scale_meters: parseInt(e.target.value)})} />
+                    <OpButton onClick={handleUpdateMapSettings}>Atualizar Mapa</OpButton>
+                </div>
+            )}
+
+            {rightTab === 'media' && isGM && (
+                <div className="space-y-4">
+                    <h4 className="text-sm font-bold text-zinc-300">Compartilhamento de Mídia</h4>
+                    <OpButton onClick={() => setIsSharingImage(true)} className="w-full">
+                        <PlusCircle className="w-4 h-4 mr-2" />
+                        Compartilhar Pista Visual
+                    </OpButton>
                 </div>
             )}
         </div>
@@ -488,6 +643,47 @@ export const GameRoom: React.FC = () => {
               </div>
           </div>
       )}
+
+      {/* MODAL DE COMPARTILHAMENTO DE IMAGEM */}
+        {isSharingImage && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                <div className="bg-op-panel border border-op-border p-6 w-full max-w-lg shadow-2xl relative">
+                    <h3 className="text-lg font-bold text-zinc-200 mb-4 font-typewriter">Compartilhar Pista Visual</h3>
+                    <div className="space-y-4">
+                        <OpFileUpload label="Arquivo de Imagem" onUpload={(url) => setShareImageData(url)} />
+                        <div>
+                            <label className="text-xs text-zinc-500 uppercase font-bold mb-2 block">Compartilhar com:</label>
+                            <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar p-2 bg-zinc-900/50 rounded border border-zinc-800">
+                                <label className="flex items-center gap-2 cursor-pointer p-2 hover:bg-zinc-800 rounded">
+                                    <input type="checkbox" checked={shareTargetIds.length === allCharacters.filter(c => !c.is_npc).length} onChange={handleSelectAllPlayers} className="form-checkbox bg-zinc-800 border-zinc-700 text-op-gold focus:ring-op-gold" />
+                                    <span className="text-sm text-zinc-300">Todos os Agentes</span>
+                                </label>
+                                {allCharacters.filter(c => !c.is_npc).map(char => (
+                                    <label key={char.id} className="flex items-center gap-2 cursor-pointer p-2 hover:bg-zinc-800 rounded">
+                                        <input type="checkbox" value={char.id} checked={shareTargetIds.includes(char.id)} onChange={handlePlayerSelect} className="form-checkbox bg-zinc-800 border-zinc-700 text-op-gold focus:ring-op-gold" />
+                                        <span className="text-sm text-zinc-300">{char.name}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex gap-2 pt-2">
+                            <OpButton variant="ghost" onClick={() => setIsSharingImage(false)} className="flex-1">Cancelar</OpButton>
+                            <OpButton onClick={handleShareImage} disabled={!shareImageData || shareTargetIds.length === 0} className="flex-1">Enviar</OpButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* MODAL DE VISUALIZAÇÃO DE IMAGEM */}
+        {sharedImageToShow && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-lg p-4" onClick={() => setSharedImageToShow(null)}>
+                <img src={sharedImageToShow} className="max-w-full max-h-full object-contain shadow-2xl" />
+                <button onClick={() => setSharedImageToShow(null)} className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-black/80">
+                    <XCircle className="w-8 h-8" />
+                </button>
+            </div>
+        )}
 
       {/* MODAL DE ROLAGEM */}
       {isRolling && (

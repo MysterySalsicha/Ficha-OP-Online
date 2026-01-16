@@ -18,61 +18,71 @@ export interface ActionResult {
   trigger?: 'LEVEL_UP_TRAIL' | 'LEVEL_UP_POWER' | 'LEVEL_UP_AFFINITY' | null;
 }
 
-// --- DATABASE SCHEMA V2 ---
+// --- DATABASE SCHEMA V2 & MERGED TYPES ---
+
+export interface InventoryItem {
+    id: string; // UUID ou ID único local para a instância do item
+    item_id_ref: string; // ID do item na library_items
+    name: string;
+    category: ItemCategory;
+    quantity: number;
+    slots: number;
+    current_ammo?: number; // Para armas
+    is_equipped: boolean;
+    stats: Record<string, any>; // Dados específicos do item (dano, critico, slots, etc.)
+}
+
 export interface CharacterDB {
-  id: string;
-  user_id: string;
+  id:string;
+  user_id: string | null;
+  mesa_id?: string;
   name: string;
   class: ClassName;
   nex: number;
-  survivor_stage?: number; // 0-5
   patente: string;
 
-  // Identidade Mecânica
   origin?: string;
   trail?: string;
-  affinity?: Affinity;
+  affinity?: Affinity | 'versatilidade';
 
-  // Atributos Base
   attributes: Record<AttributeName, number>;
 
-  // Stats Calculados (Snapshot)
-  stats_max: {
-    pv: number;
-    pe: number;
-    san: number;
-  };
-  stats_current: {
-    pv: number;
-    pe: number;
-    san: number;
+  stats_max: { pv: number; pe: number; san: number; };
+  stats_current: { pv: number; pe: number; san: number; conditions: string[], is_dying: boolean, is_stable: boolean };
+  
+  inventory_meta: {
+    load_limit: number;
+    credit_limit: string;
+    current_load: number;
   };
 
-  // Resistências e Movimento
   defenses: {
     passiva: number;
     esquiva: number;
     bloqueio: number;
+    mental: number;
   };
+
   movement: number;
-
-  // Inventário e SaH
-  inventory_slots_max: number;
-  survivor_mode: boolean;
   stress: number;
+  resources?: { fome: number; sede: number; fadiga: number; };
 
-  // Progressão
-  skills: Record<SkillName, number>; // 0, 5, 10, 15
-  powers: string[]; // IDs or Names of powers
+  skills: Record<string, { grau: 'destreinado' | 'treinado' | 'veterano' | 'expert', bonus: number }>;
+  powers: string[];
   rituals: RitualRule[];
+  inventory: InventoryItem[];
 
-  // Flags de Estado
   status_flags: {
     vida: VitalStatus;
     mental: MentalStatus;
     sobrecarregado: boolean;
   };
+
   is_gm_mode: boolean;
+  is_npc: boolean;
+  is_approved_evolve: boolean;
+  survivor_stage?: number;
+  survivor_mode: boolean;
 
   created_at: string;
 }
@@ -84,11 +94,10 @@ export interface ItemDB {
   category: ItemCategory;
   description?: string;
 
-  // Mecânicas
   slots: number;
-  access_category: number; // 0=Livre, 1=I, etc.
+  access_category: number;
   quantity: number;
-  weight: number; // Keep for legacy/mass calculation if needed, but slots is priority
+  weight: number;
 
   stats: Record<string, any>;
   is_custom: boolean;
@@ -132,13 +141,12 @@ export interface RitualRule {
 // --- STORE INTERFACE ---
 export interface SheetStore {
   character: CharacterDB;
-  items: ItemDB[];
+  items: InventoryItem[];
 
   mode: SheetMode;
   creation_step: WizardStep;
-  creation_points_spent: number; // Track attribute points spent during creation
+  creation_points_spent: number;
 
-  // Actions
   toggleMode: (mode: SheetMode) => void;
   setCreationStep: (step: WizardStep) => void;
 
@@ -154,7 +162,6 @@ export interface SheetStore {
   castRitual: (ritualId: string) => ActionResult;
   performAttack: (weaponId: string) => ActionResult;
 
-  // Helpers
   recalculateDerivedStats: () => void;
   getRollData: (skill: SkillName, attr: AttributeName) => RollData;
 }

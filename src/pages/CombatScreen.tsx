@@ -3,7 +3,7 @@ import { useGameStore } from '../store/game-store';
 import { useAuth } from '../contexts/AuthContext';
 import { Play, SkipForward, XSquare, Swords } from 'lucide-react';
 
-export const InitiativeTracker: React.FC = () => {
+export const CombatScreen: React.FC = () => {
     const { currentMesa, allCharacters, startCombat, nextTurn, endCombat } = useGameStore();
     const { user } = useAuth();
     

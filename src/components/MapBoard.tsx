@@ -3,12 +3,13 @@ import { useGameStore, Token } from '../store/game-store';
 import { Users, Skull, Maximize, Minus, Plus } from 'lucide-react';
 
 export const MapBoard: React.FC = () => {
-    const { activeScene, tokens, moveToken, currentUser, character, allCharacters } = useGameStore();
+    const { activeScene, tokens, moveToken, currentUser, character, allCharacters, selectTarget, performAttack } = useGameStore();
     
     const [scale, setScale] = useState(1);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isDraggingMap, setIsDraggingMap] = useState(false);
     const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
+    const [contextMenu, setContextMenu] = useState<{ x: number, y: number, token: Token } | null>(null);
 
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -17,6 +18,7 @@ export const MapBoard: React.FC = () => {
             setIsDraggingMap(true);
             setLastMousePos({ x: e.clientX, y: e.clientY });
         }
+        if (contextMenu) setContextMenu(null);
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
@@ -56,6 +58,19 @@ export const MapBoard: React.FC = () => {
         moveToken(token.id, snappedX, snappedY);
     };
 
+    const handleTokenContextMenu = (e: React.MouseEvent, token: Token) => {
+        e.preventDefault();
+        setContextMenu({ x: e.clientX, y: e.clientY, token });
+    };
+
+    const handleAttack = (token: Token) => {
+        selectTarget(token.id);
+        // A lógica de ataque real deve ser acionada a partir da ficha do personagem,
+        // usando a arma selecionada e o alvo definido por `selectTarget`.
+        // performAttack('some-weapon-id'); // Exemplo
+        setContextMenu(null);
+    };
+
     if (!activeScene) {
         return (
             <div className="flex-1 flex flex-col items-center justify-center bg-zinc-950 text-zinc-700">
@@ -71,6 +86,7 @@ export const MapBoard: React.FC = () => {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onWheel={handleWheel}
+            onContextMenu={(e) => e.preventDefault()} // Prevenir menu de contexto padrão no mapa
             ref={containerRef}
         >
             {/* Transform Layer */}
@@ -111,6 +127,7 @@ export const MapBoard: React.FC = () => {
                             key={token.id}
                             draggable={canMove}
                             onDragEnd={(e) => handleTokenDragEnd(e, token)}
+                            onContextMenu={(e) => handleTokenContextMenu(e, token)}
                             className={`absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out z-10 group`}
                             style={{ 
                                 left: token.x, 
@@ -144,6 +161,18 @@ export const MapBoard: React.FC = () => {
                     );
                 })}
             </div>
+            
+            {contextMenu && (
+                <div 
+                    className="absolute bg-op-panel border border-op-border rounded shadow-lg z-50 p-1"
+                    style={{ top: contextMenu.y, left: contextMenu.x }}
+                >
+                    <button className="block w-full text-left px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800 rounded">Sussurrar</button>
+                    {contextMenu.token.character_id !== character?.id && (
+                        <button onClick={() => handleAttack(contextMenu.token)} className="block w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-red-900/50 rounded">Atacar</button>
+                    )}
+                </div>
+            )}
 
             {/* Map Controls */}
             <div className="absolute bottom-6 right-6 flex flex-col gap-2 z-30">

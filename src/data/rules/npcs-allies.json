@@ -1,0 +1,20 @@
+[
+  {
+    "id": "agente_ordem",
+    "name": "Agente da Ordem",
+    "type": "Humano",
+    "description": "Um agente de campo da Ordo Realitas. Pode ter diferentes especializações."
+  },
+  {
+    "id": "cientista",
+    "name": "Cientista",
+    "type": "Humano",
+    "description": "Um especialista em alguma área do conhecimento. Pode ajudar com pesquisas e análises."
+  },
+  {
+    "id": "testemunha",
+    "name": "Testemunha",
+    "type": "Humano",
+    "description": "Alguém que presenciou um evento paranormal. Geralmente assustado e confuso."
+  }
+]

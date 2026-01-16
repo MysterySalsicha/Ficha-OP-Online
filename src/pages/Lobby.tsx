@@ -134,7 +134,7 @@ export const Lobby: React.FC = () => {
       {isCreatingMesa && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
               <div className="bg-op-panel border border-op-border p-6 w-full max-w-sm shadow-2xl relative animate-in fade-in zoom-in duration-200">
-                  <h3 className="text-lg font-bold text-op-red mb-1 font-typewriter uppercase tracking-widest">Nova Operação</h3>
+                  <h3 className="text-lg font-bold text-op-red mb-1 font-typewriter uppercase tracking-widest">Nova Missão</h3>
                   <p className="text-xs text-zinc-500 mb-6 font-mono">Defina o codinome da missão para o arquivo.</p>
                   
                   <div className="space-y-6">
@@ -163,7 +163,7 @@ export const Lobby: React.FC = () => {
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto relative z-10">
         <div className="bg-op-panel p-8 border border-op-border hover:border-op-red transition-all group relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><FileText className="w-32 h-32" /></div>
-          <h2 className="text-xl font-bold mb-2 font-typewriter text-zinc-200 group-hover:text-op-red transition-colors flex items-center gap-2"><Plus className="w-5 h-5" /> Nova Operação</h2>
+          <h2 className="text-xl font-bold mb-2 font-typewriter text-zinc-200 group-hover:text-op-red transition-colors flex items-center gap-2"><Plus className="w-5 h-5" /> Nova Missão</h2>
           <p className="text-zinc-500 text-sm mb-8 leading-relaxed">Inicie um novo caso. Você assumirá o papel de Mestre, controlando a narrativa e as ameaças.</p>
           <OpButton onClick={handleOpenCreateModal} disabled={loading} className="w-full">{loading ? 'Carregando...' : 'Criar Mesa'}</OpButton>
         </div>
