@@ -7,7 +7,8 @@ import { getProgressionInfo } from '../../engine/progression';
 
 export interface CharacterSlice {
     createCharacter: (data: { name: string, isSurvivor: boolean, origin: string, class: ClassName, attributes: Record<AttributeName, number> }) => Promise<ActionResult>;
-    updateCharacterStatus: (characterId: string, newStatus: Partial<Character['current_status']>) => Promise<ActionResult>;
+    updateCharacterStatus: (characterId: string, newStatus: Partial<Character['stats_current']>) => Promise<ActionResult>;
+    updateCharacterFull: (data: Partial<Character>) => Promise<ActionResult>;
     toggleCanEvolve: (characterId: string, value: boolean) => Promise<ActionResult>;
     completeLevelUp: (choices: LevelUpChoices) => Promise<ActionResult>;
     increaseAttribute: (attribute: AttributeName, characterId: string) => Promise<ActionResult>;
@@ -32,8 +33,8 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
             nex: charForRules.nex,
             origin: data.origin,
             attributes: data.attributes,
-            stats: { max_pv: maxPV, max_pe: maxPE, max_san: maxSAN },
-            current_status: { pv: maxPV, pe: maxPE, san: maxSAN, conditions: [], is_dying: false, is_stable: true },
+            stats_max: { pv: maxPV, pe: maxPE, san: maxSAN },
+            stats_current: { pv: maxPV, pe: maxPE, san: maxSAN, conditions: [], is_dying: false, is_stable: true },
             defenses: { passiva: passiveDefense, esquiva: 0, bloqueio: 0, mental: 0 },
             inventory_meta: { load_limit: 5 + (data.attributes.for || 0), credit_limit: 'I', current_load: 0 },
             movement: 9,
@@ -44,7 +45,11 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
             rituals: [],
             inventory: [],
             is_npc: false,
-            is_approved_evolve: false
+            is_approved_evolve: false,
+            survivor_mode: false,
+            patente: 'Recruta',
+            status_flags: { vida: 'vivo', mental: 'sao', sobrecarregado: false },
+            is_gm_mode: false,
         };
 
         const { data: created, error } = await supabase.from('characters').insert(newChar).select().single();
@@ -58,11 +63,23 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
         const character = allCharacters.find(c => c.id === characterId);
         if (!character) return { success: false, message: "Personagem não encontrado." };
 
-        const updatedStatus = { ...character.current_status, ...newStatus };
-        const { error } = await supabase.from('characters').update({ current_status: updatedStatus }).eq('id', characterId);
+        const updatedStatus = { ...character.stats_current, ...newStatus };
+        const { error } = await supabase.from('characters').update({ stats_current: updatedStatus }).eq('id', characterId);
 
         if (error) return { success: false, message: "Falha ao atualizar status." };
         return { success: true, message: "Status atualizado." };
+    },
+
+    updateCharacterFull: async (data) => {
+        const { character } = get();
+        if (!character) return { success: false, message: "Personagem não encontrado" };
+
+        const { error } = await supabase.from('characters').update(data).eq('id', character.id);
+        if (error) {
+            console.error("Error updating character:", error);
+            return { success: false, message: "Falha ao atualizar a ficha." };
+        }
+        return { success: true, message: "Ficha atualizada!" };
     },
 
     toggleCanEvolve: async (characterId, value) => {
@@ -70,8 +87,7 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
         const characterToUpdate = allCharacters.find(c => c.id === characterId);
         if (!characterToUpdate) return { success: false, message: "Personagem não encontrado." };
         
-        // GM check logic might need to be enhanced based on roles
-        const isGM = currentMesa?.gm_id === currentUser?.id;
+        const isGM = currentMesa?.mestre_id === currentUser?.id;
         if (!isGM) return { success: false, message: "Apenas o Mestre pode autorizar a evolução." };
 
         const { error } = await supabase.from('characters').update({ is_approved_evolve: value }).eq('id', characterId);
@@ -91,41 +107,33 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
         
         let updatedCharacter = { ...character };
 
-        // Apply new NEX
         updatedCharacter.nex = choices.newNex;
 
-        // Apply attribute increase
         if (choices.attributeChoice) {
             updatedCharacter.attributes[choices.attributeChoice]++;
         }
 
-        // Apply class change
         if (character.class === 'sobrevivente' && choices.newClass) {
             updatedCharacter.class = choices.newClass;
         }
 
-        // Recalculate stats based on new attributes/class/nex
         const newMaxPV = calculateMaxPV(updatedCharacter);
         const newMaxPE = calculateMaxPE(updatedCharacter);
         const newMaxSAN = calculateMaxSAN(updatedCharacter);
         
-        updatedCharacter.stats = { max_pv: newMaxPV, max_pe: newMaxPE, max_san: newMaxSAN };
-        updatedCharacter.current_status.pv = newMaxPV; // Full heal on level up
-        updatedCharacter.current_status.pe = newMaxPE;
-        updatedCharacter.current_status.san = newMaxSAN;
+        updatedCharacter.stats_max = { pv: newMaxPV, pe: newMaxPE, san: newMaxSAN };
+        updatedCharacter.stats_current.pv = newMaxPV;
+        updatedCharacter.stats_current.pe = newMaxPE;
+        updatedCharacter.stats_current.san = newMaxSAN;
 
-        // TODO: Apply other choices like powers, skills, etc.
-
-        // Sanity cost for transcending
         if(choices.selectedAffinity) {
             const sanityCostReward = progression.rewards.find(r => r.type === 'versatility');
-            if (sanityCostReward && sanityCostReward.data.sanityCost) {
-                const newSan = updatedCharacter.current_status.san - sanityCostReward.data.sanityCost;
-                updatedCharacter.current_status.san = Math.max(0, newSan);
+            if (sanityCostReward && (sanityCostReward.data as any).sanityCost) {
+                const newSan = updatedCharacter.stats_current.san - (sanityCostReward.data as any).sanityCost;
+                updatedCharacter.stats_current.san = Math.max(0, newSan);
             }
         }
         
-        // Finalize: reset evolution flag and update DB
         updatedCharacter.is_approved_evolve = false;
         
         const { error } = await supabase.from('characters').update(updatedCharacter).eq('id', character.id);
@@ -136,7 +144,6 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
     },
 
     increaseAttribute: async (attribute, characterId) => {
-        // This is now part of completeLevelUp, but can be a separate GM tool
         const { allCharacters } = get();
         const character = allCharacters.find(c => c.id === characterId);
         if (!character) return { success: false, message: "Personagem não encontrado."};

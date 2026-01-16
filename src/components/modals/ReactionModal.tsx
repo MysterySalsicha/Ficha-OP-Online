@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { OpButton } from '../ui-op/OpButton';
-import { AlertTriangle, Shield, Sword, Run } from 'lucide-react';
+import { AlertTriangle, Shield, Sword, Zap } from 'lucide-react';
 import { AttackResult } from '../../core/types';
 
 interface ReactionModalProps {
@@ -44,7 +44,7 @@ export const ReactionModal: React.FC<ReactionModalProps> = ({ attackResult, onRe
                             ${selectedReaction === 'dodge' ? 'bg-op-blue/20 border-op-blue text-op-blue' : 'bg-zinc-800 border-zinc-700 text-zinc-500 hover:border-zinc-500'}
                         `}
                     >
-                        <Run className="w-6 h-6 mb-2" />
+                        <Zap className="w-6 h-6 mb-2" />
                         <span className="font-bold uppercase text-sm">Esquivar</span>
                         <p className="text-xs text-zinc-600 mt-1">Tentar evitar o ataque.</p>
                     </button>
@@ -77,7 +77,7 @@ export const ReactionModal: React.FC<ReactionModalProps> = ({ attackResult, onRe
                             ${selectedReaction === 'none' ? 'bg-zinc-700 border-zinc-500 text-zinc-300' : 'bg-zinc-800 border-zinc-700 text-zinc-500 hover:border-zinc-500'}
                         `}
                     >
-                        <Run className="w-6 h-6 mb-2 opacity-0" /> {/* Ícone invisível para alinhar */}
+                        <Zap className="w-6 h-6 mb-2 opacity-0" /> {/* Ícone invisível para alinhar */}
                         <span className="font-bold uppercase text-sm">Nenhuma</span>
                         <p className="text-xs text-zinc-600 mt-1">Aceitar o ataque.</p>
                     </button>

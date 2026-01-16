@@ -141,7 +141,7 @@ export function calculatePassiveStatGains(oldChar: Character, newCharState: Char
         pvDelta: newCharState.stats_max.pv - oldChar.stats_max.pv,
         peDelta: newCharState.stats_max.pe - oldChar.stats_max.pe,
         sanDelta: newCharState.stats_max.san - oldChar.stats_max.san,
-        slotsDelta: newCharState.inventory_slots_max - oldChar.inventory_slots_max
+        slotsDelta: newCharState.inventory_meta.load_limit - oldChar.inventory_meta.load_limit
     };
 }
 

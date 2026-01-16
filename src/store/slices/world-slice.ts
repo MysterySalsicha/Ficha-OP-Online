@@ -12,11 +12,27 @@ export interface WorldSlice {
     createPlayerToken: (characterId: string) => Promise<ActionResult>;
     moveToken: (tokenId: string, x: number, y: number) => Promise<void>;
     spawnMonster: (monsterId: string, position: { x: number, y: number }) => Promise<ActionResult>;
+    shareImage: (imageUrl: string, userIds: string[]) => Promise<void>;
 }
 
 export const createWorldSlice: StateCreator<GameState, [], [], WorldSlice> = (set, get) => ({
     activeScene: null,
     tokens: [],
+
+    shareImage: async (imageUrl, userIds) => {
+        const { currentMesa, currentUser } = get();
+        if (!currentMesa || !currentUser) return;
+
+        const messagesToInsert = userIds.map(userId => ({
+            mesa_id: currentMesa.id,
+            user_id: currentUser.id,
+            type: 'image',
+            content: { text: `O Mestre compartilhou uma pista visual.`, imageUrl },
+            target_user_id: userId
+        }));
+
+        await supabase.from('messages').insert(messagesToInsert);
+    },
 
     createScene: async (name, imageUrl) => {
         const { currentMesa } = get();
@@ -76,27 +92,25 @@ export const createWorldSlice: StateCreator<GameState, [], [], WorldSlice> = (se
     },
 
     spawnMonster: async (monsterId, position) => {
-        const { currentMesa, activeScene, createCharacter, sendChatMessage } = get();
+        const { currentMesa, activeScene, sendChatMessage } = get();
         if (!currentMesa || !activeScene) return { success: false, message: "Nenhuma cena ativa." };
 
         const monsterTemplate = (monstersData as any[]).find(m => m.id === monsterId);
         if(!monsterTemplate) return { success: false, message: "Monstro não encontrado." };
 
-        // Create a character for the monster
         const newMonsterChar: Omit<Character, 'id' | 'created_at'> = {
             mesa_id: currentMesa.id,
             name: `${monsterTemplate.name} #${Math.floor(Math.random() * 100)}`,
-            class: 'nenhuma', // Monsters don't have classes in the same way
-            nex: monsterTemplate.vd, // Use VD as NEX
+            class: 'mundano',
+            nex: monsterTemplate.vd,
             origin: 'monstro',
             attributes: monsterTemplate.attributes,
-            stats: { max_pv: monsterTemplate.stats.pv, max_pe: 0, max_san: 0 },
-            current_status: { pv: monsterTemplate.stats.pv, pe: 0, san: 0, conditions: [], is_dying: false, is_stable: true },
+            stats_max: { pv: monsterTemplate.stats.pv, pe: 0, san: 0 },
+            stats_current: { pv: monsterTemplate.stats.pv, pe: 0, san: 0, conditions: [], is_dying: false, is_stable: true },
             defenses: { passiva: monsterTemplate.stats.defesa, esquiva: 0, bloqueio: 0, mental: 0 },
             inventory_meta: { load_limit: 0, credit_limit: 'Nenhum', current_load: 0 },
             movement: monsterTemplate.stats.deslocamento,
             stress: 0,
-            resources: { fome: 0, sede: 0, fadiga: 0 },
             skills: {},
             powers: [],
             rituals: [],
@@ -104,12 +118,15 @@ export const createWorldSlice: StateCreator<GameState, [], [], WorldSlice> = (se
             is_npc: true,
             is_approved_evolve: false,
             user_id: null,
+            patente: 'Criatura',
+            survivor_mode: false,
+            status_flags: { vida: 'vivo', mental: 'sao', sobrecarregado: false },
+            is_gm_mode: false,
         };
 
         const { data: createdChar, error: charError } = await supabase.from('characters').insert(newMonsterChar).select().single();
         if (charError || !createdChar) return { success: false, message: `Falha ao criar o personagem do monstro: ${charError?.message}`};
 
-        // Create a token for the monster
         const { error: tokenError } = await supabase.from('tokens').insert({
             scene_id: activeScene.id,
             character_id: createdChar.id,

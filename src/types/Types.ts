@@ -138,6 +138,26 @@ export interface RitualRule {
   components?: string[];
 }
 
+export interface Scene {
+    id: string;
+    mesa_id: string;
+    name: string;
+    image_url: string;
+    grid_size: number;
+    scale_meters: number;
+    is_active: boolean;
+}
+
+export interface Token {
+    id: string;
+    scene_id: string;
+    character_id?: string;
+    x: number;
+    y: number;
+    size: number;
+    is_visible: boolean;
+}
+
 // --- STORE INTERFACE ---
 export interface SheetStore {
   character: CharacterDB;
@@ -164,4 +184,8 @@ export interface SheetStore {
 
   recalculateDerivedStats: () => void;
   getRollData: (skill: SkillName, attr: AttributeName) => RollData;
+
+  // New actions
+  setCharacter: (character: CharacterDB) => void;
+  setItems: (items: InventoryItem[]) => void;
 }

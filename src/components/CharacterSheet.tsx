@@ -11,7 +11,7 @@ import { AttackResult, Character } from '../core/types';
 export const CharacterSheet: React.FC = () => {
     // --- STATE & STORES ---
     const { character: gameCharacter, items: gameItems, allCharacters, performAttack, performDamage } = useGameStore();
-    const { character, items, mode, toggleMode, setCharacter: setSheetCharacter, setItems: setSheetItems } = useSheetStore();
+    const { character, items, mode, toggleMode } = useSheetStore();
     const { showToast } = useToast();
     
     const [activeTab, setActiveTab] = useState<'pericias' | 'inventario' | 'habilidades'>('pericias');
@@ -20,14 +20,15 @@ export const CharacterSheet: React.FC = () => {
 
     // Sync GameStore -> SheetStore (One-way sync for viewing)
     useEffect(() => {
+        const { setCharacter, setItems } = useSheetStore.getState();
         if (gameCharacter && gameCharacter.id !== character?.id) {
-            setSheetCharacter(gameCharacter);
-            setSheetItems(gameItems);
+            setCharacter(gameCharacter);
+            setItems(gameItems);
             if (gameCharacter.name === 'Agente Novato') { // Simple check for new char
                 toggleMode('creation');
             }
         }
-    }, [gameCharacter, gameItems, character, setSheetCharacter, setSheetItems, toggleMode]);
+    }, [gameCharacter, gameItems, character, toggleMode]);
 
     // --- RENDER MODES ---
     if (mode === 'creation') {

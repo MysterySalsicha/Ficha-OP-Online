@@ -23,7 +23,7 @@ export function calculateMaxStats(char: Character) {
     const cls = getClassData(char.class);
     if (!cls) {
          // Fallback or error
-         return { ...char.stats_max, slots: char.inventory_slots_max };
+         return { ...char.stats_max, slots: char.inventory_meta.load_limit };
     }
 
     const nex = char.nex;
@@ -45,14 +45,14 @@ export function calculateMaxStats(char: Character) {
     const levels = Math.floor(nex / 5);
     const pv = cls.pv_inicial + vig + (levels - 1) * (cls.pv_por_nex + vig);
     const pe = cls.pe_inicial + pre + (levels - 1) * (cls.pe_por_nex + pre);
-    const san = cls.san_inicial + (levels - 1) * cls.san_por_nex;
+    const san = cls.san_inicial + (levels - 1) * (cls.san_por_nex);
     const slots = 5 + (char.attributes.for * 5);
 
     return { pv, pe, san, slots };
 }
 
 export function calculateSkillBonus(char: Character, skillName: string, attributeName: string): number {
-    const trainingLevel = char.skills[skillName] || 0;
+    const trainingLevel = char.skills[skillName]?.bonus || 0;
     return trainingLevel;
 }
 
@@ -70,7 +70,7 @@ export function recalculateCharacter(char: Character, items: Item[]): Character 
     const { pv, pe, san, slots } = calculateMaxStats(char);
 
     newChar.stats_max = { pv, pe, san };
-    newChar.inventory_slots_max = slots;
+    newChar.inventory_meta.load_limit = slots;
 
     // Defesa
     let armorBonus = 0;

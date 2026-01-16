@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useGameStore, Token } from '../store/game-store';
+import { useGameStore } from '../store/game-store';
+import { Token } from '../core/types';
 import { Users, Skull, Maximize, Minus, Plus } from 'lucide-react';
 
 export const MapBoard: React.FC = () => {
@@ -117,7 +118,7 @@ export const MapBoard: React.FC = () => {
                 {tokens.map(token => {
                     const charData = allCharacters.find(c => c.id === token.character_id);
                     const isMine = token.character_id === character?.id;
-                    const isGM = currentUser?.id === useGameStore.getState().currentMesa?.gm_id;
+                    const isGM = currentUser?.id === useGameStore.getState().currentMesa?.mestre_id;
                     const canMove = isMine || isGM;
 
                     const sizePx = (activeScene.grid_size || 50) * token.size;

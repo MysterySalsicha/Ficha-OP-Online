@@ -8,7 +8,7 @@ import ritualsSeed from '../../data/seed_rituals.json'; // Placeholder, should c
 export interface UtilitySlice {
     messages: any[];
     sendChatMessage: (content: string, type?: string, targetUserId?: string | null) => Promise<void>;
-    consumeItem: (characterId: string, itemTemplateId: string, quantity?: number) => Promise<ActionResult>;
+    consumeItem: (characterId: string, itemId: string, quantity?: number) => Promise<ActionResult>;
     giveItemToCharacter: (item: InventoryItem, targetCharId: string) => Promise<ActionResult>;
     castRitual: (ritualId: string) => Promise<ActionResult>;
 }
@@ -21,10 +21,16 @@ export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> =
 
         let messageContent: any = { text: content };
         let msgType = type;
+        
+        const rollMatch = content.match(/^\/(d|r|roll)\s*(.*)/i);
 
-        // Handle dice rolls
-        if (type === 'text' && (content.startsWith('/r ') || content.startsWith('/roll '))) {
-            const rollCommand = content.replace(/^\/(r|roll)\s+/, '').trim();
+        if (type === 'text' && rollMatch) {
+            let rollCommand = rollMatch[2].trim();
+            // Handle simple /d20 syntax
+            if (rollMatch[1] === 'd' && !rollCommand.includes('d')) {
+                rollCommand = `1d${rollCommand}`;
+            }
+
             const roll = rollDice(rollCommand, 'dado');
             msgType = 'roll';
             messageContent = { ...roll, details: rollCommand };
@@ -40,13 +46,13 @@ export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> =
         });
     },
 
-    consumeItem: async (characterId, itemTemplateId, quantity = 1) => {
+    consumeItem: async (characterId, itemId, quantity = 1) => {
         const { allCharacters, sendChatMessage } = get();
         const character = allCharacters.find(c => c.id === characterId);
         if (!character) return { success: false, message: "Personagem não encontrado." };
 
         const inventory = [...character.inventory];
-        const itemIndex = inventory.findIndex(i => i.template_id === itemTemplateId);
+        const itemIndex = inventory.findIndex(i => i.id === itemId);
 
         if (itemIndex === -1) return { success: false, message: "Item não encontrado." };
         
@@ -74,13 +80,12 @@ export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> =
         if (!target) return { success: false, message: "Personagem alvo não encontrado." };
 
         const inventory = [...target.inventory];
-        // Check if the item already exists to stack it
-        const existingItemIndex = inventory.findIndex(i => i.template_id === item.template_id && i.is_stackable);
+        const existingItemIndex = inventory.findIndex(i => i.item_id_ref === item.item_id_ref);
 
         if (existingItemIndex !== -1) {
-            inventory[existingItemIndex].quantity = (inventory[existingItemIndex].quantity || 1) + (item.quantity || 1);
+            inventory[existingItemIndex].quantity += item.quantity || 1;
         } else {
-            inventory.push({ ...item, id: crypto.randomUUID() }); // Assign a new UUID for the inventory instance
+            inventory.push({ ...item, id: crypto.randomUUID() });
         }
         
         const { error } = await supabase.from('characters').update({ inventory }).eq('id', targetCharId);
@@ -94,16 +99,14 @@ export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> =
         const { character, sendChatMessage, updateCharacterStatus } = get();
         if (!character) return { success: false, message: "Personagem não encontrado." };
 
-        const ritual = ritualsSeed.find((r: any) => r.id === ritualId); // Placeholder
+        const ritual = ritualsSeed.find((r: any) => r.id === ritualId);
         if (!ritual) return { success: false, message: "Ritual desconhecido." };
 
-        if (character.current_status.pe < ritual.cost_pe) {
+        if (character.stats_current.pe < ritual.cost_pe) {
             return { success: false, message: "PE Insuficiente." };
         }
         
-        // Consume components if necessary (future implementation)
-
-        const newPE = character.current_status.pe - ritual.cost_pe;
+        const newPE = character.stats_current.pe - ritual.cost_pe;
         const statusUpdateResult = await updateCharacterStatus(character.id, { pe: newPE });
 
         if (!statusUpdateResult.success) return statusUpdateResult;

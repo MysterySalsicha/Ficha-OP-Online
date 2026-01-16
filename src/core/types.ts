@@ -10,7 +10,9 @@ import {
     Affinity as NewAffinity,
     VitalStatus as NewVitalStatus,
     MentalStatus as NewMentalStatus,
-    ItemCategory as NewItemCategory
+    ItemCategory as NewItemCategory,
+    Scene as NewScene,
+    Token as NewToken
 } from '../types/Types';
 
 export type Character = CharacterDB;
@@ -24,6 +26,8 @@ export type Affinity = NewAffinity;
 export type VitalStatus = NewVitalStatus;
 export type MentalStatus = NewMentalStatus;
 export type ItemCategory = NewItemCategory;
+export type Scene = NewScene;
+export type Token = NewToken;
 
 export interface User {
     id: string;

@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { OpButton } from '../components/ui-op/OpButton';
 import { OpInput } from '../components/ui-op/OpInput';
 import originsData from '../data/rules/origins.json';
+import { ClassName } from '../core/types';
 
 const STEPS = ['Conceito', 'Classe & Origem', 'Atributos', 'Finalizar'];
 
@@ -56,7 +57,10 @@ export const CharacterCreationWizard: React.FC = () => {
 
     const handleFinish = async () => {
         if (!mesaId) return;
-        const result = await createCharacter(formData);
+        const result = await createCharacter({
+            ...formData,
+            class: formData.class as ClassName
+        });
         if (result.success) {
             navigate(`/mesa/${mesaId}`);
         } else {

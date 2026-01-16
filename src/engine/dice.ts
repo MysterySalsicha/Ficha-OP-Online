@@ -3,7 +3,7 @@ import { DieRoll } from '../core/types';
 interface RollResult {
     total: number;
     results: number[];
-    diceCode: string;
+    dice_code: string;
     isCritical: boolean;
     details: string; // Ex: "Maior de [5, 18, 3]" ou "Soma [4, 6]"
 }
@@ -11,17 +11,19 @@ interface RollResult {
 /**
  * Rola dados baseado no código (ex: "3d20", "2d8+5").
  * @param code Código do dado.
- * @param type Tipo de rolagem: 'atributo' (pega maior) ou 'dano' (soma).
+ * @param type Tipo de rolagem: 'atributo' (pega maior) ou 'dano'/'dado' (soma).
  * @param threat Margem de ameaça (para verificar crítico em testes de atributo).
  */
-export function rollDice(code: string, type: 'atributo' | 'dano' = 'atributo', threat: number = 20, baseBonus: number = 0, advantageModifier: number = 0): RollResult {
+export function rollDice(code: string, type: 'atributo' | 'dano' | 'dado' = 'atributo', threat: number = 20, baseBonus: number = 0, advantageModifier: number = 0): RollResult {
     // Parser simples: N d X + B
     const match = code.toLowerCase().match(/^(\d*)d(\d+)([+-]\d+)?$/);
     
     if (!match) {
         // Fallback para input numérico simples ou inválido
-        return { total: 0, results: [], diceCode: code, isCritical: false, details: "Inválido" };
+        return { total: 0, results: [], dice_code: code, isCritical: false, details: "Inválido" };
     }
+    
+    if (type === 'dado') type = 'dano';
 
     const count = parseInt(match[1]) || 1;
     const faces = parseInt(match[2]);
@@ -81,7 +83,7 @@ export function rollDice(code: string, type: 'atributo' | 'dano' = 'atributo', t
     return {
         total,
         results: returnedResults,
-        diceCode: code,
+        dice_code: code,
         isCritical,
         details
     };

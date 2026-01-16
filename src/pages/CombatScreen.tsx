@@ -9,8 +9,8 @@ export const CombatScreen: React.FC = () => {
     
     if (!currentMesa) return null;
     
-    const isGM = currentMesa.gm_id === user?.id;
-    const isCombat = currentMesa.combat_active;
+    const isGM = currentMesa.mestre_id === user?.id;
+    const isCombat = currentMesa.combat_state.in_combat;
 
     // Se não estiver em combate, mostra apenas o botão de iniciar (para o GM)
     if (!isCombat) {
@@ -27,10 +27,8 @@ export const CombatScreen: React.FC = () => {
         );
     }
 
-    // Ordenar personagens conforme a ordem do turno salva no banco
-    // O banco salva um array de { character_id, initiative }
-    const turnOrder = currentMesa.turn_order || [];
-    const currentIndex = currentMesa.current_turn_index || 0;
+    const turnOrder = currentMesa.combat_state.turn_order || [];
+    const currentIndex = currentMesa.combat_state.current_turn_index || 0;
 
     return (
         <div className="absolute top-14 left-0 w-full z-20 flex flex-col items-center pointer-events-none">
@@ -95,7 +93,7 @@ export const CombatScreen: React.FC = () => {
                 {/* Contador de Rodadas */}
                 <div className="flex flex-col items-center ml-2">
                     <span className="text-[8px] uppercase text-zinc-500 font-bold">Rodada</span>
-                    <span className="text-lg font-black text-zinc-200 leading-none">{currentMesa.round_count || 1}</span>
+                    <span className="text-lg font-black text-zinc-200 leading-none">{currentMesa.combat_state.round || 1}</span>
                 </div>
             </div>
         </div>

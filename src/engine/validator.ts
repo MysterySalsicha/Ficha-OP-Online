@@ -58,7 +58,7 @@ export function validateRitualCast(char: Character, ritual: RitualRule): ActionR
  * Validates if an item can be equipped/carried.
  */
 export function validateItemAdd(char: Character, itemWeight: number, currentWeight: number): ActionResult {
-    if (currentWeight + itemWeight > char.inventory_slots_max) {
+    if (currentWeight + itemWeight > char.inventory_meta.load_limit) {
          return {
              success: true,
              message: "Sobrecarregado!",

@@ -1,6 +1,6 @@
 import { create, StateCreator } from 'zustand';
 import { supabase } from '../lib/supabase';
-import { Character, Mesa, User, Item } from '../core/types';
+import { Character, Mesa, User, Item, InventoryItem } from '../core/types';
 
 import { CharacterSlice, createCharacterSlice } from './slices/character-slice';
 import { CombatSlice, createCombatSlice } from './slices/combat-slice';
@@ -16,7 +16,7 @@ export type GameState = CharacterSlice & CombatSlice & UtilitySlice & WorldSlice
     currentMesa: Mesa | null;
     character: Character | null;
     allCharacters: Character[];
-    items: Item[];
+    items: InventoryItem[];
     logs: any[];
     isLoading: boolean;
     needsCharacterCreation: boolean;
@@ -72,8 +72,8 @@ const coreSlice: StateCreator<GameState, [], [], Omit<GameState, keyof (Characte
             const { data: items } = myChar ? await supabase.from('items').select('*').eq('character_id', myChar.id) : { data: [] };
             
             set({
-                character: myChar ? recalculateCharacter(myChar as Character, items || []) : null,
-                items: items || [],
+                character: myChar ? recalculateCharacter(myChar as Character, items as Item[] || []) : null,
+                items: items as InventoryItem[] || [],
                 allCharacters: (allChars as Character[]) || [],
             });
 

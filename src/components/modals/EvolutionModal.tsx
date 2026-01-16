@@ -28,7 +28,7 @@ export const EvolutionModal: React.FC = () => {
     // If strict mode is ON, we only allow what's valid.
 
     const handleAttribute = async (attr: AttributeName) => {
-        const result = await increaseAttribute(attr);
+        const result = await increaseAttribute(attr, character.id);
         if (result.success) {
             setStatus(result.message);
             setTimeout(() => toggleMode('view'), 1500); // Auto close on success

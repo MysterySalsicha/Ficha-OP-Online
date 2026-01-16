@@ -55,7 +55,7 @@ export function calculateMaxPV(character: CharacterForRules): number {
     // Tratamento especial para Sobrevivente (NEX 0%) - A especificação não detalha, mas baseados na v1.0
     if (character.nex === 0 && character.class === 'sobrevivente') {
         const sobreviventeInfo = (classesData as any).classes.Sobrevivente;
-        return sobreviventeInfo.pv_inicial + (sobriventeInfo.pv_por_estagio * (character.nex / 5)); // NEX/5 é sempre 0 aqui
+        return sobreviventeInfo.pv_inicial + (sobreviventeInfo.pv_por_estagio * (character.nex / 5)); // NEX/5 é sempre 0 aqui
     }
 
     const nivel = calculateLevel(character.nex);
@@ -80,7 +80,7 @@ export function calculateMaxPE(character: CharacterForRules): number {
     // Tratamento especial para Sobrevivente (NEX 0%)
     if (character.nex === 0 && character.class === 'sobrevivente') {
         const sobreviventeInfo = (classesData as any).classes.Sobrevivente;
-        return sobreviventeInfo.pe_inicial + (sobriventeInfo.pe_por_estagio * (character.nex / 5));
+        return sobreviventeInfo.pe_inicial + (sobreviventeInfo.pe_por_estagio * (character.nex / 5));
     }
 
     const nivel = calculateLevel(character.nex);
@@ -104,7 +104,7 @@ export function calculateMaxSAN(character: CharacterForRules): number {
     // Tratamento especial para Sobrevivente (NEX 0%)
     if (character.nex === 0 && character.class === 'sobrevivente') {
         const sobreviventeInfo = (classesData as any).classes.Sobrevivente;
-        return sobreviventeInfo.san_inicial + (sobriventeInfo.san_por_estagio * (character.nex / 5));
+        return sobreviventeInfo.san_inicial + (sobreviventeInfo.san_por_estagio * (character.nex / 5));
     }
 
     const nivel = calculateLevel(character.nex);

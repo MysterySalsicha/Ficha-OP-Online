@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 import { GameState } from '../game-store'; // This will be the main store interface
-import { ActionResult, AttackResult, DamageInput, AttributeName, Character, Item } from '../../core/types';
+import { ActionResult, AttackResult, DamageInput, AttributeName, Character, InventoryItem, DieRoll } from '../../core/types';
 import { rollDice } from '../../engine/dice';
 import { supabase } from '../../lib/supabase';
 
@@ -24,7 +24,7 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         if (!currentMesa) return { success: false, message: "Mesa não encontrada." };
 
         const turnOrder = allCharacters
-            .filter(c => c.current_status.pv > 0) // Apenas personagens vivos
+            .filter(c => c.stats_current.pv > 0) // Apenas personagens vivos
             .map(char => {
                 const iniciativa = char.attributes.agi;
                 const roll = rollDice('1d20', 'atributo', 20, iniciativa);
@@ -32,8 +32,8 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
             })
             .sort((a, b) => b.initiative - a.initiative);
 
-        const update = { combat_active: true, turn_order: turnOrder, current_turn_index: 0, round_count: 1 };
-        const { error } = await supabase.from('mesas').update(update).eq('id', currentMesa.id);
+        const combat_state = { in_combat: true, turn_order: turnOrder, current_turn_index: 0, round: 1 };
+        const { error } = await supabase.from('mesas').update({ combat_state }).eq('id', currentMesa.id);
         if (error) return { success: false, message: "Falha ao iniciar o combate." };
         
         await sendChatMessage("⚔️ COMBATE INICIADO!", "system");
@@ -42,21 +42,21 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
 
     nextTurn: async () => {
         const { currentMesa, allCharacters, sendChatMessage } = get();
-        if (!currentMesa?.combat_active || !currentMesa.turn_order) return { success: false, message: "Não está em combate." };
+        if (!currentMesa?.combat_state.in_combat || !currentMesa.combat_state.turn_order) return { success: false, message: "Não está em combate." };
 
-        let nextIndex = (currentMesa.current_turn_index ?? -1) + 1;
-        let nextRound = currentMesa.round_count || 1;
+        let nextIndex = (currentMesa.combat_state.current_turn_index ?? -1) + 1;
+        let nextRound = currentMesa.combat_state.round || 1;
 
-        if (nextIndex >= currentMesa.turn_order.length) {
+        if (nextIndex >= currentMesa.combat_state.turn_order.length) {
             nextIndex = 0;
             nextRound++;
             await sendChatMessage(`🔔 RODADA ${nextRound} INICIADA`, "system");
         }
-
-        const { error } = await supabase.from('mesas').update({ current_turn_index: nextIndex, round_count: nextRound }).eq('id', currentMesa.id);
+        const combat_state = { ...currentMesa.combat_state, current_turn_index: nextIndex, round: nextRound };
+        const { error } = await supabase.from('mesas').update({ combat_state }).eq('id', currentMesa.id);
         if (error) return { success: false, message: "Falha ao avançar o turno." };
 
-        const turnData = currentMesa.turn_order[nextIndex];
+        const turnData = currentMesa.combat_state.turn_order[nextIndex];
         const charOnTurn = allCharacters.find(c => c.id === turnData.character_id);
         if (charOnTurn) {
             await sendChatMessage(`Vez de: ${charOnTurn.name}`, "system");
@@ -68,7 +68,8 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         const { currentMesa, sendChatMessage } = get();
         if (!currentMesa) return { success: false, message: "Mesa não encontrada." };
         
-        const { error } = await supabase.from('mesas').update({ combat_active: false, turn_order: [], current_turn_index: -1 }).eq('id', currentMesa.id);
+        const combat_state = { ...currentMesa.combat_state, in_combat: false, turn_order: [], current_turn_index: -1 };
+        const { error } = await supabase.from('mesas').update({ combat_state }).eq('id', currentMesa.id);
         if (error) return { success: false, message: "Falha ao encerrar o combate." };
 
         await sendChatMessage("🏳️ Combate Encerrado.", "system");
@@ -85,21 +86,22 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         const target = allCharacters.find(char => char.id === targetCharacterId);
         if (!target) return { success: false, message: "Alvo não encontrado." };
 
-        const attackAttribute = (weapon.type === 'Arma de Fogo' || weapon.type === 'Arma de Disparo') ? 'agi' : 'for';
+        const attackAttribute = (weapon.stats.type === 'Arma de Fogo' || weapon.stats.type === 'Arma de Disparo') ? 'agi' : 'for';
         const attackerAttributeValue = character.attributes[attackAttribute];
         const attackRoll = rollDice('1d20', 'atributo', 20, attackerAttributeValue);
         
         const targetDefense = target.defenses.passiva;
         const isHit = attackRoll.total >= targetDefense;
 
-        const weaponCritThreat = weapon.crit_threat_range ?? 20;
+        const critString = weapon.stats.critico || '20';
+        const weaponCritThreat = parseInt(critString.split('/')[0]);
         const isCriticalThreat = attackRoll.results[0] >= weaponCritThreat;
 
         const message = `${character.name} atacou ${target.name} com ${weapon.name}: Rolagem ${attackRoll.total} vs Defesa ${targetDefense}. ${isHit ? 'ACERTOU!' : 'ERROU!'}${isCriticalThreat && isHit ? ' (Ameaça de Crítico!)' : ''}`;
         await sendChatMessage(message, 'system');
 
-        if (weapon.ammo_id && weapon.ammo_per_shot) {
-            await consumeItem(character.id, weapon.ammo_id, weapon.ammo_per_shot);
+        if (weapon.stats.ammo_id && weapon.stats.ammo_per_shot) {
+            await consumeItem(character.id, weapon.stats.ammo_id, weapon.stats.ammo_per_shot);
         }
 
         return {
@@ -107,9 +109,9 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
             message: isHit ? "Ataque bem-sucedido!" : "Ataque falhou.",
             isHit,
             isCriticalThreat: isCriticalThreat && isHit,
-            attackRoll,
+            attackRoll: attackRoll as DieRoll,
             targetDefense,
-            weapon,
+            weapon: weapon as any,
             attackerId: character.id,
             targetId: target.id
         };
@@ -128,15 +130,15 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         let damageMultiplier = 1;
         let critMessage = '';
         if (isCriticalConfirmed) {
-            damageMultiplier = weapon.crit_multiplier ?? 2;
+            const critString = weapon.stats.critico || '20/x2';
+            damageMultiplier = parseInt(critString.split('/')[1]?.replace('x', '')) || 2;
             critMessage = ' (CRÍTICO!)';
         }
 
         const damageRoll = rollDice(damageDice, 'dano', 0, damageBonus || 0);
         const totalDamage = damageRoll.total * damageMultiplier;
 
-        // TODO: Considerar resistência/vulnerabilidade do alvo
-        const newTargetPV = Math.max(0, target.current_status.pv - totalDamage);
+        const newTargetPV = Math.max(0, target.stats_current.pv - totalDamage);
 
         await updateCharacterStatus(target.id, { pv: newTargetPV });
         
@@ -144,7 +146,7 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         const message = `${attacker?.name || 'Um ataque'} causou ${totalDamage} de dano${critMessage} a ${target.name}. PV restantes: ${newTargetPV}`;
         await sendChatMessage(message, 'system');
 
-        if (newTargetPV <= 0 && !target.current_status.is_dying) {
+        if (newTargetPV <= 0 && !target.stats_current.is_dying) {
             await updateCharacterStatus(target.id, { is_dying: true });
             await sendChatMessage(`${target.name} está Morrendo!`, 'system');
         }
@@ -164,11 +166,9 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
 
         switch (reactionType) {
             case 'dodge':
-                // Placeholder para lógica de esquiva
                 reactionMessage = `${target.name} tentou Esquivar do ataque! (Lógica de rolagem pendente)`;
                 break;
             case 'block':
-                 // Placeholder para lógica de bloqueio
                 reactionMessage = `${target.name} tentou Bloquear o ataque! (Lógica de rolagem pendente)`;
                 break;
             case 'none':
