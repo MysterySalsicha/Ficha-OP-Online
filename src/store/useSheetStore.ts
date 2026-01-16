@@ -108,9 +108,15 @@ export const useSheetStore = create<SheetStore>()((set, get) => ({ // Removed ex
   mode: 'view',
   creation_step: 'concept',
   creation_points_spent: 0,
+  isRollModalOpen: false, // Initialize as false
   
   setCharacter: (character: CharacterDB) => set({ character }),
   setItems: (items: InventoryItem[]) => set({ items }),
+
+  setProfileImageUrl: (url: string) => set((s) => ({ character: { ...s.character, profile_image_url: url } })),
+  setTokenImageUrl: (url: string) => set((s) => ({ character: { ...s.character, token_image_url: url } })),
+
+  setIsRollModalOpen: (isOpen: boolean) => set({ isRollModalOpen: isOpen }),
 
   toggleMode: (mode: SheetMode) => set({ mode }),
   setCreationStep: (step: WizardStep) => set({ creation_step: step }),

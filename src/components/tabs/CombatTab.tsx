@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGameStore } from '../../store/game-store';
 import { OpButton } from '../ui-op/OpButton';
-import { Swords, Shield, Heart, Zap } from 'lucide-react';
+import { Swords, Shield, Heart, Zap, ChevronUp, ChevronDown, RotateCcw } from 'lucide-react'; // Added RotateCcw, ChevronUp, ChevronDown
 
 export const CombatTab: React.FC = () => {
     const { 
@@ -9,15 +9,21 @@ export const CombatTab: React.FC = () => {
         allCharacters, 
         startCombat, 
         nextTurn, 
+        revertTurn, // Imported revertTurn
+        passTurn, // Imported passTurn
         endCombat,
-        playerRole
+        playerRole,
+        character: playerCharacter // Get the current player's character
     } = useGameStore(state => ({
         currentMesa: state.currentMesa,
         allCharacters: state.allCharacters,
         startCombat: state.startCombat,
         nextTurn: state.nextTurn,
+        revertTurn: state.revertTurn,
+        passTurn: state.passTurn,
         endCombat: state.endCombat,
-        playerRole: state.playerRole
+        playerRole: state.playerRole,
+        character: state.character
     }));
 
     const isGM = playerRole === 'gm' || playerRole === 'co-gm';
@@ -36,6 +42,15 @@ export const CombatTab: React.FC = () => {
         })
         .filter(item => item.character); // Filtra caso um personagem não seja encontrado
 
+    const currentTurnCharacter = sortedCharacters[current_turn_index]?.character;
+    const isPlayersTurn = playerCharacter && currentTurnCharacter?.id === playerCharacter.id;
+
+    const handleReorderTurn = async (characterId: string, direction: 'up' | 'down') => {
+      // TODO: Implement reorderTurn action in combat-slice.ts
+      console.log(`Reordenar ${characterId} para ${direction}`);
+      // For now, this is just a placeholder.
+    }
+
     return (
         <div className="flex-1 flex flex-col overflow-hidden bg-zinc-900 text-white">
             <div className="p-3 border-b border-op-border">
@@ -48,6 +63,13 @@ export const CombatTab: React.FC = () => {
                         <span className="text-2xl font-bold">{round}</span>
                         <p className="text-xs text-zinc-400 uppercase">Rodada</p>
                     </div>
+
+                    {isPlayersTurn && (
+                      <div className="p-3 bg-op-gold/10 text-op-gold text-center font-bold uppercase animate-pulse">
+                        Sua Vez!
+                      </div>
+                    )}
+
                     <ul className="divide-y divide-zinc-800">
                         {sortedCharacters.map((item, index) => (
                             <li 
@@ -65,6 +87,16 @@ export const CombatTab: React.FC = () => {
                                         <span className="flex items-center gap-1"><Zap className="w-3 h-3 text-yellow-500"/>{item.character?.stats_current.san}</span>
                                     </div>
                                 </div>
+                                {isGM && (
+                                    <div className="flex flex-col gap-1">
+                                        <button onClick={() => handleReorderTurn(item.character_id, 'up')} className="p-1 text-zinc-500 hover:text-white">
+                                            <ChevronUp className="w-4 h-4" />
+                                        </button>
+                                        <button onClick={() => handleReorderTurn(item.character_id, 'down')} className="p-1 text-zinc-500 hover:text-white">
+                                            <ChevronDown className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                )}
                                 {index === current_turn_index && <div className="w-2 h-2 rounded-full bg-op-gold animate-pulse"></div>}
                             </li>
                         ))}
@@ -76,20 +108,29 @@ export const CombatTab: React.FC = () => {
                 </div>
             )}
             
-            {isGM && (
-                <div className="p-3 border-t border-op-border bg-zinc-950/70 grid grid-cols-2 gap-2">
-                    {!in_combat ? (
+            <div className="p-3 border-t border-op-border bg-zinc-950/70 grid grid-cols-2 gap-2">
+                {isGM ? (
+                    !in_combat ? (
                         <OpButton variant='danger' className="col-span-2" onClick={startCombat}>
-                            <Swords className="w-4 h-4 mr-2" /> Iniciar Combate
+                            <Swords className="w-4 h-4 mr-2" /> Iniciar
                         </OpButton>
                     ) : (
                         <>
-                            <OpButton variant='primary' onClick={nextTurn}>Próximo Turno</OpButton>
-                            <OpButton variant='ghost' onClick={endCombat}>Encerrar Combate</OpButton>
+                            <OpButton variant='primary' onClick={nextTurn}>Próximo</OpButton>
+                            <OpButton variant='secondary' onClick={revertTurn}>
+                                <RotateCcw className="w-4 h-4 mr-2" /> Retornar
+                            </OpButton>
+                            <OpButton variant='ghost' className="col-span-2" onClick={endCombat}>Encerrar Combate</OpButton>
                         </>
-                    )}
-                </div>
-            )}
+                    )
+                ) : ( // Player controls
+                    in_combat && isPlayersTurn && (
+                        <OpButton variant='primary' className="col-span-2" onClick={passTurn}>
+                            Passar a Vez
+                        </OpButton>
+                    )
+                )}
+            </div>
         </div>
     );
 };

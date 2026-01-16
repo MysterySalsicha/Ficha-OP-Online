@@ -1,13 +1,13 @@
 import { StateCreator } from 'zustand';
 import { GameState } from '../game-store';
-import { ActionResult, Item, InventoryItem } from '../../core/types';
+import { ActionResult, Item, InventoryItem, Message } from '../../core/types'; // Added Message
 import { supabase } from '../../lib/supabase';
 import { rollDice } from '../../engine/dice';
 import ritualsSeed from '../../data/seed_rituals.json'; // Placeholder, should come from a library
 
 export interface UtilitySlice {
     messages: any[];
-    sendChatMessage: (content: string, type?: string, targetUserId?: string | null) => Promise<void>;
+    sendChatMessage: (content: string, type?: Message['type'], options?: { imageUrl?: string; targetUserId?: string }) => Promise<void>; // Updated signature
     consumeItem: (characterId: string, itemId: string, quantity?: number) => Promise<ActionResult>;
     giveItemToCharacter: (item: InventoryItem, targetCharId: string) => Promise<ActionResult>;
     castRitual: (ritualId: string) => Promise<ActionResult>;
@@ -15,25 +15,28 @@ export interface UtilitySlice {
 
 export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> = (set, get) => ({
     messages: [],
-    sendChatMessage: async (content, type = 'text', targetUserId = null) => {
+    sendChatMessage: async (content: string, type: Message['type'] = 'text', options?: { imageUrl?: string; targetUserId?: string }) => {
         const { currentMesa, currentUser, character } = get();
         if (!currentMesa || !currentUser) return;
 
         let messageContent: any = { text: content };
         let msgType = type;
         
+        // Handle roll command if message type is 'text'
         const rollMatch = content.match(/^\/(d|r|roll)\s*(.*)/i);
-
-        if (type === 'text' && rollMatch) {
+        if (msgType === 'text' && rollMatch) {
             let rollCommand = rollMatch[2].trim();
             // Handle simple /d20 syntax
             if (rollMatch[1] === 'd' && !rollCommand.includes('d')) {
                 rollCommand = `1d${rollCommand}`;
             }
-
             const roll = rollDice(rollCommand, 'dado');
             msgType = 'roll';
             messageContent = { ...roll, details: rollCommand };
+        } else if (msgType === 'image' && options?.imageUrl) {
+            messageContent = { imageUrl: options.imageUrl };
+        } else if (msgType === 'whisper') {
+            // Content is already text for whisper
         }
         
         await supabase.from('messages').insert({
@@ -42,7 +45,7 @@ export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> =
             character_id: character?.id,
             type: msgType,
             content: messageContent,
-            target_user_id: targetUserId
+            target_user_id: options?.targetUserId || null // Use targetUserId from options
         });
     },
 

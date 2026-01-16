@@ -1,39 +1,46 @@
 import { create, StateCreator } from 'zustand';
 import { supabase } from '../lib/supabase';
-import { Character, Mesa, User, InventoryItem } from '../core/types';
+import { Character, Mesa, User, InventoryItem, ItemTemplate } from '../core/types';
 
 import { CharacterSlice, createCharacterSlice } from './slices/character-slice';
 import { CombatSlice, createCombatSlice } from './slices/combat-slice';
 import { UtilitySlice, createUtilitySlice } from './slices/utility-slice';
 import { WorldSlice, createWorldSlice } from './slices/world-slice';
+import { LibrarySlice, createLibrarySlice } from './slices/library-slice';
+import { JournalSlice, createJournalSlice } from './slices/journal-slice'; // Added JournalSlice
 import { recalculateCharacter } from '../engine/calculator';
 
 // --- MAIN STATE & CORE LOGIC ---
 
-export type GameState = CharacterSlice & CombatSlice & UtilitySlice & WorldSlice & {
+export type GameState = CharacterSlice & CombatSlice & UtilitySlice & WorldSlice & LibrarySlice & JournalSlice & { // Added JournalSlice
+// Temporary comment to force re-evaluation
     // Core state properties
     currentUser: User | null;
     currentMesa: Mesa | null;
     character: Character | null;
+    currentMesaId: string | null; // Track current Mesa ID to pass to slices init
     allCharacters: Character[];
-    items: InventoryItem[]; // Note: This might be deprecated if inventory is fully in character object
+    items: ItemTemplate[]; // Corrected type to ItemTemplate[]
     messages: any[];
     isLoading: boolean;
     needsCharacterCreation: boolean;
     approvalStatus: 'pending' | 'approved' | 'rejected' | 'banned' | 'none';
     playerRole: 'player' | 'gm' | 'co-gm' | 'none';
+    visualMode: 'horizontal' | 'vertical'; // Added visualMode
 
     // Core lifecycle methods
-    initialize: (user: User, mesaId: string, isFirstLoad?: boolean) => Promise<void>;
+    initialize: (user: User, mesaId: string) => Promise<void>;
     fetchUserMesas: (userId: string) => Promise<Mesa[]>;
     subscribeToChanges: (mesaId: string) => void;
     unsubscribe: () => void;
+    setVisualMode: (mode: 'horizontal' | 'vertical') => void;
 };
 
-const coreSlice: StateCreator<GameState, [], [], Omit<GameState, keyof (CharacterSlice & CombatSlice & UtilitySlice & WorldSlice)>> = (set, get) => ({
+const coreSlice: StateCreator<GameState, [], [], Omit<GameState, keyof (CharacterSlice & CombatSlice & UtilitySlice & WorldSlice & LibrarySlice & JournalSlice)>> = (set, get) => ({ // Added JournalSlice
     // Initial State
     currentUser: null,
     currentMesa: null,
+    currentMesaId: null, // Initial current Mesa ID
     character: null,
     allCharacters: [],
     items: [],
@@ -42,12 +49,18 @@ const coreSlice: StateCreator<GameState, [], [], Omit<GameState, keyof (Characte
     needsCharacterCreation: false,
     approvalStatus: 'none',
     playerRole: 'none',
+    visualMode: 'horizontal', // Initial visual mode
 
     // --- INITIALIZATION & SUBSCRIPTIONS ---
-    initialize: async (user, mesaId, isFirstLoad = false) => {
-        if (isFirstLoad) {
-            set({ isLoading: true, currentUser: user, needsCharacterCreation: false, approvalStatus: 'none', playerRole: 'none' });
+    initialize: async (user, mesaId) => {
+        // If already initialized for this mesa and user, simply ensure subscriptions are active and return
+        // This prevents unnecessary re-fetching when component re-renders or tab regains focus
+        if (get().currentMesa?.id === mesaId && get().currentUser?.id === user.id) {
+            get().subscribeToChanges(mesaId); // Ensure subscriptions are active
+            return;
         }
+
+        set({ isLoading: true, currentUser: user, needsCharacterCreation: false, approvalStatus: 'none', playerRole: 'none', currentMesaId: mesaId }); // Set currentMesaId
         
         try {
             const { data: playerStatus } = await supabase.from('mesa_players').select('status, role').eq('mesa_id', mesaId).eq('user_id', user.id).maybeSingle();
@@ -81,15 +94,16 @@ const coreSlice: StateCreator<GameState, [], [], Omit<GameState, keyof (Characte
                 messages: messages || [],
             });
 
-            if (isFirstLoad) {
-                get().subscribeToChanges(mesaId);
-            }
+            // Always subscribe after a successful (re)initialization
+            get().subscribeToChanges(mesaId);
+            // Fetch library data for the current mesa/user
+            get().fetchMonsters(mesaId);
+            get().fetchItems(mesaId);
+            get().fetchJournalEntries(mesaId, user.id);
         } catch (error) {
             console.error("Erro na Inicialização:", error);
         } finally {
-            if (isFirstLoad) {
-                set({ isLoading: false });
-            }
+            set({ isLoading: false });
         }
     },
     
@@ -103,6 +117,10 @@ const coreSlice: StateCreator<GameState, [], [], Omit<GameState, keyof (Characte
         if (playerMesasError) return gmMesas || [];
         const allMesas = [...(gmMesas || []), ...(playerMesas || [])];
         return Array.from(new Map(allMesas.map(mesa => [mesa.id, mesa])).values());
+    },
+
+    setVisualMode: (mode: 'horizontal' | 'vertical') => {
+        set({ visualMode: mode });
     },
 
     subscribeToChanges: (mesaId) => {
@@ -151,4 +169,6 @@ export const useGameStore = create<GameState>()((...a) => ({
     ...createCombatSlice(...a),
     ...createUtilitySlice(...a),
     ...createWorldSlice(...a),
+    ...createLibrarySlice(...a),
+    ...createJournalSlice(...a), // Added JournalSlice
 }));

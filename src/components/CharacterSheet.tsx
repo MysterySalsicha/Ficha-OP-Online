@@ -2,19 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useSheetStore } from '../store/useSheetStore';
 import { useGameStore } from '../store/game-store';
 import { useToast } from './ui-op/OpToast';
-import { Shield, Brain, Heart, Zap, Crosshair, ChevronUp } from 'lucide-react';
+import { Shield, Brain, Heart, Zap, Crosshair, ChevronUp, Dice1, X, Check } from 'lucide-react'; // Changed Dice to Dice1
 import { EvolutionModal } from './modals/EvolutionModal';
 import { SheetWizard } from './wizard/SheetWizard';
 import { ReactionModal } from './modals/ReactionModal';
 import { AttackResult, Character } from '../core/types';
+import { OpButton } from './ui-op/OpButton'; // Import OpButton
+import { OpInput } from './ui-op/OpInput'; // Import OpInput
 
 export const CharacterSheet: React.FC = () => {
     // --- STATE & STORES ---
-    const { character: gameCharacter, items: gameItems, allCharacters, performAttack, performDamage } = useGameStore();
-    const { character, items, mode, toggleMode } = useSheetStore();
+    const { character: gameCharacter, items: gameItems, allCharacters, performAttack, performDamage, sendChatMessage } = useGameStore(); // Added sendChatMessage
+    const { character, items, mode, toggleMode, getRollData, isRollModalOpen, setIsRollModalOpen } = useSheetStore();
     const { showToast } = useToast();
     
-    const [activeTab, setActiveTab] = useState<'pericias' | 'inventario' | 'habilidades'>('pericias');
+    const [rollInput, setRollInput] = useState(''); // State for roll input inside the modal
+
+    const [activeTab, setActiveTab] = useState<'pericias' | 'inventario' | 'habilidades' | 'configuracoes'>('pericias');
     const [isShowingReactionModal, setIsShowingReactionModal] = useState(false);
     const [attackResultForReaction, setAttackResultForReaction] = useState<AttackResult | null>(null);
 
@@ -23,7 +27,6 @@ export const CharacterSheet: React.FC = () => {
         const { setCharacter, setItems } = useSheetStore.getState();
         if (gameCharacter && gameCharacter.id !== character?.id) {
             setCharacter(gameCharacter);
-            setItems(gameItems);
             if (gameCharacter.name === 'Agente Novato') { // Simple check for new char
                 toggleMode('creation');
             }
@@ -32,7 +35,7 @@ export const CharacterSheet: React.FC = () => {
 
     // --- RENDER MODES ---
     if (mode === 'creation') {
-        return <SheetWizard />;
+        return <SheetWizard />; 
     }
 
     if (!character) {
@@ -95,9 +98,31 @@ export const CharacterSheet: React.FC = () => {
         }
     };
 
+    const handleConfirmRoll = async (diceCode: string) => {
+        if (diceCode.trim()) {
+            await sendChatMessage(`/roll ${diceCode}`);
+            setRollInput('');
+            setIsRollModalOpen(false);
+        }
+    };
+
+    const handleAttributeRoll = (attributeName: 'for' | 'agi' | 'int' | 'pre' | 'vig') => {
+        const rollData = getRollData('none', attributeName); // 'none' for skillName as it's an attribute roll
+        setRollInput(rollData.explanation);
+        setIsRollModalOpen(true);
+    };
+
+    const handleOpenRollModal = () => {
+        setRollInput(''); // Clear previous roll input
+        setIsRollModalOpen(true);
+    };
+
     // --- UI COMPONENTS ---
-    const AttrHex = ({ label, value, color }: any) => (
-        <div className="flex flex-col items-center justify-center w-24 h-24 relative group select-none">
+    const AttrHex = ({ label, value, color, onClick }: { label: string, value: number, color: string, onClick?: () => void }) => (
+        <div 
+            className="flex flex-col items-center justify-center w-24 h-24 relative group select-none cursor-pointer"
+            onClick={onClick}
+        >
             <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full text-zinc-800 fill-zinc-900 stroke-2">
                 <polygon points="50 0, 100 25, 100 75, 50 100, 0 75, 0 25" stroke="currentColor" />
             </svg>
@@ -114,21 +139,60 @@ export const CharacterSheet: React.FC = () => {
                 <ReactionModal attackResult={attackResultForReaction} onReact={handleReaction} onClose={() => setIsShowingReactionModal(false)} />
             )}
 
+            {/* Roll Dice Modal */}
+            {isRollModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="bg-op-panel border border-op-border p-6 w-full max-w-sm shadow-2xl relative animate-in fade-in zoom-in duration-200">
+                        <h3 className="text-lg font-bold text-op-gold mb-4 font-typewriter uppercase">Rolar Dados</h3>
+                        <div className="space-y-4">
+                            <OpInput
+                                label="Código dos Dados"
+                                placeholder="Ex: 1d20+5"
+                                value={rollInput}
+                                onChange={(e) => setRollInput(e.target.value)}
+                                autoFocus
+                            />
+                            <div className="grid grid-cols-3 gap-2">
+                                {['1d4', '1d6', '1d8', '1d10', '1d12', '1d20', '1d100'].map(dice => (
+                                    <OpButton key={dice} onClick={() => setRollInput(dice)} variant="secondary" className="text-sm">
+                                        {dice}
+                                    </OpButton>
+                                ))}
+                            </div>
+                            <div className="flex gap-2 pt-2">
+                                <OpButton variant="ghost" onClick={() => setIsRollModalOpen(false)} className="flex-1">
+                                    <X className="w-4 h-4 mr-2" /> Cancelar
+                                </OpButton>
+                                <OpButton onClick={() => handleConfirmRoll(rollInput)} className="flex-1" disabled={!rollInput.trim()}>
+                                    <Check className="w-4 h-4 mr-2" /> Rolar
+                                </OpButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
             {/* Header */}
             <header className="flex justify-between items-end p-6 border-b border-op-border bg-op-bg/50 backdrop-blur-sm z-10">
-                <div>
-                    <h1 className="text-4xl font-typewriter font-bold text-zinc-100 uppercase">{character.name}</h1>
-                    <div className="flex gap-4 mt-2 text-xs font-mono text-zinc-500 uppercase items-center">
-                        <span className="text-op-red font-bold">{character.class}</span>
-                        <span>NEX {character.nex}%</span>
-                        <span>{character.patente}</span>
-                        <button
-                            onClick={() => toggleMode('evolution')}
-                            disabled={!character.is_approved_evolve}
-                            className={`flex items-center gap-1 px-2 py-0.5 rounded transition-colors ${character.is_approved_evolve ? 'bg-op-gold/10 text-op-gold border border-op-gold/50 hover:bg-op-gold/20 animate-pulse' : 'bg-zinc-800 text-zinc-600 border border-zinc-700 cursor-not-allowed'}`}
-                        >
-                            <ChevronUp className="w-3 h-3" /> Evoluir
-                        </button>
+                <div className="flex items-end gap-4">
+                    {character.profile_image_url && (
+                        <img src={character.profile_image_url} alt={`${character.name} Profile`} className="w-24 h-24 object-cover rounded-md border border-op-border" />
+                    )}
+                    <div>
+                        <h1 className="text-4xl font-typewriter font-bold text-zinc-100 uppercase">{character.name}</h1>
+                        <div className="flex gap-4 mt-2 text-xs font-mono text-zinc-500 uppercase items-center">
+                            <span className="text-op-red font-bold">{character.class}</span>
+                            <span>NEX {character.nex}%</span>
+                            <span>{character.patente}</span>
+                            <button
+                                onClick={() => toggleMode('evolution')}
+                                disabled={!character.is_approved_evolve}
+                                className={`flex items-center gap-1 px-2 py-0.5 rounded transition-colors ${character.is_approved_evolve ? 'bg-op-gold/10 text-op-gold border border-op-gold/50 hover:bg-op-gold/20 animate-pulse' : 'bg-zinc-800 text-zinc-600 border border-zinc-700 cursor-not-allowed'}`}
+                            >
+                                <ChevronUp className="w-3 h-3" /> Evoluir
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div className="flex flex-col items-center bg-zinc-900 border border-op-border p-2 rounded-sm w-20">
@@ -137,6 +201,13 @@ export const CharacterSheet: React.FC = () => {
                     <span className="text-[8px] uppercase text-zinc-600">Defesa</span>
                 </div>
             </header>
+
+            {/* Roll Button */}
+            <div className="absolute top-4 right-4 z-20">
+                <OpButton onClick={handleOpenRollModal} variant="primary" className="flex items-center gap-2">
+                    <Dice1 className="w-5 h-5" /> Rolar Dados
+                </OpButton>
+            </div>
 
             {/* Body */}
             <div className="flex-1 overflow-auto p-6 grid grid-cols-1 md:grid-cols-12 gap-8">
@@ -174,11 +245,11 @@ export const CharacterSheet: React.FC = () => {
                 {/* Attributes Column */}
                 <div className="md:col-span-6 flex items-center justify-center py-8">
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                        <AttrHex label="Agi" value={character.attributes.agi} color="text-yellow-500" />
-                        <AttrHex label="Int" value={character.attributes.int} color="text-blue-500" />
-                        <AttrHex label="For" value={character.attributes.for} color="text-red-500" />
-                        <AttrHex label="Pre" value={character.attributes.pre} color="text-purple-500" />
-                        <AttrHex label="Vig" value={character.attributes.vig} color="text-green-500" />
+                        <AttrHex label="Agi" value={character.attributes.agi} color="text-yellow-500" onClick={() => handleAttributeRoll('agi')} />
+                        <AttrHex label="Int" value={character.attributes.int} color="text-blue-500" onClick={() => handleAttributeRoll('int')} />
+                        <AttrHex label="For" value={character.attributes.for} color="text-red-500" onClick={() => handleAttributeRoll('for')} />
+                        <AttrHex label="Pre" value={character.attributes.pre} color="text-purple-500" onClick={() => handleAttributeRoll('pre')} />
+                        <AttrHex label="Vig" value={character.attributes.vig} color="text-green-500" onClick={() => handleAttributeRoll('vig')} />
                     </div>
                 </div>
 
@@ -187,6 +258,7 @@ export const CharacterSheet: React.FC = () => {
                     <div className="flex border-b border-op-border">
                         <button onClick={() => setActiveTab('pericias')} className={`flex-1 py-2 text-[10px] font-bold uppercase ${activeTab === 'pericias' ? 'bg-zinc-800 text-white' : 'text-zinc-500'}`}>Perícias</button>
                         <button onClick={() => setActiveTab('inventario')} className={`flex-1 py-2 text-[10px] font-bold uppercase ${activeTab === 'inventario' ? 'bg-zinc-800 text-white' : 'text-zinc-500'}`}>Inventário</button>
+                        <button onClick={() => setActiveTab('configuracoes')} className={`flex-1 py-2 text-[10px] font-bold uppercase ${activeTab === 'configuracoes' ? 'bg-zinc-800 text-white' : 'text-zinc-500'}`}>Configurações</button>
                     </div>
                     <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
                         {activeTab === 'inventario' && (
@@ -206,7 +278,35 @@ export const CharacterSheet: React.FC = () => {
                                 ))}
                                 <div className="mt-4 pt-4 border-t border-zinc-800 flex justify-between text-xs text-zinc-500 font-mono">
                                     <span>CARGA</span>
-                                    <span>{items.reduce((acc, i) => acc + i.slots, 0)} / {character.inventory_meta.load_limit}</span>
+                                    <span>{items.reduce((acc, i) => acc + i.slots * i.quantity, 0)} / {character.inventory_meta.load_limit}</span>
+                                </div>
+                            </div>
+                        )}
+                        {activeTab === 'configuracoes' && (
+                            <div className="space-y-4">
+                                <div>
+                                    <h4 className="font-semibold text-zinc-200 mb-2">Imagem de Perfil</h4>
+                                    <OpInput
+                                        label="URL da Imagem de Perfil"
+                                        placeholder="Cole a URL da imagem de perfil"
+                                        value={character.profile_image_url || ''}
+                                        onChange={(e) => useSheetStore.getState().setProfileImageUrl(e.target.value)}
+                                    />
+                                    {character.profile_image_url && (
+                                        <img src={character.profile_image_url} alt="Prévia do Perfil" className="w-32 h-32 object-cover rounded-md mt-2 border border-op-border" />
+                                    )}
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-zinc-200 mb-2">Imagem do Token</h4>
+                                    <OpInput
+                                        label="URL da Imagem do Token"
+                                        placeholder="Cole a URL da imagem do token (para o mapa)"
+                                        value={character.token_image_url || ''}
+                                        onChange={(e) => useSheetStore.getState().setTokenImageUrl(e.target.value)}
+                                    />
+                                    {character.token_image_url && (
+                                        <img src={character.token_image_url} alt="Prévia do Token" className="w-16 h-16 object-cover rounded-full mt-2 border border-op-border" />
+                                    )}
                                 </div>
                             </div>
                         )}

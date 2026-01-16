@@ -105,10 +105,10 @@ export const updatePlayerStatus = async (mesaId: string, userId: string, status:
   if (error) throw error;
 };
 
-export const promotePlayer = async (mesaId: string, userId: string) => {
+export const promotePlayer = async (mesaId: string, userId: string, newRole: 'gm' | 'co-gm' | 'player') => {
   const { error } = await supabase
     .from('mesa_players')
-    .update({ role: 'gm' })
+    .update({ role: newRole })
     .eq('mesa_id', mesaId)
     .eq('user_id', userId);
 

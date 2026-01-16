@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useGameStore } from '../../store/game-store';
 import { useAuth } from '../../contexts/AuthContext';
-import { Dice1, Send } from 'lucide-react';
+import { useSheetStore } from '../../store/useSheetStore'; // Import useSheetStore
+import { Dice1, Send } from 'lucide-react'; 
 import { Character, DieRoll, User } from '../../core/types';
 
 interface ChatTabProps {
     messages: any[];
-    allCharacters: Character[];
+    allCharacters: Character[]; // Re-added for simplicity for now
     user: User | null;
-    sendChatMessage: (content: string) => Promise<void>;
+    sendChatMessage: (content: string) => Promise<void>; // Simplified signature
 }
 
 const DiceRollDisplay: React.FC<{ roll: DieRoll, characterName: string }> = ({ roll, characterName }) => (
@@ -29,6 +30,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ messages, allCharacters, user,
     const [chatInput, setChatInput] = useState('');
     const [isDicePopoverOpen, setIsDicePopoverOpen] = useState(false);
     const chatEndRef = useRef<HTMLDivElement>(null);
+    const { setIsRollModalOpen } = useSheetStore(); // Keep this for now, will remove later if needed
 
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });

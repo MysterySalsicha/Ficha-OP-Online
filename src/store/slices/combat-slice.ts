@@ -11,6 +11,8 @@ export interface CombatSlice {
     handleReaction: (attackResult: AttackResult, reactionType: 'dodge' | 'block' | 'counter' | 'none') => Promise<AttackResult>;
     startCombat: () => Promise<ActionResult>;
     nextTurn: () => Promise<ActionResult>;
+    revertTurn: () => Promise<ActionResult>; // Added revertTurn
+    passTurn: () => Promise<ActionResult>; // Added passTurn
     endCombat: () => Promise<ActionResult>;
     selectTarget: (tokenId: string | null) => void;
 }
@@ -62,6 +64,35 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
             await sendChatMessage(`Vez de: ${charOnTurn.name}`, "system");
         }
         return { success: true, message: "Próximo turno." };
+    },
+
+    revertTurn: async () => {
+        const { currentMesa, allCharacters, sendChatMessage } = get();
+        if (!currentMesa?.combat_state.in_combat || !currentMesa.combat_state.turn_order) return { success: false, message: "Não está em combate." };
+
+        let prevIndex = (currentMesa.combat_state.current_turn_index ?? 0) - 1;
+        let prevRound = currentMesa.combat_state.round || 1;
+
+        if (prevIndex < 0) {
+            if (prevRound <= 1) return { success: false, message: "Não há turno anterior." }; // Cannot go before Round 1
+            prevRound--;
+            prevIndex = currentMesa.combat_state.turn_order.length - 1;
+            await sendChatMessage(`🔔 RETROCEDENDO para RODADA ${prevRound}`, "system");
+        }
+        const combat_state = { ...currentMesa.combat_state, current_turn_index: prevIndex, round: prevRound };
+        const { error } = await supabase.from('mesas').update({ combat_state }).eq('id', currentMesa.id);
+        if (error) return { success: false, message: "Falha ao retroceder o turno." };
+
+        const turnData = currentMesa.combat_state.turn_order[prevIndex];
+        const charOnTurn = allCharacters.find(c => c.id === turnData.character_id);
+        if (charOnTurn) {
+            await sendChatMessage(`Retrocedendo para: ${charOnTurn.name}`, "system");
+        }
+        return { success: true, message: "Retrocedido para turno anterior." };
+    },
+
+    passTurn: async () => {
+        return get().nextTurn();
     },
 
     endCombat: async () => {

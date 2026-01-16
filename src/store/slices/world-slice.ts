@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
 import { GameState } from '../game-store';
-import { ActionResult, Scene, Token, Character } from '../../core/types';
+import { ActionResult, Scene, Token, Character, TokenType } from '../../core/types'; // Added TokenType
 import { supabase } from '../../lib/supabase';
 import monstersData from '../../data/rules/monsters.json';
 
@@ -9,6 +9,10 @@ export interface WorldSlice {
     tokens: Token[];
     createScene: (name: string, imageUrl: string) => Promise<ActionResult>;
     updateScene: (mesaId: string, sceneId: string, updates: Partial<Scene>) => Promise<ActionResult>;
+    deleteScene: (mesaId: string, sceneId: string) => Promise<ActionResult>; // Added
+    createToken: (sceneId: string, characterId: string | null, position: { x: number, y: number }, type: TokenType, size: number, imageUrl: string) => Promise<ActionResult>; // Added
+    updateToken: (tokenId: string, updates: Partial<Token>) => Promise<ActionResult>; // Added
+    deleteToken: (tokenId: string) => Promise<ActionResult>; // Added
     createPlayerToken: (characterId: string) => Promise<ActionResult>;
     moveToken: (tokenId: string, x: number, y: number) => Promise<void>;
     spawnMonster: (monsterId: string, position: { x: number, y: number }) => Promise<ActionResult>;
@@ -48,6 +52,7 @@ export const createWorldSlice: StateCreator<GameState, [], [], WorldSlice> = (se
             is_active: true, 
             grid_size: 50,
             scale_meters: 1.5,
+            tokens: [] // Initialize tokens as an empty array
         }).select().single();
 
         if (error) return { success: false, message: "Falha ao criar a cena." };
@@ -65,6 +70,51 @@ export const createWorldSlice: StateCreator<GameState, [], [], WorldSlice> = (se
         
         return { success: true, message: 'Configurações da cena atualizadas.' };
     },
+
+    deleteScene: async (mesaId, sceneId) => { // Added
+        const { error } = await supabase.from('scenes')
+            .delete()
+            .eq('mesa_id', mesaId)
+            .eq('id', sceneId);
+
+        if (error) return { success: false, message: 'Não foi possível deletar a cena.' };
+        return { success: true, message: 'Cena deletada com sucesso.' };
+    },
+
+    createToken: async (sceneId, characterId, position, type, size, imageUrl) => { // Added
+        const { error } = await supabase.from('tokens').insert({
+            scene_id: sceneId,
+            character_id: characterId,
+            x: position.x,
+            y: position.y,
+            type: type,
+            size: size,
+            image_url: imageUrl,
+            is_visible: true
+        });
+
+        if (error) return { success: false, message: "Não foi possível adicionar o token." };
+        return { success: true, message: "Token adicionado!" };
+    },
+
+    updateToken: async (tokenId, updates) => { // Added
+        const { error } = await supabase.from('tokens')
+            .update(updates)
+            .eq('id', tokenId);
+
+        if (error) return { success: false, message: "Não foi possível atualizar o token." };
+        return { success: true, message: "Token atualizado!" };
+    },
+
+    deleteToken: async (tokenId) => { // Added
+        const { error } = await supabase.from('tokens')
+            .delete()
+            .eq('id', tokenId);
+
+        if (error) return { success: false, message: "Não foi possível deletar o token." };
+        return { success: true, message: "Token deletado!" };
+    },
+
 
     createPlayerToken: async (characterId) => {
         const { activeScene, tokens } = get();

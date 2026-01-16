@@ -42,6 +42,8 @@ export interface CharacterDB {
     trail?: string;
     affinity?: Element | null;
     image_url: string | null;
+    profile_image_url?: string; // New field for character profile image
+    token_image_url?: string; // New field for character token image
 
     type: 'player' | 'npc';
     patente: string;
@@ -153,7 +155,7 @@ export interface Message {
     mesa_id: string;
     user_id: string;
     character_id: string | null;
-    type: 'text' | 'roll' | 'system' | 'image';
+    type: 'text' | 'roll' | 'system' | 'image' | 'whisper';
     content: {
         text?: string;
         results?: number[];
@@ -268,6 +270,55 @@ export interface LevelUpChoices {
     selectedAffinity?: Affinity;
 }
 
+export interface MonsterTemplate {
+    id: string;
+    owner_id: string | null; // null for official bestiary
+    name: string;
+    description?: string;
+    category?: string; // e.g., "Mundo", "Outro Lado"
+    profile_image_url?: string; // New field
+    token_image_url?: string;   // New field
+    attributes: Record<AttributeName, number>; // New structured field
+    stats_max: { // New structured field
+        pv: number;
+        pe: number;
+        san: number;
+    };
+    defenses: { // New structured field
+        passiva: number;
+        esquiva: number;
+        bloqueio: number;
+        mental: number;
+    };
+    abilities?: string[]; // New structured field (array of strings for now)
+    is_public: boolean; // can others see/use this template
+    created_at?: string;
+}
+
+export interface ItemTemplate { // For reusable item definitions (library items)
+    id: string;
+    owner_id: string | null; // null for official bestiary
+    name: string;
+    description?: string;
+    category: ItemCategory;
+    image_url?: string;
+    roll_type?: 'none' | 'attack' | 'damage' | 'save'; // New field for special roll type
+    roll_data?: string; // New field for roll expression (e.g., "1d20+agi")
+    stats?: Record<string, any>; // More structured stats, aligning with ItemDB
+    is_public: boolean;
+    created_at?: string;
+}
+
+export interface JournalEntry { // Added JournalEntry
+    id: string;
+    user_id: string; // Owner of the note
+    mesa_id: string; // The mesa it belongs to
+    title: string;
+    content: string; // Markdown or rich text content
+    created_at?: string;
+    updated_at?: string;
+}
+
 
 // --- STORE INTERFACE (useSheetStore) ---
 export interface SheetStore {
@@ -299,4 +350,8 @@ export interface SheetStore {
     // New actions
     setCharacter: (character: CharacterDB) => void;
     setItems: (items: InventoryItem[]) => void;
+    setProfileImageUrl: (url: string) => void; // New action
+    setTokenImageUrl: (url: string) => void;   // New action
+    isRollModalOpen: boolean; // New state for roll modal
+    setIsRollModalOpen: (isOpen: boolean) => void; // New action for roll modal
 }
