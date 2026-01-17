@@ -7,7 +7,7 @@ import ritualsSeed from '../../data/seed_rituals.json'; // Placeholder, should c
 
 export interface UtilitySlice {
     messages: any[];
-    sendChatMessage: (content: string, type?: Message['type'], options?: { imageUrl?: string; targetUserId?: string }) => Promise<void>; // Updated signature
+    sendChatMessage: (content: string, type?: Message['type'], options?: { imageUrl?: string; targetUserId?: string | null }) => Promise<void>; // Updated signature
     consumeItem: (characterId: string, itemId: string, quantity?: number) => Promise<ActionResult>;
     giveItemToCharacter: (item: InventoryItem, targetCharId: string) => Promise<ActionResult>;
     castRitual: (ritualId: string) => Promise<ActionResult>;
@@ -15,7 +15,7 @@ export interface UtilitySlice {
 
 export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> = (set, get) => ({
     messages: [],
-    sendChatMessage: async (content: string, type: Message['type'] = 'text', options?: { imageUrl?: string; targetUserId?: string }) => {
+    sendChatMessage: async (content: string, type: Message['type'] = 'text', options?: { imageUrl?: string; targetUserId?: string | null }) => {
         const { currentMesa, currentUser, character } = get();
         if (!currentMesa || !currentUser) return;
 
