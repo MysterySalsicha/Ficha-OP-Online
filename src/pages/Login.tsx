@@ -56,7 +56,7 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-op-bg text-zinc-100 p-4 relative overflow-hidden bg-noise">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-op-bg text-zinc-100 p-4 relative bg-noise">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900/50 via-op-bg to-op-bg z-0 pointer-events-none"></div>
       <div className="absolute top-0 left-0 w-full h-full scanline z-10 pointer-events-none opacity-20"></div>
 

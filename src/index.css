@@ -21,7 +21,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--op-bg);
   color: #e4e4e7;
-  overflow: hidden; /* Evita scroll na página inteira no modo app */
 }
 
 /* --- EFEITOS VISUAIS --- */
@@ -72,6 +71,15 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #52525b; 
+}
+
+/* Utility to hide scrollbar but keep functionality */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
 /* Animação de Glitch (para hover) */

@@ -11,6 +11,7 @@ export const CombatTab: React.FC = () => {
         nextTurn, 
         revertTurn, // Imported revertTurn
         passTurn, // Imported passTurn
+        reorderTurn,
         endCombat,
         playerRole,
         character: playerCharacter // Get the current player's character
@@ -21,6 +22,7 @@ export const CombatTab: React.FC = () => {
         nextTurn: state.nextTurn,
         revertTurn: state.revertTurn,
         passTurn: state.passTurn,
+        reorderTurn: state.reorderTurn,
         endCombat: state.endCombat,
         playerRole: state.playerRole,
         character: state.character
@@ -46,9 +48,7 @@ export const CombatTab: React.FC = () => {
     const isPlayersTurn = playerCharacter && currentTurnCharacter?.id === playerCharacter.id;
 
     const handleReorderTurn = async (characterId: string, direction: 'up' | 'down') => {
-      // TODO: Implement reorderTurn action in combat-slice.ts
-      console.log(`Reordenar ${characterId} para ${direction}`);
-      // For now, this is just a placeholder.
+      await reorderTurn(characterId, direction);
     }
 
     return (

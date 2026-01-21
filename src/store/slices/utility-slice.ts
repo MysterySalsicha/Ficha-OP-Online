@@ -7,7 +7,7 @@ import ritualsSeed from '../../data/seed_rituals.json'; // Placeholder, should c
 
 export interface UtilitySlice {
     messages: any[];
-    sendChatMessage: (content: string, type?: Message['type'], options?: { imageUrl?: string; targetUserId?: string }) => Promise<void>; // Updated signature
+    sendChatMessage: (type: 'text' | 'roll' | 'system', content: string | object) => Promise<void>;
     consumeItem: (characterId: string, itemId: string, quantity?: number) => Promise<ActionResult>;
     giveItemToCharacter: (item: InventoryItem, targetCharId: string) => Promise<ActionResult>;
     castRitual: (ritualId: string) => Promise<ActionResult>;
@@ -15,28 +15,42 @@ export interface UtilitySlice {
 
 export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> = (set, get) => ({
     messages: [],
-    sendChatMessage: async (content: string, type: Message['type'] = 'text', options?: { imageUrl?: string; targetUserId?: string }) => {
+    sendChatMessage: async (type: 'text' | 'roll' | 'system', rawContent: string | object) => {
         const { currentMesa, currentUser, character } = get();
         if (!currentMesa || !currentUser) return;
 
-        let messageContent: any = { text: content };
+        let messageContent: any = {};
         let msgType = type;
-        
-        // Handle roll command if message type is 'text'
-        const rollMatch = content.match(/^\/(d|r|roll)\s*(.*)/i);
-        if (msgType === 'text' && rollMatch) {
-            let rollCommand = rollMatch[2].trim();
-            // Handle simple /d20 syntax
-            if (rollMatch[1] === 'd' && !rollCommand.includes('d')) {
-                rollCommand = `1d${rollCommand}`;
+
+        if (type === 'roll' && typeof rawContent === 'object' && rawContent !== null && 'meta' in rawContent) {
+            // Content comes from GlobalRollModal
+            messageContent = { 
+                text: (rawContent as any).text,
+                results: (rawContent as any).meta.rolls,
+                total: (rawContent as any).meta.total,
+                modifier: (rawContent as any).meta.bonus,
+                rollMode: (rawContent as any).meta.mode,
+                isKeepLowest: (rawContent as any).meta.isKeepLowest,
+                // originalDiceCount: (rawContent as any).meta.originalDiceCount, // O GlobalRollModal não está enviando isso ainda.
+                details: 'Rolagem Personalizada' // Pode ser melhorado depois
+            };
+        } else if (typeof rawContent === 'string') {
+            // Existing logic for chat commands (e.g., "/roll 1d20")
+            const rollMatch = rawContent.match(/^\/(d|r|roll)\s*(.*)/i);
+            if (rollMatch) {
+                let rollCommand = rollMatch[2].trim();
+                if (rollMatch[1] === 'd' && !rollCommand.includes('d')) {
+                    rollCommand = `1d${rollCommand}`;
+                }
+                const roll = rollDice(rollCommand, 'dado'); // Usar a rollDice antiga para compatibilidade
+                msgType = 'roll';
+                messageContent = { ...roll, details: rollCommand };
+            } else {
+                messageContent = { text: rawContent };
             }
-            const roll = rollDice(rollCommand, 'dado');
-            msgType = 'roll';
-            messageContent = { ...roll, details: rollCommand };
-        } else if (msgType === 'image' && options?.imageUrl) {
-            messageContent = { imageUrl: options.imageUrl };
-        } else if (msgType === 'whisper') {
-            // Content is already text for whisper
+        } else {
+            // Fallback for other object types, though not expected currently
+            messageContent = rawContent;
         }
         
         await supabase.from('messages').insert({
@@ -45,7 +59,7 @@ export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> =
             character_id: character?.id,
             type: msgType,
             content: messageContent,
-            target_user_id: options?.targetUserId || null // Use targetUserId from options
+            target_user_id: null
         });
     },
 
@@ -73,7 +87,7 @@ export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> =
         const { error } = await supabase.from('characters').update({ inventory }).eq('id', characterId);
         if (error) return { success: false, message: "Falha ao consumir item." };
         
-        await sendChatMessage(`${character.name} consumiu ${quantity}x ${item.name}.`, 'system');
+        await sendChatMessage('system', `${character.name} consumiu ${quantity}x ${item.name}.`);
         return { success: true, message: "Item consumido." };
     },
 
@@ -94,7 +108,7 @@ export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> =
         const { error } = await supabase.from('characters').update({ inventory }).eq('id', targetCharId);
         if (error) return { success: false, message: `Falha ao entregar item: ${error.message}` };
         
-        await sendChatMessage(`Entregou ${item.name} para ${target.name}.`, 'system');
+        await sendChatMessage('system', `Entregou ${item.name} para ${target.name}.`);
         return { success: true, message: "Item entregue." };
     },
 
@@ -114,7 +128,7 @@ export const createUtilitySlice: StateCreator<GameState, [], [], UtilitySlice> =
 
         if (!statusUpdateResult.success) return statusUpdateResult;
 
-        await sendChatMessage(`${character.name} conjurou ${ritual.name}!`, 'system');
+        await sendChatMessage('system', `${character.name} conjurou ${ritual.name}!`);
         return { success: true, message: `Ritual ${ritual.name} conjurado!` };
     },
 });

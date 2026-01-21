@@ -2,43 +2,64 @@ import React, { useState, useEffect } from 'react';
 import { useSheetStore } from '../store/useSheetStore';
 import { useGameStore } from '../store/game-store';
 import { useToast } from './ui-op/OpToast';
-import { Shield, Brain, Heart, Zap, Crosshair, ChevronUp, Dice1, X, Check } from 'lucide-react'; // Changed Dice to Dice1
+import { Shield, Brain, Heart, Zap, Crosshair, ChevronUp, Dice1, X, Check, Minus, Plus } from 'lucide-react';
 import { EvolutionModal } from './modals/EvolutionModal';
 import { SheetWizard } from './wizard/SheetWizard';
 import { ReactionModal } from './modals/ReactionModal';
+import { RestModal } from './modals/RestModal';
 import { AttackResult, Character } from '../core/types';
-import { OpButton } from './ui-op/OpButton'; // Import OpButton
-import { OpInput } from './ui-op/OpInput'; // Import OpInput
+import { OpButton } from './ui-op/OpButton';
+import { OpInput } from './ui-op/OpInput';
 
-export const CharacterSheet: React.FC = () => {
+export const CharacterSheet: React.FC<{ characterId: string; editMode: boolean }> = ({ characterId, editMode }) => {
     // --- STATE & STORES ---
-    const { character: gameCharacter, items: gameItems, allCharacters, performAttack, performDamage, sendChatMessage } = useGameStore(); // Added sendChatMessage
-    const { character, items, mode, toggleMode, getRollData, isRollModalOpen, setIsRollModalOpen } = useSheetStore();
+    const { character: gameCharacter, items: gameItems, allCharacters, performAttack, performDamage, sendChatMessage, currentUser } = useGameStore();
+    const { character, items, mode, toggleMode, getRollData, isRollModalOpen, setIsRollModalOpen, rollModalInputValue, setRollModalInputValue, setCharacter, setItems, updateCharacterCurrentStats } = useSheetStore();
     const { showToast } = useToast();
     
-    const [rollInput, setRollInput] = useState(''); // State for roll input inside the modal
-
     const [activeTab, setActiveTab] = useState<'pericias' | 'inventario' | 'habilidades' | 'configuracoes'>('pericias');
     const [isShowingReactionModal, setIsShowingReactionModal] = useState(false);
     const [attackResultForReaction, setAttackResultForReaction] = useState<AttackResult | null>(null);
+    const [isRestModalOpen, setIsRestModalOpen] = useState(false); // Novo estado para o modal de descanso
 
-    // Sync GameStore -> SheetStore (One-way sync for viewing)
+    // Load character data based on characterId prop
     useEffect(() => {
-        const { setCharacter, setItems } = useSheetStore.getState();
-        if (gameCharacter && gameCharacter.id !== character?.id) {
-            setCharacter(gameCharacter);
-            if (gameCharacter.name === 'Agente Novato') { // Simple check for new char
-                toggleMode('creation');
+        if (characterId) {
+            const charToLoad = allCharacters.find(c => c.id === characterId);
+            if (charToLoad) {
+                setCharacter(charToLoad);
+                setItems(charToLoad.inventory || []); // Ensure items are also loaded
             }
         }
-    }, [gameCharacter, gameItems, character, toggleMode]);
+    }, [characterId, allCharacters, setCharacter, setItems]);
+
+    // Sync GameStore -> SheetStore (One-way sync for viewing)
+    // Removed old sync logic as it's now handled by characterId prop and explicit setCharacter/setItems
+    // This useEffect ensures that if the *currently viewed* character (via characterId) changes in gameStore
+    // (e.g., due to realtime update), the sheetStore also updates.
+    useEffect(() => {
+        const currentDisplayedChar = allCharacters.find(c => c.id === characterId);
+        if (currentDisplayedChar && currentDisplayedChar.id === character?.id) { // Only update if it's the same char
+            // This is a shallow check, a deeper check might be needed for specific properties
+            setCharacter(currentDisplayedChar);
+            setItems(currentDisplayedChar.inventory || []);
+        }
+    }, [allCharacters, characterId, character, setCharacter, setItems]);
+    
+    // Auto-enter creation mode for new characters
+    useEffect(() => {
+        if (character?.name === 'Agente Novato') { // Simple check for new char
+            toggleMode('creation');
+        }
+    }, [character, toggleMode]);
+
 
     // --- RENDER MODES ---
     if (mode === 'creation') {
         return <SheetWizard />; 
     }
 
-    if (!character) {
+    if (!character || character.id !== characterId) { // Ensure correct character is loaded
         return <div className="p-8 text-center text-zinc-500 font-typewriter">Carregando Dossiê...</div>;
     }
 
@@ -98,38 +119,94 @@ export const CharacterSheet: React.FC = () => {
         }
     };
 
-    const handleConfirmRoll = async (diceCode: string) => {
-        if (diceCode.trim()) {
-            await sendChatMessage(`/roll ${diceCode}`);
-            setRollInput('');
-            setIsRollModalOpen(false);
-        }
-    };
-
     const handleAttributeRoll = (attributeName: 'for' | 'agi' | 'int' | 'pre' | 'vig') => {
         const rollData = getRollData('none', attributeName); // 'none' for skillName as it's an attribute roll
-        setRollInput(rollData.explanation);
+        setRollModalInputValue(rollData.explanation);
         setIsRollModalOpen(true);
     };
 
     const handleOpenRollModal = () => {
-        setRollInput(''); // Clear previous roll input
+        setRollModalInputValue(''); // Clear previous roll input
         setIsRollModalOpen(true);
     };
 
     // --- UI COMPONENTS ---
-    const AttrHex = ({ label, value, color, onClick }: { label: string, value: number, color: string, onClick?: () => void }) => (
+    const AttrHex = ({ label, value, color, onClick, disabled }: { label: string, value: number, color: string, onClick?: () => void, disabled?: boolean }) => (
         <div 
-            className="flex flex-col items-center justify-center w-24 h-24 relative group select-none cursor-pointer"
-            onClick={onClick}
+            className={`flex flex-col items-center justify-center w-24 h-24 relative group select-none ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+            onClick={!disabled ? onClick : undefined} // Conditionally enable onClick
         >
             <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full text-zinc-800 fill-zinc-900 stroke-2">
                 <polygon points="50 0, 100 25, 100 75, 50 100, 0 75, 0 25" stroke="currentColor" />
             </svg>
             <span className="relative z-10 text-2xl font-black text-zinc-100 font-typewriter">{value}</span>
             <span className={`relative z-10 text-[10px] font-bold uppercase tracking-widest mt-1 ${color}`}>{label}</span>
-        </div>
+            {disabled && <div className="absolute inset-0 bg-black/50 rounded-lg"></div>} {/* Visual indication of disabled */}        </div>
     );
+
+    const VitalsInput = ({ label, value, max, color, icon: Icon, onValueChange }: { 
+        label: string; 
+        value: number; 
+        max: number; 
+        color: string; 
+        icon: React.ElementType; 
+        onValueChange: (newValue: number) => void; 
+    }) => {
+        const [inputValue, setInputValue] = useState(value.toString());
+
+        useEffect(() => {
+            setInputValue(value.toString());
+        }, [value]);
+
+        const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const newValue = e.target.value;
+            setInputValue(newValue);
+        };
+
+        const handleBlur = () => {
+            let numValue = parseInt(inputValue, 10);
+            if (isNaN(numValue)) numValue = value; // Revert to original if invalid
+            numValue = Math.max(0, Math.min(numValue, max)); // Clamp between 0 and max
+            onValueChange(numValue);
+            setInputValue(numValue.toString());
+        };
+
+        const handleIncrement = () => {
+            const numValue = Math.min(value + 1, max);
+            onValueChange(numValue);
+            setInputValue(numValue.toString());
+        };
+
+        const handleDecrement = () => {
+            const numValue = Math.max(value - 1, 0);
+            onValueChange(numValue);
+            setInputValue(numValue.toString());
+        };
+
+        return (
+            <div className={`bg-zinc-900/50 p-4 rounded-sm border ${color === 'red' ? 'border-red-900/30' : color === 'yellow' ? 'border-yellow-900/30' : 'border-blue-900/30'}`}>
+                <div className="flex justify-between items-center mb-2">
+                    <span className={`text-xs font-bold uppercase ${color === 'red' ? 'text-red-500' : color === 'yellow' ? 'text-yellow-500' : 'text-blue-500'}`}>{label}</span> <Icon className={`w-4 h-4 ${color === 'red' ? 'text-red-500' : color === 'yellow' ? 'text-yellow-500' : 'text-blue-500'}`} />
+                </div>
+                <div className="flex items-center gap-2">
+                    <button onClick={handleDecrement} className="p-1 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400">
+                        <Minus className="w-4 h-4" />
+                    </button>
+                    <input 
+                        type="number" 
+                        value={inputValue} 
+                        onChange={handleInputChange} 
+                        onBlur={handleBlur}
+                        className="flex-1 bg-transparent text-center text-3xl font-black text-white focus:outline-none" 
+                    />
+                    <button onClick={handleIncrement} className="p-1 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400">
+                        <Plus className="w-4 h-4" />
+                    </button>
+                </div>
+                <div className="text-right text-sm text-zinc-600 font-normal">/ {max}</div>
+            </div>
+        );
+    };
 
     return (
         <div className="bg-op-panel w-full h-full flex flex-col font-sans text-zinc-200 overflow-hidden relative">
@@ -138,39 +215,7 @@ export const CharacterSheet: React.FC = () => {
             {isShowingReactionModal && attackResultForReaction && (
                 <ReactionModal attackResult={attackResultForReaction} onReact={handleReaction} onClose={() => setIsShowingReactionModal(false)} />
             )}
-
-            {/* Roll Dice Modal */}
-            {isRollModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                    <div className="bg-op-panel border border-op-border p-6 w-full max-w-sm shadow-2xl relative animate-in fade-in zoom-in duration-200">
-                        <h3 className="text-lg font-bold text-op-gold mb-4 font-typewriter uppercase">Rolar Dados</h3>
-                        <div className="space-y-4">
-                            <OpInput
-                                label="Código dos Dados"
-                                placeholder="Ex: 1d20+5"
-                                value={rollInput}
-                                onChange={(e) => setRollInput(e.target.value)}
-                                autoFocus
-                            />
-                            <div className="grid grid-cols-3 gap-2">
-                                {['1d4', '1d6', '1d8', '1d10', '1d12', '1d20', '1d100'].map(dice => (
-                                    <OpButton key={dice} onClick={() => setRollInput(dice)} variant="secondary" className="text-sm">
-                                        {dice}
-                                    </OpButton>
-                                ))}
-                            </div>
-                            <div className="flex gap-2 pt-2">
-                                <OpButton variant="ghost" onClick={() => setIsRollModalOpen(false)} className="flex-1">
-                                    <X className="w-4 h-4 mr-2" /> Cancelar
-                                </OpButton>
-                                <OpButton onClick={() => handleConfirmRoll(rollInput)} className="flex-1" disabled={!rollInput.trim()}>
-                                    <Check className="w-4 h-4 mr-2" /> Rolar
-                                </OpButton>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {isRestModalOpen && <RestModal character={character} onClose={() => setIsRestModalOpen(false)} />} {/* Adicionado o RestModal */}
 
 
             {/* Header */}
@@ -192,6 +237,14 @@ export const CharacterSheet: React.FC = () => {
                             >
                                 <ChevronUp className="w-3 h-3" /> Evoluir
                             </button>
+                            {character.user_id === currentUser?.id && (
+                                <button
+                                    onClick={() => showToast("Converse com seu mestre para atualizar a patente.", "info")}
+                                    className="flex items-center gap-1 px-2 py-0.5 rounded transition-colors bg-op-gold/10 text-op-gold border border-op-gold/50 hover:bg-op-gold/20 font-bold uppercase"
+                                >
+                                    ✨ Subir de Nível
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -213,43 +266,47 @@ export const CharacterSheet: React.FC = () => {
             <div className="flex-1 overflow-auto p-6 grid grid-cols-1 md:grid-cols-12 gap-8">
                 {/* Vitals Column */}
                 <div className="md:col-span-3 flex flex-col gap-4">
-                    {/* PV */}
-                    <div className="bg-zinc-900/50 border border-red-900/30 p-4 rounded-sm">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs font-bold text-red-500 uppercase">Vida</span> <Heart className="w-4 h-4 text-red-500" />
-                        </div>
-                        <div className="text-3xl font-black text-white">
-                            {character.stats_current.pv} <span className="text-sm text-zinc-600 font-normal">/ {character.stats_max.pv}</span>
-                        </div>
-                    </div>
-                    {/* PE */}
-                    <div className="bg-zinc-900/50 border border-yellow-900/30 p-4 rounded-sm">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs font-bold text-yellow-500 uppercase">Esforço</span> <Zap className="w-4 h-4 text-yellow-500" />
-                        </div>
-                        <div className="text-3xl font-black text-white">
-                            {character.stats_current.pe} <span className="text-sm text-zinc-600 font-normal">/ {character.stats_max.pe}</span>
-                        </div>
-                    </div>
-                    {/* SAN */}
-                    <div className="bg-zinc-900/50 border border-blue-900/30 p-4 rounded-sm">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs font-bold text-blue-500 uppercase">Sanidade</span> <Brain className="w-4 h-4 text-blue-500" />
-                        </div>
-                        <div className="text-3xl font-black text-white">
-                            {character.stats_current.san} <span className="text-sm text-zinc-600 font-normal">/ {character.stats_max.san}</span>
-                        </div>
-                    </div>
+                    <VitalsInput 
+                        label="Vida" 
+                        value={character.stats_current.pv} 
+                        max={character.stats_max.pv} 
+                        color="red" 
+                        icon={Heart} 
+                        onValueChange={(val) => updateCharacterCurrentStats('pv', val)} 
+                    />
+                    <VitalsInput 
+                        label="Esforço" 
+                        value={character.stats_current.pe} 
+                        max={character.stats_max.pe} 
+                        color="yellow" 
+                        icon={Zap} 
+                        onValueChange={(val) => updateCharacterCurrentStats('pe', val)} 
+                    />
+                    <VitalsInput 
+                        label="Sanidade" 
+                        value={character.stats_current.san} 
+                        max={character.stats_max.san} 
+                        color="blue" 
+                        icon={Brain} 
+                        onValueChange={(val) => updateCharacterCurrentStats('san', val)} 
+                    />
+                    <OpButton 
+                        variant="secondary" 
+                        className="w-full mt-4 flex items-center justify-center gap-2"
+                        onClick={() => setIsRestModalOpen(true)} // Abre o modal de descanso
+                    >
+                        💤 Descansar
+                    </OpButton>
                 </div>
 
                 {/* Attributes Column */}
                 <div className="md:col-span-6 flex items-center justify-center py-8">
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                        <AttrHex label="Agi" value={character.attributes.agi} color="text-yellow-500" onClick={() => handleAttributeRoll('agi')} />
-                        <AttrHex label="Int" value={character.attributes.int} color="text-blue-500" onClick={() => handleAttributeRoll('int')} />
-                        <AttrHex label="For" value={character.attributes.for} color="text-red-500" onClick={() => handleAttributeRoll('for')} />
-                        <AttrHex label="Pre" value={character.attributes.pre} color="text-purple-500" onClick={() => handleAttributeRoll('pre')} />
-                        <AttrHex label="Vig" value={character.attributes.vig} color="text-green-500" onClick={() => handleAttributeRoll('vig')} />
+                        <AttrHex label="Agi" value={character.attributes.agi} color="text-yellow-500" onClick={() => handleAttributeRoll('agi')} disabled={!editMode} />
+                        <AttrHex label="Int" value={character.attributes.int} color="text-blue-500" onClick={() => handleAttributeRoll('int')} disabled={!editMode} />
+                        <AttrHex label="For" value={character.attributes.for} color="text-red-500" onClick={() => handleAttributeRoll('for')} disabled={!editMode} />
+                        <AttrHex label="Pre" value={character.attributes.pre} color="text-purple-500" onClick={() => handleAttributeRoll('pre')} disabled={!editMode} />
+                        <AttrHex label="Vig" value={character.attributes.vig} color="text-green-500" onClick={() => handleAttributeRoll('vig')} disabled={!editMode} />
                     </div>
                 </div>
 
@@ -291,6 +348,7 @@ export const CharacterSheet: React.FC = () => {
                                         placeholder="Cole a URL da imagem de perfil"
                                         value={character.profile_image_url || ''}
                                         onChange={(e) => useSheetStore.getState().setProfileImageUrl(e.target.value)}
+                                        disabled={!editMode}
                                     />
                                     {character.profile_image_url && (
                                         <img src={character.profile_image_url} alt="Prévia do Perfil" className="w-32 h-32 object-cover rounded-md mt-2 border border-op-border" />
@@ -303,6 +361,7 @@ export const CharacterSheet: React.FC = () => {
                                         placeholder="Cole a URL da imagem do token (para o mapa)"
                                         value={character.token_image_url || ''}
                                         onChange={(e) => useSheetStore.getState().setTokenImageUrl(e.target.value)}
+                                        disabled={!editMode}
                                     />
                                     {character.token_image_url && (
                                         <img src={character.token_image_url} alt="Prévia do Token" className="w-16 h-16 object-cover rounded-full mt-2 border border-op-border" />

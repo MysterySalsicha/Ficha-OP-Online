@@ -202,7 +202,7 @@ export const createWorldSlice: StateCreator<GameState, [], [], WorldSlice> = (se
 
         if (tokenError) return { success: false, message: "Falha ao criar o token do monstro." };
 
-        await sendChatMessage(`Uma criatura medonha surgiu: ${newMonsterChar.name}`, 'system');
+        await sendChatMessage('system', `Uma criatura medonha surgiu: ${newMonsterChar.name}`);
         return { success: true, message: "Monstro invocado!" };
     },
 });

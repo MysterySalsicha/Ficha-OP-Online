@@ -16,6 +16,7 @@ import classesData from '../data/rules/classes.json';
 import progressionData from '../data/rules/progression.json';
 import ritualsSeed from '../data/seed_rituals.json';
 import { validateAttributeIncrease, validateAttack, validateRitualCast } from '../engine/validator';
+import { useGameStore } from './game-store';
 
 // --- MOCK INITIAL DATA ---
 const initialCharacter: CharacterDB = {
@@ -109,7 +110,15 @@ export const useSheetStore = create<SheetStore>()((set, get) => ({ // Removed ex
   creation_step: 'concept',
   creation_points_spent: 0,
   isRollModalOpen: false, // Initialize as false
+  rollModalInputValue: '',
+  rollFaces: 20,
   
+  openRollModal: (faces: number) => set({ 
+    isRollModalOpen: true, 
+    rollFaces: faces,
+    rollModalInputValue: '', // Optional: reset input
+  }),
+
   setCharacter: (character: CharacterDB) => set({ character }),
   setItems: (items: InventoryItem[]) => set({ items }),
 
@@ -117,6 +126,7 @@ export const useSheetStore = create<SheetStore>()((set, get) => ({ // Removed ex
   setTokenImageUrl: (url: string) => set((s) => ({ character: { ...s.character, token_image_url: url } })),
 
   setIsRollModalOpen: (isOpen: boolean) => set({ isRollModalOpen: isOpen }),
+  setRollModalInputValue: (value: string) => set({ rollModalInputValue: value }),
 
   toggleMode: (mode: SheetMode) => set({ mode }),
   setCreationStep: (step: WizardStep) => set({ creation_step: step }),
@@ -237,5 +247,24 @@ export const useSheetStore = create<SheetStore>()((set, get) => ({ // Removed ex
           bonus,
           explanation: `${dice}d20 + ${bonus}`
       };
+  },
+
+  updateCharacterCurrentStats: (key: 'pv' | 'pe' | 'san', value: number) => {
+    const { character } = get();
+    if (!character) return;
+
+    // Update local state
+    set((s) => ({
+      character: {
+        ...s.character,
+        stats_current: {
+          ...s.character.stats_current,
+          [key]: value,
+        },
+      },
+    }));
+
+    // Persist to database via useGameStore
+    useGameStore.getState().updateCharacterStats(character.id, { [key]: value });
   },
 }));

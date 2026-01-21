@@ -12,6 +12,8 @@ export interface CharacterSlice {
     toggleCanEvolve: (characterId: string, value: boolean) => Promise<ActionResult>;
     completeLevelUp: (choices: LevelUpChoices) => Promise<ActionResult>;
     increaseAttribute: (attribute: AttributeName, characterId: string) => Promise<ActionResult>;
+    fetchUserCharacters: () => Promise<void>;
+    importCharacter: (characterId: string, targetMesaId: string) => Promise<ActionResult>;
 }
 
 export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlice> = (set, get) => ({
@@ -107,7 +109,7 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
         if (error) return { success: false, message: "Falha ao atualizar permissão de evolução." };
         
         const message = value ? `${characterToUpdate.name} agora pode evoluir!` : `A permissão de evolução de ${characterToUpdate.name} foi revogada.`;
-        await sendChatMessage(message, 'system');
+        await sendChatMessage('system', message);
         return { success: true, message };
     },
 
@@ -156,7 +158,7 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
         const { error } = await supabase.from('characters').update(updatedCharacter).eq('id', character.id);
         if (error) return { success: false, message: "Falha ao salvar evolução no banco de dados." };
 
-        await sendChatMessage(`${character.name} evoluiu para NEX ${choices.newNex}%!`, 'system');
+        await sendChatMessage('system', `${character.name} evoluiu para NEX ${choices.newNex}%!`);
         return { success: true, message: "Evolução completa!" };
     },
 
@@ -171,5 +173,48 @@ export const createCharacterSlice: StateCreator<GameState, [], [], CharacterSlic
         if (error) return { success: false, message: "Falha ao aumentar atributo."};
 
         return { success: true, message: `Atributo ${attribute.toUpperCase()} de ${character.name} aumentado.`};
-    }
+    },
+
+    fetchUserCharacters: async () => {
+        const { currentUser } = get();
+        if (!currentUser) return;
+
+        const { data, error } = await supabase
+            .from('characters')
+            .select('*')
+            .eq('user_id', currentUser.id);
+
+        if (error) {
+            console.error("Error fetching user characters:", error);
+            return;
+        }
+        
+        set({ availableCharacters: data || [] });
+    },
+
+    importCharacter: async (characterId, targetMesaId) => {
+        const { availableCharacters } = get();
+        const characterToImport = availableCharacters.find(c => c.id === characterId);
+
+        if (!characterToImport) {
+            return { success: false, message: "Personagem para importação não encontrado." };
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id, created_at, ...newCharData } = characterToImport;
+
+        const charToInsert = {
+            ...newCharData,
+            mesa_id: targetMesaId
+        };
+        
+        const { error } = await supabase.from('characters').insert(charToInsert);
+
+        if (error) {
+            console.error("Error importing character:", error);
+            return { success: false, message: "Falha ao importar o personagem." };
+        }
+
+        return { success: true, message: "Personagem importado com sucesso!" };
+    },
 });

@@ -13,6 +13,7 @@ export interface CombatSlice {
     nextTurn: () => Promise<ActionResult>;
     revertTurn: () => Promise<ActionResult>; // Added revertTurn
     passTurn: () => Promise<ActionResult>; // Added passTurn
+    reorderTurn: (characterId: string, direction: 'up' | 'down') => Promise<ActionResult>;
     endCombat: () => Promise<ActionResult>;
     selectTarget: (tokenId: string | null) => void;
 }
@@ -38,7 +39,7 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         const { error } = await supabase.from('mesas').update({ combat_state }).eq('id', currentMesa.id);
         if (error) return { success: false, message: "Falha ao iniciar o combate." };
         
-        await sendChatMessage("⚔️ COMBATE INICIADO!", "system");
+        await sendChatMessage('system', "⚔️ COMBATE INICIADO!");
         return { success: true, message: "Combate iniciado!" };
     },
 
@@ -52,7 +53,7 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         if (nextIndex >= currentMesa.combat_state.turn_order.length) {
             nextIndex = 0;
             nextRound++;
-            await sendChatMessage(`🔔 RODADA ${nextRound} INICIADA`, "system");
+            await sendChatMessage('system', `🔔 RODADA ${nextRound} INICIADA`);
         }
         const combat_state = { ...currentMesa.combat_state, current_turn_index: nextIndex, round: nextRound };
         const { error } = await supabase.from('mesas').update({ combat_state }).eq('id', currentMesa.id);
@@ -61,7 +62,7 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         const turnData = currentMesa.combat_state.turn_order[nextIndex];
         const charOnTurn = allCharacters.find(c => c.id === turnData.character_id);
         if (charOnTurn) {
-            await sendChatMessage(`Vez de: ${charOnTurn.name}`, "system");
+            await sendChatMessage('system', `Vez de: ${charOnTurn.name}`);
         }
         return { success: true, message: "Próximo turno." };
     },
@@ -77,7 +78,7 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
             if (prevRound <= 1) return { success: false, message: "Não há turno anterior." }; // Cannot go before Round 1
             prevRound--;
             prevIndex = currentMesa.combat_state.turn_order.length - 1;
-            await sendChatMessage(`🔔 RETROCEDENDO para RODADA ${prevRound}`, "system");
+            await sendChatMessage('system', `🔔 RETROCEDENDO para RODADA ${prevRound}`);
         }
         const combat_state = { ...currentMesa.combat_state, current_turn_index: prevIndex, round: prevRound };
         const { error } = await supabase.from('mesas').update({ combat_state }).eq('id', currentMesa.id);
@@ -86,13 +87,53 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         const turnData = currentMesa.combat_state.turn_order[prevIndex];
         const charOnTurn = allCharacters.find(c => c.id === turnData.character_id);
         if (charOnTurn) {
-            await sendChatMessage(`Retrocedendo para: ${charOnTurn.name}`, "system");
+            await sendChatMessage('system', `Retrocedendo para: ${charOnTurn.name}`);
         }
         return { success: true, message: "Retrocedido para turno anterior." };
     },
 
     passTurn: async () => {
         return get().nextTurn();
+    },
+
+    reorderTurn: async (characterId, direction) => {
+        const { currentMesa } = get();
+        const combatState = currentMesa?.combat_state;
+
+        if (!combatState || !combatState.in_combat || !combatState.turn_order) {
+            return { success: false, message: "Não está em combate." };
+        }
+
+        const turnOrder = [...combatState.turn_order];
+        const charIndex = turnOrder.findIndex(t => t.character_id === characterId);
+
+        if (charIndex === -1) {
+            return { success: false, message: "Personagem não encontrado na ordem de turno." };
+        }
+
+        const swapIndex = direction === 'up' ? charIndex - 1 : charIndex + 1;
+
+        if (swapIndex < 0 || swapIndex >= turnOrder.length) {
+            return { success: false, message: "Movimento inválido." }; // Cannot move further
+        }
+
+        // Swap elements
+        [turnOrder[charIndex], turnOrder[swapIndex]] = [turnOrder[swapIndex], turnOrder[charIndex]];
+        
+        const newCombatState = { ...combatState, turn_order: turnOrder };
+
+        const { error } = await supabase
+            .from('mesas')
+            .update({ combat_state: newCombatState })
+            .eq('id', currentMesa.id);
+
+        if (error) {
+            console.error("Erro ao reordenar turno:", error)
+            return { success: false, message: "Falha ao reordenar o turno." };
+        }
+
+        // We don't need to set state locally, as the subscription will handle it
+        return { success: true, message: "Ordem de turno atualizada." };
     },
 
     endCombat: async () => {
@@ -103,7 +144,7 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         const { error } = await supabase.from('mesas').update({ combat_state }).eq('id', currentMesa.id);
         if (error) return { success: false, message: "Falha ao encerrar o combate." };
 
-        await sendChatMessage("🏳️ Combate Encerrado.", "system");
+        await sendChatMessage('system', "🏳️ Combate Encerrado.");
         return { success: true, message: "Combate encerrado." };
     },
 
@@ -142,7 +183,7 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         const isCriticalThreat = attackRoll.results[0] >= weaponCritThreat;
 
         const message = `${character.name} atacou ${target.name} com ${weapon.name}: Rolagem ${attackRoll.total} vs Defesa ${targetDefense}. ${isHit ? 'ACERTOU!' : 'ERROU!'}${isCriticalThreat && isHit ? ' (Ameaça de Crítico!)' : ''}`;
-        await sendChatMessage(message, 'system');
+        await sendChatMessage('system', message);
 
         if (weapon.stats?.ammo_id && weapon.stats?.ammo_per_shot) { // Added optional chaining
             await consumeItem(character.id, weapon.stats.ammo_id, weapon.stats.ammo_per_shot);
@@ -188,11 +229,11 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
         
         const attacker = allCharacters.find(char => char.id === attackerId);
         const message = `${attacker?.name || 'Um ataque'} causou ${totalDamage} de dano${critMessage} a ${target.name}. PV restantes: ${newTargetPV}`;
-        await sendChatMessage(message, 'system');
+        await sendChatMessage('system', message);
 
         if (newTargetPV <= 0 && !target.stats_current.is_dying) {
             await updateCharacterStatus(target.id, { is_dying: true });
-            await sendChatMessage(`${target.name} está Morrendo!`, 'system');
+            await sendChatMessage('system', `${target.name} está Morrendo!`);
         }
 
         return { success: true, message: "Dano aplicado com sucesso!" };
@@ -220,7 +261,7 @@ export const createCombatSlice: StateCreator<GameState, [], [], CombatSlice> = (
                 break;
         }
 
-        await sendChatMessage(reactionMessage, 'system');
+        await sendChatMessage('system', reactionMessage);
         return modifiedAttackResult;
     },
 });

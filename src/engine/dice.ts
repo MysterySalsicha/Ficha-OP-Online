@@ -88,3 +88,50 @@ export function rollDice(code: string, type: 'atributo' | 'dano' | 'dado' = 'atr
         details
     };
 }
+
+export function rollOrdemParanormal(
+    attributeValue: number, 
+    skillBonus: number, 
+    mode: 'normal' | 'advantage' | 'disadvantage'
+): DieRoll {
+    const originalDiceCount = attributeValue;
+    let diceCount = attributeValue;
+    if (mode === 'advantage') diceCount++;
+    if (mode === 'disadvantage') diceCount--;
+
+    let results: number[] = [];
+    let isKeepLowest = false;
+    let faces = 20;
+
+    if (diceCount <= 0) {
+        diceCount = 2;
+        isKeepLowest = true;
+    } else {
+        isKeepLowest = false;
+    }
+
+    for (let i = 0; i < diceCount; i++) {
+        results.push(Math.floor(Math.random() * faces) + 1);
+    }
+    
+    let chosenResult = 0;
+    if (isKeepLowest) {
+        chosenResult = Math.min(...results);
+    } else {
+        chosenResult = Math.max(...results);
+    }
+
+    const total = chosenResult + skillBonus;
+    const details = `Rolagem: [${results.join(', ')}] + ${skillBonus}`;
+
+    return {
+        results,
+        total,
+        details,
+        modifier: skillBonus,
+        dice_code: `${attributeValue}d20+${skillBonus}`, // Código simplificado
+        rollMode: mode,
+        originalDiceCount: originalDiceCount,
+        isCritical: chosenResult === 20
+    };
+}

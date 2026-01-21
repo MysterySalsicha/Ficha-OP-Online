@@ -21,6 +21,16 @@ export type Affinity = 'morte' | 'sangue' | 'energia' | 'conhecimento' | 'medo' 
 export type VitalStatus = 'vivo' | 'morrendo' | 'morto';
 export type MentalStatus = 'sao' | 'abalado' | 'enlouquecendo';
 
+export type PlayerRole = 'player' | 'gm' | 'co-gm';
+export type PlayerStatus = 'pending' | 'approved' | 'rejected' | 'banned';
+
+export interface PlayerMesaStatus {
+    mesa_id: string;
+    user_id: string;
+    status: PlayerStatus;
+    role: PlayerRole;
+}
+
 export interface User {
     id: string;
     email?: string; // Optional to match Supabase User
@@ -132,7 +142,7 @@ export interface Scene {
 export interface Mesa {
     id: string;
     name: string;
-    codigo: string;
+    code: string;
     mestre_id: string;
     current_scene_id: string | null;
     scenes: Scene[];
@@ -146,7 +156,6 @@ export interface Mesa {
     jogadores: any[];
     modo_sah: boolean;
     modo_tutorial: boolean;
-    is_active?: boolean;
     created_at?: string;
 }
 
@@ -165,6 +174,10 @@ export interface Message {
         imageUrl?: string;
         dice_code?: string; // Added from DieRoll in previous build errors
         isCritical?: boolean; // Added from DieRoll in previous build errors
+        rollMode?: 'normal' | 'advantage' | 'disadvantage';
+        originalDiceCount?: number;
+        isKeepLowest?: boolean;
+        is_hidden?: boolean; // Adicionado para rolagens ocultas
     };
     created_at: string;
     target_user_id: string | null;
@@ -200,6 +213,9 @@ export interface DieRoll {
     modifier: number;
     dice_code?: string; // Re-added
     isCritical?: boolean; // Re-added
+    rollMode?: 'normal' | 'advantage' | 'disadvantage';
+    originalDiceCount?: number;
+    isKeepLowest?: boolean;
 }
 
 export interface ActionResult {
@@ -354,4 +370,9 @@ export interface SheetStore {
     setTokenImageUrl: (url: string) => void;   // New action
     isRollModalOpen: boolean; // New state for roll modal
     setIsRollModalOpen: (isOpen: boolean) => void; // New action for roll modal
+    rollModalInputValue: string;
+    setRollModalInputValue: (value: string) => void;
+    rollFaces: number;
+    openRollModal: (faces: number) => void;
+    updateCharacterCurrentStats: (key: 'pv' | 'pe' | 'san', value: number) => void;
 }

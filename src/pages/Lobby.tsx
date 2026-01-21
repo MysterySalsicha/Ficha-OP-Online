@@ -118,10 +118,10 @@ export const Lobby: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-op-bg text-zinc-100 p-8 bg-noise font-sans relative">
+    <div className="min-h-screen bg-op-bg text-zinc-100 p-4 sm:p-8 bg-noise font-sans relative">
       <div className="scanline absolute inset-0 z-0 opacity-10 pointer-events-none"></div>
 
-      <header className="flex justify-between items-center mb-16 relative z-10 border-b border-op-border pb-4">
+      <header className="flex justify-between items-center mb-8 md:mb-16 relative z-10 border-b border-op-border pb-4">
         <div>
             <h1 className="text-3xl font-typewriter font-bold text-op-red uppercase tracking-widest">Painel de Missões</h1>
             <p className="text-[10px] text-zinc-500 font-mono mt-1">SISTEMA VER. 1.1 // ORDO REALITAS</p>
@@ -194,7 +194,7 @@ export const Lobby: React.FC = () => {
           </div>
       )}
 
-      <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto relative z-10">
+      <div className="grid md:grid-cols-2 gap-4 md:gap-8 max-w-5xl mx-auto relative z-10">
         <div className="bg-op-panel p-8 border border-op-border hover:border-op-red transition-all group relative overflow-hidden">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><FileText className="w-32 h-32" /></div>
           <h2 className="text-xl font-bold mb-2 font-typewriter text-zinc-200 group-hover:text-op-red transition-colors flex items-center gap-2"><Plus className="w-5 h-5" /> Nova Missão</h2>
@@ -233,7 +233,7 @@ export const Lobby: React.FC = () => {
                 onClick={() => navigate(`/mesa/${mesa.id}`)}
               >
                 <h3 className="font-bold text-lg text-zinc-200">{mesa.name}</h3>
-                <p className="text-xs text-zinc-500 font-mono">Código: {mesa.codigo}</p>
+                <p className="text-xs text-zinc-500 font-mono">Código: {mesa.code}</p>
                 <p className="text-xs text-op-red mt-2">Mestre: {mesa.mestre_id === user?.id ? 'Você' : 'Outro'}</p> {/* TODO: Get actual GM name */}
               </div>
             ))}

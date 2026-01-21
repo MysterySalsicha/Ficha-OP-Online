@@ -1,102 +1,103 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, Trash2 } from 'lucide-react'; 
 import { useGameStore } from '../../store/game-store';
 import { useAuth } from '../../contexts/AuthContext';
-import { useSheetStore } from '../../store/useSheetStore'; // Import useSheetStore
-import { Dice1, Send } from 'lucide-react'; 
-import { Character, DieRoll, User } from '../../core/types';
+import { useSheetStore } from '../../store/useSheetStore'; 
+import d20Icon from '../../assets/d20-icon.svg';
 
-interface ChatTabProps {
-    messages: any[];
-    allCharacters: Character[]; // Re-added for simplicity for now
-    user: User | null;
-    sendChatMessage: (content: string) => Promise<void>; // Simplified signature
-}
+export const ChatTab: React.FC = () => {
+  const { currentMesa, messages, sendMessage, sendChatMessage, deleteMessage, isGM, revealRollMessage } = useGameStore();
+  const { user } = useAuth();
+  const { openRollModal } = useSheetStore();
 
-const DiceRollDisplay: React.FC<{ roll: DieRoll, characterName: string }> = ({ roll, characterName }) => (
-    <div className="bg-zinc-800/50 border border-zinc-700 rounded-lg p-3 my-2">
-        <p className="text-xs text-zinc-400 mb-2">{characterName} rolou {roll.details}...</p>
-        <div className="flex items-center justify-center gap-2">
-            <p className="text-3xl font-bold text-op-gold">{roll.total}</p>
-            <p className="text-xs text-zinc-500">
-                ({roll.results.join(' + ')}
-                {roll.modifier !== 0 && (roll.modifier > 0 ? ` + ${roll.modifier}` : ` - ${Math.abs(roll.modifier)}`)})
-            </p>
-        </div>
-    </div>
-);
+  const [newMessage, setNewMessage] = useState('');
+  const [isDicePopoverOpen, setIsDicePopoverOpen] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const scrollToBottom = () => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); };
+  useEffect(() => { scrollToBottom(); }, [messages]);
 
-export const ChatTab: React.FC<ChatTabProps> = ({ messages, allCharacters, user, sendChatMessage }) => {
-    const [chatInput, setChatInput] = useState('');
-    const [isDicePopoverOpen, setIsDicePopoverOpen] = useState(false);
-    const chatEndRef = useRef<HTMLDivElement>(null);
-    const { setIsRollModalOpen } = useSheetStore(); // Keep this for now, will remove later if needed
+  const handleSendMessage = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!newMessage.trim() || !user || !currentMesa) return;
+    await sendMessage(currentMesa.id, user.id, 'text', { text: newMessage });
+    setNewMessage('');
+  };
 
-    useEffect(() => {
-        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+  const handleDiceButtonClick = (faces: number) => {
+    openRollModal(faces);
+    setIsDicePopoverOpen(false);
+  };
 
-    const handleSendMessage = async (e?: React.FormEvent) => {
-        e?.preventDefault();
-        if (chatInput.trim()) {
-            await sendChatMessage(chatInput);
-            setChatInput('');
-        }
-    };
-    
-    const handleQuickDiceRoll = async (dice: string) => {
-        await sendChatMessage(`/roll ${dice}`);
-        setIsDicePopoverOpen(false);
-    }
+  return (
+    <div className="flex flex-col h-full bg-zinc-950 text-zinc-100 relative">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar pb-20">
+        {messages.map((msg) => {
+            const isMe = msg.user_id === user?.id;
+            if (!msg.user_id) return <div key={msg.id} className="text-center text-xs text-zinc-500 my-2">{msg.content.text}</div>;
 
-    return (
-        <div className="flex-1 flex flex-col overflow-hidden bg-zinc-900">
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                {messages.map((msg, i) => {
-                    const characterName = allCharacters.find(c => c.user_id === msg.user_id)?.name || 'Agente';
-                    return(
-                        <div key={i}>
-                            {msg.type === 'text' && (
-                                <div className={`text-sm`}>
-                                    <span className={`font-bold text-xs block ${msg.user_id === user?.id ? 'text-op-gold' : 'text-zinc-500'}`}>
-                                        {characterName}
-                                    </span>
-                                    {msg.content.text}
+            const isHiddenRoll = msg.type === 'roll' && msg.content.is_hidden;
+
+            return (
+                <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'} group`}>
+                    <div className={`max-w-[80%] rounded-lg p-3 ${isMe ? 'bg-zinc-800 text-zinc-100' : 'bg-zinc-900 border border-zinc-800'} 
+                                ${isHiddenRoll && isGM ? 'border-purple-500 bg-purple-900/20' : ''}`}> {/* Estilo para GM em rolagem oculta */}
+                        {!isMe && <div className="text-[10px] text-op-red font-bold uppercase mb-1">Investigador</div>}
+                        
+                        {msg.type === 'roll' ? (
+                            isHiddenRoll && !isGM ? ( // Rolagem oculta para players
+                                <div className="font-mono text-sm bg-black/20 p-2 rounded border border-zinc-700 text-zinc-400">
+                                    🎲 O Mestre está rolando dados...
                                 </div>
-                            )}
-                            {msg.type === 'roll' && (
-                                <DiceRollDisplay roll={msg.content} characterName={characterName} />
-                            )}
-                            {msg.type === 'system' && (
-                                <p className="text-sm text-yellow-500 italic text-center my-2 py-1 border-y border-yellow-500/10">
-                                    {msg.content.text}
-                                </p>
-                            )}
-                        </div>
-                    )
-                })}
-                <div ref={chatEndRef} />
-            </div>
-            <div className="p-3 border-t border-op-border bg-zinc-950/70">
-                <form onSubmit={handleSendMessage} className="flex gap-2">
-                    <div className="relative">
-                        <button type="button" onClick={() => setIsDicePopoverOpen(!isDicePopoverOpen)} className="p-2 bg-zinc-800 hover:bg-op-gold/20 text-zinc-400 hover:text-op-gold border border-zinc-700 rounded transition-colors">
-                            <Dice1 className="w-5 h-5" />
-                        </button>
-                        {isDicePopoverOpen && (
-                            <div className="absolute bottom-full mb-2 w-56 bg-op-panel border border-op-border rounded shadow-lg z-10 p-2 grid grid-cols-3 gap-2">
-                                {['1d4', '1d6', '1d8', '1d10', '1d12', '1d20', '1d100'].map(dice => (
-                                    <button key={dice} type="button" onClick={() => handleQuickDiceRoll(dice)} className="p-2 text-sm font-bold bg-zinc-800 hover:bg-op-gold/20 rounded border border-zinc-700">{dice}</button>
-                                ))}
-                            </div>
+                            ) : ( // Rolagem normal para todos, ou oculta para GM
+                                <div className="font-mono text-sm bg-black/20 p-2 rounded border border-op-gold/20">
+                                    <div className="text-op-gold font-bold text-xs mb-1 border-b border-op-gold/10 pb-1">🎲 RESULTADO</div>
+                                    <div className="whitespace-pre-wrap">{msg.content.text}</div>
+                                    {isHiddenRoll && isGM && ( // Botão Revelar para GM em rolagem oculta
+                                        <button 
+                                            onClick={() => revealRollMessage(msg.id)} 
+                                            className="mt-2 px-3 py-1 bg-purple-700 hover:bg-purple-600 text-white text-xs rounded-full"
+                                        >
+                                            Revelar para Todos
+                                        </button>
+                                    )}
+                                </div>
+                            )
+                        ) : (
+                            <div className="whitespace-pre-wrap text-sm">{msg.content.text}</div>
                         )}
+                        
+                        <div className="flex justify-between items-center mt-1 text-[9px] text-zinc-600">
+                            {new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+                            {isMe && <button onClick={() => deleteMessage(msg.id)} className="opacity-0 group-hover:opacity-100 hover:text-red-500 ml-2"><Trash2 className="w-3 h-3"/></button>}
+                        </div>
                     </div>
-                    <input className="flex-1 bg-black/40 border border-zinc-700 rounded p-2 text-sm outline-none focus:border-op-red" placeholder="Mensagem..." value={chatInput} onChange={e => setChatInput(e.target.value)} />
-                    <button type="submit" className="p-2 bg-op-red hover:bg-red-500 text-white border border-red-700 rounded">
-                        <Send className="w-5 h-5" />
-                    </button>
-                </form>
-            </div>
+                </div>
+            );
+        })}
+        <div ref={messagesEndRef} />
+      </div>
+
+      <div className="p-3 bg-zinc-900 border-t border-zinc-800 flex gap-2 items-center absolute bottom-0 w-full">
+        <div className="relative">
+            <button type="button" onClick={() => setIsDicePopoverOpen(!isDicePopoverOpen)} className={`p-2 rounded border ${isDicePopoverOpen ? 'bg-op-gold/20 text-op-gold border-op-gold' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>
+                <img src={d20Icon} className="w-6 h-6" />
+            </button>
+            {isDicePopoverOpen && (
+                <div className="absolute bottom-full left-0 mb-2 w-56 bg-zinc-950 border border-zinc-700 rounded-lg shadow-2xl p-2 z-50 grid grid-cols-4 gap-2">
+                    {[3, 4, 6, 8, 10, 12, 20, 100].map(faces => 
+                        <button key={faces} onClick={() => handleDiceButtonClick(faces)} className="p-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-bold rounded border border-zinc-800">
+                            d{faces}
+                        </button>
+                    )}
+                </div>
+            )}
         </div>
-    );
+        <form onSubmit={handleSendMessage} className="flex-1 flex gap-2">
+            <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Enviar mensagem..." className="flex-1 bg-zinc-950 text-white text-sm rounded border border-zinc-800 px-3 py-2 outline-none focus:border-zinc-600"/>
+            <button type="submit" disabled={!newMessage.trim()} className="p-2 bg-op-red hover:bg-red-700 text-white rounded"><Send className="w-4 h-4"/></button>
+        </form>
+      </div>
+    </div>
+  );
 };

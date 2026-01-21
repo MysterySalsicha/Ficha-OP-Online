@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../../store/game-store';
 import { useAuth } from '../../contexts/AuthContext';
 import { Copy, Shield, Crown, User, UserX, Loader2, Monitor, MonitorUp, LogOut } from 'lucide-react'; // Import MonitorUp and LogOut
 import { OpButton } from '../ui-op/OpButton';
 import { promotePlayer, updatePlayerStatus } from '../../lib/mesa'; // Assuming these functions exist
+import { useToast } from '../ui-op/OpToast';
 
 export const SettingsTab: React.FC = () => {
   const { currentMesa, allCharacters, playerRole, initialize, currentUser, visualMode, setVisualMode } = useGameStore(); // Added visualMode and setVisualMode
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const { showToast } = useToast();
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
 
   const isGM = playerRole === 'gm' || playerRole === 'co-gm';
 
+  const handleLeaveMesa = () => {
+    navigate('/lobby');
+  };
+
   const handleCopyCode = () => {
-    if (currentMesa?.codigo) {
-      navigator.clipboard.writeText(currentMesa.codigo);
-      // TODO: Add a toast notification for "Copied!"
+    if (currentMesa?.code) {
+      navigator.clipboard.writeText(currentMesa.code);
+      showToast('Código da mesa copiado!', 'success'); // Adicionar esta linha
     }
   };
 
@@ -75,7 +83,7 @@ export const SettingsTab: React.FC = () => {
         <div className="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
           <h4 className="font-semibold text-zinc-200 mb-2">Código da Mesa</h4>
           <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded p-2">
-            <span className="flex-1 font-mono text-op-gold text-lg select-all">{currentMesa?.codigo || 'N/A'}</span>
+            <span className="flex-1 font-mono text-op-gold text-lg select-all">{currentMesa?.code || 'N/A'}</span>
             <button 
               onClick={handleCopyCode} 
               className="p-1 rounded bg-zinc-700 hover:bg-zinc-600 transition-colors"
@@ -161,10 +169,10 @@ export const SettingsTab: React.FC = () => {
           <h4 className="font-semibold text-zinc-200 mb-2">Ações da Mesa</h4>
           <OpButton 
             variant="danger" 
-            onClick={() => signOut()}
+            onClick={handleLeaveMesa}
             className="w-full"
           >
-            <LogOut className="w-4 h-4 mr-2" /> Sair da Mesa
+            <LogOut className="w-4 h-4 mr-2" /> Voltar para o QG
           </OpButton>
           <p className="text-xs text-zinc-500 mt-2">Sair da mesa atual e retornar para o Lobby.</p>
         </div>

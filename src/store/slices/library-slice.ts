@@ -21,29 +21,28 @@ export const createLibrarySlice: StateCreator<GameState, [], [], LibrarySlice> =
     items: [],
 
     fetchMonsters: async (mesaId: string) => {
-        // Fetch official (owner_id is null) and user-owned monsters
-        const { data: officialMonsters, error: officialError } = await supabase
-            .from('library_monsters')
-            .select('*')
-            .is('owner_id', null);
+        const userId = get().currentUser?.id;
+        if (!userId) {
+            console.error("User not found to fetch monsters");
+            return;
+        };
 
-        const { data: userMonsters, error: userError } = await supabase
-            .from('library_monsters')
+        const { data, error } = await supabase
+            .from('library_creatures')
             .select('*')
-            .eq('owner_id', get().currentUser?.id);
+            .or(`owner_id.eq.${userId},is_public.eq.true,owner_id.is.null`);
 
-        if (officialError || userError) {
-            console.error("Error fetching monsters:", officialError || userError);
+        if (error) {
+            console.error("Error fetching monsters:", error);
             return;
         }
 
-        const allMonsters = [...(officialMonsters || []), ...(userMonsters || [])];
-        set({ monsters: allMonsters });
+        set({ monsters: data || [] });
     },
 
     createMonster: async (monster) => {
         const { error } = await supabase
-            .from('library_monsters')
+            .from('library_creatures')
             .insert({ 
                 name: monster.name,
                 description: monster.description,
@@ -63,7 +62,7 @@ export const createLibrarySlice: StateCreator<GameState, [], [], LibrarySlice> =
 
     updateMonster: async (monsterId, updates) => {
         const { error } = await supabase
-            .from('library_monsters')
+            .from('library_creatures')
             .update(updates)
             .eq('id', monsterId)
             .eq('owner_id', get().currentUser?.id); // Only owner can update
@@ -74,7 +73,7 @@ export const createLibrarySlice: StateCreator<GameState, [], [], LibrarySlice> =
 
     deleteMonster: async (monsterId) => {
         const { error } = await supabase
-            .from('library_monsters')
+            .from('library_creatures')
             .delete()
             .eq('id', monsterId)
             .eq('owner_id', get().currentUser?.id); // Only owner can delete
@@ -84,24 +83,23 @@ export const createLibrarySlice: StateCreator<GameState, [], [], LibrarySlice> =
     },
 
     fetchItems: async (mesaId: string) => {
-        // Fetch official (owner_id is null) and user-owned items
-        const { data: officialItems, error: officialError } = await supabase
-            .from('library_items')
-            .select('*')
-            .is('owner_id', null);
-
-        const { data: userItems, error: userError } = await supabase
-            .from('library_items')
-            .select('*')
-            .eq('owner_id', get().currentUser?.id);
-
-        if (officialError || userError) {
-            console.error("Error fetching items:", officialError || userError);
+        const userId = get().currentUser?.id;
+        if (!userId) {
+            console.error("User not found to fetch items");
             return;
         }
 
-        const allItems = [...(officialItems || []), ...(userItems || [])];
-        set({ items: allItems });
+        const { data, error } = await supabase
+            .from('library_items')
+            .select('*')
+            .or(`owner_id.eq.${userId},is_public.eq.true,owner_id.is.null`);
+
+        if (error) {
+            console.error("Error fetching items:", error);
+            return;
+        }
+
+        set({ items: data || [] });
     },
 
     createItem: async (item) => {

@@ -1,23 +1,18 @@
 import { supabase } from './supabase';
 import { Mesa } from '../core/types';
 
-const generateCode = () => {
-  return Math.random().toString(36).substring(2, 8).toUpperCase();
-};
-
-export const createMesa = async (name: string, gmId: string) => {
-  const code = generateCode();
+export const createMesa = async (name: string, userId: string) => {
+  // Nota: Não geramos 'code' aqui. O Banco de Dados gera automaticamente (default).
   
-  // 1. Criar a mesa
+  // 1. Inserir Mesa Limpa
   const { data: mesa, error: mesaError } = await supabase
     .from('mesas')
     .insert([
       {
         name,
-        code,
-        gm_id: gmId,
-        is_active: true,
-        settings: { survivor_mode: false }
+        mestre_id: userId, // CORREÇÃO: mestre_id, não gm_id
+        // Code é gerado automático pelo banco
+        // Settings usa o default do banco
       }
     ])
     .select()
@@ -25,19 +20,18 @@ export const createMesa = async (name: string, gmId: string) => {
 
   if (mesaError) throw new Error(`Erro ao criar mesa: ${mesaError.message}`);
 
-  // 2. Adicionar o GM como aprovado na tabela mesa_players
+  // 2. Adicionar Mestre na tabela de players
   const { error: playerError } = await supabase
     .from('mesa_players')
     .insert({
       mesa_id: mesa.id,
-      user_id: gmId,
+      user_id: userId,
       status: 'approved',
       role: 'gm'
     });
 
   if (playerError) {
-    console.error("Erro ao adicionar GM aos players:", playerError);
-    // Não vamos falhar tudo por isso, mas é bom logar
+    console.error("Erro ao vincular mestre:", playerError);
   }
 
   return mesa as Mesa;

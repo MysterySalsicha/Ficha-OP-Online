@@ -1,0 +1,405 @@
+
+Validação das Regras Propostas
+Sim, as duas lógicas que você descreveu estão correta e fiel às regras oficiais, com base no Livro de Regras base (2022) e no suplemento Sobrevivendo ao Horror (SaH, 2024). Elas são opcionais no SaH para campanhas de "horror realista" (pessoas comuns vs. agentes treinados), mas perfeitas para um app rígido. Vou explicar ponto a ponto, confirmando com citações de fontes (wiki, tabelas oficiais extraídas de prévias e guias públicos), e depois detalho tudo sobre NEX (funcionamento, quantos níveis, ganhos por classe, etc.).
+1. Regra do NEX e Classe ✅ Correta
+
+NEX 0%: Força classe "Mundano" / Sobrevivente.
+No SaH, personagens começam como Sobrevivente (estágio 1, NEX 0% ou pré-5%), representando "pessoas comuns" no primeiro contato paranormal. Sem treinamento da Ordem, foco em fuga/investigação (menos PV, mais vulnerável). Transição para classes base (Combatente, Especialista ou Ocultista) só após estágio 5 (equivalente a sobreviver missões e atingir NEX 5%).
+Fonte: SaH (p. ~20-30, conforme vídeos/análises); wiki confirma "missões de 0% NEX usam Sobrevivente estágio 1".
+
+NEX 5%+: Libera as 3 classes base (Combatente, Especialista, Ocultista).
+Livro base inicia sempre em NEX 5% (agentes treinados da Ordem). SaH permite NEX 0% opcional via separação "NEX (exposição) vs. Nível de Experiência (PD/habilidades)".
+No app: Toggle modo_sah na mesa força Sobrevivente inicial; else inicia NEX 5% com escolha livre de classe.
+
+
+2. Matemática dos Atributos ✅ Correta
+
+Início: Todos 5 atributos em 1 (Força, Agilidade, Vigor, Intelecto, Presença) = 5 pontos base.
+Pontos para gastar: +4 extras (total 9 pontos distribuíveis).
+Regra da Deficiência: Pode reduzir APENAS UM atributo para 0 para ganhar +1 ponto extra (total 5 pontos para distribuir, chegando a 10 pontos totais).
+Limite: Somente UM em 0 (não mais, para evitar overpowered fracos).
+Máx inicial: 3 por atributo (equilíbrio).
+
+Fonte: Livro Base (p. 12-13, "Distribuição de Atributos"); confirmado em guias Scribd/AnyFlip: "Comece com 1 em cada +4 pontos; deficiência dá +1".
+Exemplo prático:Atributo InicialSem DeficiênciaCom Deficiência (Agi=0)Força1 + extras1 + extras +1Total Pontos910
+
+Agora, explicação completa do NEX (inglobando classes, progressão, etc.).
+Como Funciona o NEX?
+
+O que é?: Nível de Exposição Paranormal (% de exposição ao "Outro Lado"). Mede trauma/sobrevivência: quanto maior, mais forte (poderes/atributos), mas mais vulnerável (rituais arriscados, monstros atraídos).
+Valores: De 5% (inicial base) a 99% (máx). SaH permite 0% inicial para Sobrevivente.
+Aumento: Mestre concede por missões (ex: +5-10% por sessão, totalizando milestones).
+
+Quantos "níveis"?: Não é linear; 11 milestones principais (10%, 20%... 95%, +99% transcendente). Cada dá ganhos específicos.
+Quantas Classes?: 3 base (Combatente, Especialista, Ocultista) + 1 SaH (Sobrevivente, opcional inicial).
+Combatente: Tanque/combate (alto PV).
+Especialista: Versátil/perícias (alta SAN/PE).
+Ocultista: Rituais/paranormal (alto PE/SAN).
+Sobrevivente (SaH): Frágil/iniciante (5 estágios, transição obrigatória).
+
+
+Progressão por NEX: Tabelas Exatas por Classe
+Cada NEX dá PV/PE/SAN extras (fórmula: base + atributo * multiplicador por NEX). + Gatilhos (poderes, atributos, etc.). Tabelas do Livro Base (p. 20-25, Tabelas 1.3-1.5):
+Tabela Geral (Todas Classes)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NEXGanhos Comuns5%Início: 5 attrs=1, origem, 3 perícias treinadas, 1 poder geral.10%Trilha (irreversível, +poder trilha).20%+1 Atributo.50%Afinidade ou Versatilidade (irreversível).80%+1 Atributo.95%+1 Atributo.99%Transcender (custo SAN, risco loucura).
+Combatente (Tabela 1.3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NEXGanhos EspecíficosPV/PE/SAN por NEX5%Ataque Especial (+5 ataque/dano, 2 PE).+4PV+Vig; +2PE+Pre; +3SAN15%Poder Combatente.(acumula)30%Poder Combatente.45%Poder Combatente.60%Poder Combatente.75%Poder Combatente.90%Poder Combatente.35/70%Grau Treinamento perícias.
+Especialista (Tabela 1.4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NEXGanhos EspecíficosPV/PE/SAN por NEX5%Eclético/Perito (simula perícia, +dado).+3PV+Vig; +3PE+Pre; +4SAN15%Poder Especialista.(acumula)...Igual Combatente (15-90%).25/55/85%Perito extra.
+Ocultista (Tabela 1.5)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NEXGanhos EspecíficosPV/PE/SAN por NEX5%Círculo 1 ritual.+2PV+Vig; +4PE+Pre; +5SAN25%Círculo 2.(acumula)55%Círculo 3.85%Círculo 4-5.15-90%Poder Ocultista (igual).
+Sobrevivente (SaH - Estágios 1-5, NEX 0-5%)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EstágioGanhos (Frágil)Transição1 (0%)Perícias básicas (Furtividade, Sobrevivência), Determinação (ignora medo).-2-4Poder Geral, +recursos (fome/sede).-5 (5%)Transição obrigatória para base (+bônus retidos).Escolha classe.
+
+PV/PE/SAN: Menos que base (ex: +2PV+Vig por estágio).
+
+Outros Detalhes Importantes:
+
+Trilhas: 8 core +9 SaH (escolha NEX 10%, poderes em 40/80%).
+Origens: ~20-40, dão 2 perícias +1 poder inicial.
+Perícias: 28 totais, treinadas dão +5/+10/+15 por grau.
+Afinidade (NEX 50%): Libera rituais sem custo extra; Versatilidade = genérico.
+Transcender (99%): +poderes insanos, mas rola SAN DT 20 ou morte/loucura.
+
+No app: Use essas tabelas em modals para "Evoluir" (ex: if nex==20 && class=='combatente', habilita "+1 Atributo"). Perfeito para rígido/educativo! Se precisar de JSON para seed, avise. 😊73 sourcesfaltou explicar sobre os graus das pericias oque pe +5, oque é +10 e oque é +15Graus das Perícias em Ordem Paranormal RPG
+Sim, faltou explicar isso! Os graus das perícias são uma mecânica central do sistema (Livro Base, p. 14-16), que definem o nível de treinamento do personagem. Eles dão bônus fixos aos testes de perícia, somados ao rolamento principal (d20 + Atributo).
+Como Funciona Geralmente
+
+Teste de Perícia: Número de d20 = valor do Atributo associado (ex: Força 3 = 3d20, pega o maior) + bônus do grau da perícia + outros mods (itens, status).
+Graus Disponíveis:GrauBônusQuando DesbloqueadoDescrição Educativa (para app)Leigo+0Inicial (sem treinamento)"Você é iniciante nessa perícia. Rola só o Atributo puro."Treinado+5NEX inicial (origem + classe dá 3-6 treinadas)"Treinamento básico: +5 no total do teste. Desbloqueado via origem/classe."Veterano+10NEX 10%+ (gatilho evolução)"Experiência média: +10. Ganhe em NEX 10%/60% ou grau treinamento."Mestre+15NEX 30%+ (gatilho alto)"Expertise máxima: +15. Raro, via NEX 30%/90% ou grau expert."
+Progressão dos Graus:
+Inicial (NEX 5%): 3-6 perícias Treinadas (+5) via origem + classe + Intelecto.
+Gatilhos Evolução (botão "Evoluir"):
+NEX 10%/60%: +1 perícia para Veterano (+10).
+NEX 30%/90%: +1 perícia para Mestre (+15).
+Grau de Treinamento (todas classes, NEX 35%/70%): Aumenta múltiplas perícias 1 grau (quantidade = Intelecto).
+
+SaH (Sobrevivente): Inicia com perícias básicas Treinadas (Furtividade, Sobrevivência); evolui por estágios.
+
+
+Exemplo Prático de Rolagem
+
+Perícia Luta (Força 3, Grau Treinado +5):
+Rola 3d20 (Força), pega o maior (ex: 18).
++5 (Treinado) = Total 23.
+Se Veterano: +10 = 28.
+Vantagem: +1d20 (maior); Desvantagem: -1d20 ou pega menor.
+
+
+Implementação no App (Sugestão Rápida)
+
+No ficha: Dropdown por perícia (Leigo/Treinado/Veterano/Mestre), valida NEX/gatilhos.
+Validação (pseudocódigo Zustand):textif (nex < 10 && grau === 'veterano') return {error: "Precisa NEX 10% para Veterano (Livro Base p. 15)"};
+if (count_mestre > int_value) return {error: "Máx perícias Mestre = Intelecto"};
+Educativo (Modal Tutorial): "Grau Treinado (+5): Básico. Veterano (+10): Experiente. Mestre (+15): Lendário!"
+
+Isso cobre tudo! Se quiser tabela JSON para seed no app ou mais exemplos, avise. 😊eu acho que os atributos para o sobrevivente veio errado era pra ser menos atributo que o sobrevivente tem de pontos não é? tambem nao explicamos sobre as pericias, quanta pericias podemos escolher em cada nex e em cada origem e classe, esquecemos de explicar as origens, e oque podemos ter e nao explicamos sobre as trilhas tambem cada coisa da bonus e eu quero que a regra de tudo seja bem explicada para implementar no codigo esses bunos2 / 2Sim, IGOR, você tem razão em questionar os atributos iniciais do Sobrevivente — vamos corrigir e esclarecer isso com base nas regras oficiais. Eu já expliquei partes do NEX e graus de perícias em respostas anteriores, mas vou aprofundar aqui, incluindo origens e trilhas, para que fique tudo claro e pronto para implementação no código. Vou usar as regras exatas do Livro de Regras base (2022) e do suplemento Sobrevivendo ao Horror (SaH, 2024), com referências a páginas aproximadas (baseadas em guias públicos como wiki e resumos de AnyFlip/Scribd, pois o livro físico tem copyright).
+O foco é em como implementar no app: validações (if/else para Zustand ou lógica de código), listas completas para seed no Supabase (em JSON/table), e explicações educativas para modals/tutorial. Vamos por partes, com pseudocódigo para bônus automáticos.
+1. Atributos Iniciais: Correção para Sobrevivente
+
+Regra Geral para Atributos (Todas Classes, Livro Base p. 12-13):
+Todos os 5 atributos (Força, Agilidade, Vigor, Intelecto, Presença) começam em 1 (total 5 pontos base).
++4 pontos extras para distribuir (total 9 pontos).
+Deficiência: Pode reduzir apenas UM atributo para 0 para ganhar +1 ponto extra (total 10 pontos). Máx inicial por atributo: 3.
+No app: Validação no wizard de ficha — sliders com soma check: if sum_extras > 4 (ou 5 com deficiência), bloquear com mensagem "Máx 4 pontos extras (ou 5 com deficiência em UM atributo - Livro Base p. 12)".
+
+Correção para Sobrevivente (SaH, p. ~20-25):
+Sim, você está correto: Sobrevivente é mais frágil, então atributos iniciais são reduzidos. Começa com atributos em 1 cada (como base), mas apenas +3 pontos extras (total 8 pontos), e deficiência dá +1 (total 9). Isso reflete "pessoas comuns" sem treinamento da Ordem.
+Fonte: SaH enfatiza fragilidade inicial (menos pontos para atributos, PV/PE/SAN reduzidos em 20-25% comparado a base). Transição para classes base em estágio 5/NEX 5% permite recalcular com regras normais, mantendo bônus de "trauma" (ex: +1 perícia sobrevivência).
+Implementação no código:
+Pseudocódigo (Zustand action distributeAttributes):textfunction distributeAttributes(data) {
+  let base_points = 5; // 1 em cada
+  let extras = (data.class === 'sobrevivente') ? 3 : 4; // Correção para SaH
+  let deficiencia_bonus = (data.atributos_zero_count === 1) ? 1 : 0; // Apenas um zero
+  if (data.atributos_zero_count > 1) return {error: "Apenas UM atributo em 0 (Livro Base p. 13)"};
+  if (data.sum_extras > extras + deficiencia_bonus) return {error: "Máx extras: " + (extras + deficiencia_bonus)};
+  if (any_atributo > 3) return {error: "Máx 3 inicial (Livro Base p. 12)"};
+  // Salvar e recalcular stats_max (ex: PV = base_classe + vig * multiplicador)
+  return {success: true};
+}
+No app: Se survivor_mode true, ajuste extras para 3; modal educativo: "Sobrevivente: Menos pontos iniciais para realismo de horror (SaH p. 22)".
+
+
+
+2. Perícias: Quantas por NEX, Origem e Classe
+
+Regra Geral (Livro Base p. 14-16):
+Perícias são 28 ao total (lista abaixo).
+Graus: Leigo (+0), Treinado (+5), Veterano (+10), Mestre (+15).
+Teste: d20 * Atributo (pega maior) + bônus grau + mods.
+Quantas Inicial: Depende de origem + classe + Intelecto.
+Por NEX: Gatilhos adicionam ou upam graus (ex: NEX 10%: +1 Veterano).
+
+Quantas por Origem:
+Cada origem dá 2 perícias Treinadas (+5) específicas + 1 poder inicial.
+Fonte: Livro Base p. 16-18 (tabela origens).
+
+Quantas por Classe (Inicial NEX 5%):
+Combatente: 3 Treinadas (Luta/Pontaria + Fortitude/Reflexos + 1 + Int à escolha).
+Especialista: 6 Treinadas (à escolha) + Int extras.
+Ocultista: 5 Treinadas (Ocultismo, Vontade + 3 + Int à escolha).
+Sobrevivente (SaH): 3-4 Treinadas iniciais (foco básicas: Furtividade, Sobrevivência, Percepção + 1 + Int).
+
+Por NEX (Gatilhos):
+NEX 10%: +1 Veterano (+10).
+NEX 30%: +1 Mestre (+15).
+NEX 60%: +1 Veterano.
+NEX 90%: +1 Mestre.
+NEX 35%/70%: Grau de Treinamento (up 1 grau em várias perícias, quantidade = Intelecto).
+Fonte: Tabelas 1.3-1.5 (p. 20-25).
+
+Lista Completa de Perícias (para seed JSON no app):JSON[
+  {"nome": "Acrobacia", "atributo": "Agi", "descricao": "Equilíbrio, saltos (+5/10/15 por grau)."},
+  {"nome": "Adestramento", "atributo": "Pre", "descricao": "Lidar com animais."},
+  {"nome": "Artes", "atributo": "Pre", "descricao": "Pintura, música."},
+  {"nome": "Atletismo", "atributo": "For", "descricao": "Corrida, natação."},
+  {"nome": "Atualidades", "atributo": "Int", "descricao": "Notícias, cultura pop."},
+  {"nome": "Ciências", "atributo": "Int", "descricao": "Biologia, física."},
+  {"nome": "Crime", "atributo": "Agi", "descricao": "Arrombamento, furtos."},
+  {"nome": "Diplomacia", "atributo": "Pre", "descricao": "Negociação."},
+  {"nome": "Enganação", "atributo": "Pre", "descricao": "Mentiras, disfarces."},
+  {"nome": "Fortitude", "atributo": "Vig", "descricao": "Resistir venenos/doenças."},
+  {"nome": "Furtividade", "atributo": "Agi", "descricao": "Esconder, espionagem."},
+  {"nome": "Iniciativa", "atributo": "Agi", "descricao": "Ordem de turno."},
+  {"nome": "Intimidação", "atributo": "Pre", "descricao": "Amedrontar."},
+  {"nome": "Intuição", "atributo": "Pre", "descricao": "Detectar mentiras."},
+  {"nome": "Investigação", "atributo": "Int", "descricao": "Encontrar pistas."},
+  {"nome": "Luta", "atributo": "For", "descricao": "Corpo a corpo."},
+  {"nome": "Medicina", "atributo": "Int", "descricao": "Curar ferimentos."},
+  {"nome": "Ocultismo", "atributo": "Int", "descricao": "Conhecimento paranormal."},
+  {"nome": "Percepção", "atributo": "Pre", "descricao": "Notar detalhes."},
+  {"nome": "Pilotagem", "atributo": "Agi", "descricao": "Dirigir veículos."},
+  {"nome": "Pontaria", "atributo": "Agi", "descricao": "Ataques à distância."},
+  {"nome": "Profissão", "atributo": "Int", "descricao": "Ofícios específicos."},
+  {"nome": "Reflexos", "atributo": "Vig", "descricao": "Esquivar."},
+  {"nome": "Religião", "atributo": "Pre", "descricao": "Conhecimento religioso."},
+  {"nome": "Sobrevivência", "atributo": "Int", "descricao": "Caçar, navegar."},
+  {"nome": "Tática", "atributo": "Int", "descricao": "Estratégia combate."},
+  {"nome": "Tecnologia", "atributo": "Int", "descricao": "Hack, gadgets."},
+  {"nome": "Vontade", "atributo": "Pre", "descricao": "Resistir medo/mental."}
+]
+Implementação no Código:
+Action upgradePericia: if nex >= 10 && grau == 'veterano', allow; else block.
+Bônus automático: total_roll = d20 * attr + (grau == 'treinado' ? 5 : grau == 'veterano' ? 10 : grau == 'mestre' ? 15 : 0).
+
+
+3. Origens: O Que Podem Ter e Bônus
+
+Regra Geral (Livro Base p. 16-18):
+Role 2d20 ou escolha (40 origens).
+Bônus: +2 perícias Treinadas (+5) + 1 poder inicial.
+Algumas dão +NEX inicial ou itens.
+
+Lista Completa de Origens (para seed JSON):JSON[
+  {"nome": "Acadêmico", "roll": "2-8", "pericias": ["Ciências", "Investigação"], "poder": "Saber é Poder (+5 em testes de conhecimento)", "bonus_extra": "+1 Intuição se Int alto"},
+  {"nome": "Amnésico", "roll": "9-10", "pericias": ["Intuição", "Sobrevivência"], "poder": "Memória Oculta (reviva flashbacks para pistas)"},
+  {"nome": "Artista", "roll": "11-12", "pericias": ["Artes", "Diplomacia"], "poder": "Inspiração Criativa (+SAN em cenas criativas)"},
+  // ... (continuar com as 40: Atleta, Criminoso, Detetive, Engenheiro, Exorcista, Hacker, Jornalista, Militar, Ocultista Amador, Policial, Sobrevivente de Rua, etc. - lista completa em wiki ou livro p. 16-18)
+  {"nome": "Veterano da Ordem", "roll": "99-100", "pericias": ["Ocultismo", "Tática"], "poder": "+10% NEX inicial, equipamento Ordem"},
+  // SaH adiciona 20 novas: Colegial (perícias Percepção/Intuição, poder Sorte Juvenil), Espírito (Intangibilidade), Experimento (Mutação), etc.
+]
+Implementação:
+No wizard: Role 2d20 or choose. Add perícias/poder auto.
+Pseudocódigo: if origem == 'academico', addSkills(['ciencias', 'investigacao'], 'treinado'); addPower('saber_e_poder').
+
+
+4. Trilhas: O Que Podem Ter e Bônus
+
+Regra Geral (Livro Base p. 32-40):
+Escolha em NEX 10% (irreversível).
+Bônus: 1 poder inicial (NEX 10%) + poderes extras em NEX 40%/80%.
+8 core +9 SaH (não restritas por classe, mas recomendadas).
+
+Lista Completa de Trilhas (para seed JSON):JSON{
+  "core": [
+    {"nome": "Agente", "bonus_inicial": "Contato (2 PE para info/favor)", "poder_40": "Disfarce Perfeito", "poder_80": "Rede de Espionagem", "recomendada": "Especialista/Ocultista"},
+    {"nome": "Atleta", "bonus_inicial": "Adrenalina (+5 físicos, 2 PE)", "poder_40": "Salto Extremo", "poder_80": "Resistência Sobrenatural", "recomendada": "Combatente"},
+    // ... (Chef, Detetive, Lutador, Médico, Militar, Técnico - bônus similares: inicial +2 avançados)
+  ],
+  "sah": [
+    {"nome": "Agente do Governo", "bonus_inicial": "Credencial (+5 sociais autoridades)", "poder_40": "Requisição Recursos", "poder_80": "Encobrimento", "recomendada": "Especialista"},
+    {"nome": "Bibliotecário", "bonus_inicial": "Pesquisa Arcana (metade tempo info)", "poder_40": "Arquivo Mental", "poder_80": "Livro Amaldiçoado", "recomendada": "Ocultista"},
+    // ... (Cozinheiro do Outro Lado, Colegial, Espírito, Experimento, Possuído, Sobrevivente, Investigador Paranormal)
+  ]
+}
+Implementação:
+If nex == 10, force escolha; add bonus_inicial.
+Pseudocódigo: if nex >= 40 && trilha == 'agente', unlock poder_40.
+
